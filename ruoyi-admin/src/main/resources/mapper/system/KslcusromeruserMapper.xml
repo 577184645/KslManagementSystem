@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.KslcusromeruserMapper">
+    
+    <resultMap type="Kslcusromeruser" id="KslcusromeruserResult">
+        <result property="id"    column="id"    />
+        <result property="username"    column="username"    />
+        <result property="sex"    column="sex"    />
+        <result property="phone"    column="phone"    />
+        <result property="email"    column="email"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectKslcusromeruserVo">
+        select id, username, sex, phone, email, create_time from kslcusromeruser
+    </sql>
+
+    <select id="selectKslcusromeruserList" parameterType="Kslcusromeruser" resultMap="KslcusromeruserResult">
+        <include refid="selectKslcusromeruserVo"/>
+        <where>  
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectKslcusromeruserById" parameterType="Long" resultMap="KslcusromeruserResult">
+        <include refid="selectKslcusromeruserVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertKslcusromeruser" parameterType="Kslcusromeruser" useGeneratedKeys="true" keyProperty="id">
+        insert into kslcusromeruser
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null  and username != ''">username,</if>
+            <if test="sex != null ">sex,</if>
+            <if test="phone != null  and phone != ''">phone,</if>
+            <if test="email != null  and email != ''">email,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="username != null  and username != ''">#{username},</if>
+            <if test="sex != null ">#{sex},</if>
+            <if test="phone != null  and phone != ''">#{phone},</if>
+            <if test="email != null  and email != ''">#{email},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKslcusromeruser" parameterType="Kslcusromeruser">
+        update kslcusromeruser
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="username != null  and username != ''">username = #{username},</if>
+            <if test="sex != null ">sex = #{sex},</if>
+            <if test="phone != null  and phone != ''">phone = #{phone},</if>
+            <if test="email != null  and email != ''">email = #{email},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteKslcusromeruserById" parameterType="Long">
+        delete from kslcusromeruser where id = #{id}
+    </delete>
+
+    <delete id="deleteKslcusromeruserByIds" parameterType="String">
+        delete from kslcusromeruser where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

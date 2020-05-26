@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PurchasedetailChildMapper">
+    
+    <resultMap type="PurchasedetailChild" id="PurchasedetailChildResult">
+        <result property="id"    column="id"    />
+        <result property="productname"    column="productname"    />
+        <result property="price"    column="price"    />
+        <result property="unit"    column="unit"    />
+        <result property="specifications"    column="specifications"    />
+        <result property="producttype"    column="producttype"    />
+        <result property="productnum"    column="productnum"    />
+        <result property="money"    column="money"    />
+        <result property="purchasedetailid"    column="purchasedetailid"    />
+        <result property="supplier"    column="supplier"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectPurchasedetailChildVo">
+        select id, productname, price, unit, specifications, producttype, productnum, money, purchasedetailid, supplier, create_time from purchasedetail_child
+    </sql>
+
+
+
+    <select id="selectPurchasedetailChildList" parameterType="PurchasedetailChild" resultMap="PurchasedetailChildResult">
+        <include refid="selectPurchasedetailChildVo"/>
+        <where>
+
+            <if test="productname != null  and productname != ''"> and productname like concat('%', #{productname}, '%')</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="specifications != null  and specifications != ''"> and specifications = #{specifications}</if>
+            <if test="producttype != null  and producttype != ''"> and producttype = #{producttype}</if>
+            <if test="productnum != null "> and productnum = #{productnum}</if>
+            <if test="money != null "> and money = #{money}</if>
+            <if test="purchasedetailid != null "> and purchasedetailid = #{purchasedetailid}</if>
+            <if test="supplier != null  and supplier != ''"> and supplier = #{supplier}</if>
+        </where>
+    </select>
+    
+    <select id="selectPurchasedetailChildById" parameterType="Long" resultMap="PurchasedetailChildResult">
+        <include refid="selectPurchasedetailChildVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPurchasedetailChild" parameterType="PurchasedetailChild" useGeneratedKeys="true" keyProperty="id">
+        insert into purchasedetail_child
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">productname,</if>
+            <if test="price != null ">price,</if>
+            <if test="unit != null  and unit != ''">unit,</if>
+            <if test="specifications != null  and specifications != ''">specifications,</if>
+            <if test="producttype != null  and producttype != ''">producttype,</if>
+            <if test="productnum != null ">productnum,</if>
+            <if test="money != null ">money,</if>
+            <if test="purchasedetailid != null ">purchasedetailid,</if>
+            <if test="supplier != null  and supplier != ''">supplier,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">#{productname},</if>
+            <if test="price != null ">#{price},</if>
+            <if test="unit != null  and unit != ''">#{unit},</if>
+            <if test="specifications != null  and specifications != ''">#{specifications},</if>
+            <if test="producttype != null  and producttype != ''">#{producttype},</if>
+            <if test="productnum != null ">#{productnum},</if>
+            <if test="money != null ">#{money},</if>
+            <if test="purchasedetailid != null ">#{purchasedetailid},</if>
+            <if test="supplier != null  and supplier != ''">#{supplier},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchasedetailChild" parameterType="PurchasedetailChild">
+        update purchasedetail_child
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">productname = #{productname},</if>
+            <if test="price != null ">price = #{price},</if>
+            <if test="unit != null  and unit != ''">unit = #{unit},</if>
+            <if test="specifications != null  and specifications != ''">specifications = #{specifications},</if>
+            <if test="producttype != null  and producttype != ''">producttype = #{producttype},</if>
+            <if test="productnum != null ">productnum = #{productnum},</if>
+            <if test="money != null ">money = #{money},</if>
+
+            <if test="purchasedetailid != null ">purchasedetailid = #{purchasedetailid},</if>
+            <if test="supplier != null  and supplier != ''">supplier = #{supplier},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchasedetailChildById" parameterType="Long">
+        delete from purchasedetail_child where id = #{id}
+    </delete>
+
+    <delete id="deletePurchasedetailChildByIds" parameterType="String">
+        delete from purchasedetail_child where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

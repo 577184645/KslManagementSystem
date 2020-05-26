@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PurchaseinvoiceMapper">
+    
+    <resultMap type="Purchaseinvoice" id="PurchaseinvoiceResult">
+        <result property="id"    column="id"    />
+        <result property="purchaseinvoiceid"    column="purchaseinvoiceid"    />
+        <result property="purchasecontractid"    column="purchasecontractid"    />
+        <result property="buyer"    column="buyer"    />
+        <result property="money"    column="money"    />
+        <result property="purchaseinvoicetime"    column="purchaseinvoicetime"    />
+        <result property="purchasedetailid"    column="purchasedetailid"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectPurchaseinvoiceVo">
+        select id, purchaseinvoiceid, purchasecontractid, buyer, money, purchaseinvoicetime, purchasedetailid, create_time from purchaseinvoice
+    </sql>
+
+    <select id="selectPurchaseinvoiceList" parameterType="Purchaseinvoice" resultMap="PurchaseinvoiceResult">
+        <include refid="selectPurchaseinvoiceVo"/>
+        <where>  
+            <if test="purchasecontractid != null  and purchasecontractid != ''"> and purchasecontractid = #{purchasecontractid}</if>
+            <if test="buyer != null  and buyer != ''"> and buyer = #{buyer}</if>
+            <if test="purchaseinvoicetime != null "> and purchaseinvoicetime = #{purchaseinvoicetime}</if>
+        </where>
+    </select>
+    
+    <select id="selectPurchaseinvoiceById" parameterType="Long" resultMap="PurchaseinvoiceResult">
+        <include refid="selectPurchaseinvoiceVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPurchaseinvoice" parameterType="Purchaseinvoice" useGeneratedKeys="true" keyProperty="id">
+        insert into purchaseinvoice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">purchaseinvoiceid,</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid,</if>
+            <if test="buyer != null  and buyer != ''">buyer,</if>
+            <if test="money != null ">money,</if>
+            <if test="purchaseinvoicetime != null ">purchaseinvoicetime,</if>
+            <if test="purchasedetailid != null ">purchasedetailid,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">#{purchaseinvoiceid},</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''">#{purchasecontractid},</if>
+            <if test="buyer != null  and buyer != ''">#{buyer},</if>
+            <if test="money != null ">#{money},</if>
+            <if test="purchaseinvoicetime != null ">#{purchaseinvoicetime},</if>
+            <if test="purchasedetailid != null ">#{purchasedetailid},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseinvoice" parameterType="Purchaseinvoice">
+        update purchaseinvoice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">purchaseinvoiceid = #{purchaseinvoiceid},</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid = #{purchasecontractid},</if>
+            <if test="buyer != null  and buyer != ''">buyer = #{buyer},</if>
+            <if test="money != null ">money = #{money},</if>
+            <if test="purchaseinvoicetime != null ">purchaseinvoicetime = #{purchaseinvoicetime},</if>
+            <if test="purchasedetailid != null ">purchasedetailid = #{purchasedetailid},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchaseinvoiceById" parameterType="Long">
+        delete from purchaseinvoice where id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseinvoiceByIds" parameterType="String">
+        delete from purchaseinvoice where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

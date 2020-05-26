@@ -950,6 +950,7 @@ var table = {
             },
             // 删除信息
             remove: function(id) {
+        		console.log(id);
             	table.set();
             	$.modal.confirm("确定删除该条" + table.options.modalName + "信息吗？", function() {
                     var url = $.common.isEmpty(id) ? table.options.removeUrl : table.options.removeUrl.replace("{id}", id);
@@ -962,6 +963,9 @@ var table = {
             	});
             	
             },
+
+
+
             // 批量删除信息
             removeAll: function() {
             	table.set();
@@ -988,10 +992,12 @@ var table = {
             add: function(id) {
             	table.set();
             	$.modal.open("添加" + table.options.modalName, $.operate.addUrl(id));
+
             },
             // 添加信息，以tab页展现
             addTab: function (id) {
             	table.set();
+
                 $.modal.openTab("添加" + table.options.modalName, $.operate.addUrl(id));
             },
             // 添加信息 全屏
@@ -1005,6 +1011,12 @@ var table = {
             	var url = $.common.isEmpty(id) ? table.options.createUrl.replace("{id}", "") : table.options.createUrl.replace("{id}", id);
                 return url;
             },
+
+
+
+
+
+
             // 修改信息
             edit: function(id) {
             	table.set();
@@ -1015,9 +1027,19 @@ var table = {
             			return;
             		}
                     var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
-                    $.modal.open("修改" + table.options.modalName, url);
+
+                	$.modal.open("修改" + table.options.modalName, url);
             	} else {
-            	    $.modal.open("修改" + table.options.modalName, $.operate.editUrl(id));
+            		if($.operate.editUrl(id).indexOf("makeinvoice")!=-1){
+                        $.modal.open("新增发票", $.operate.editUrl(id));
+					}else if($.operate.editUrl(id).indexOf("purchase")!=-1){
+                        $.modal.open("采购", $.operate.editUrl(id));
+            		}else{
+                        $.modal.open("修改" + table.options.modalName, $.operate.editUrl(id));
+
+                    }
+
+
             	}
             },
             // 修改信息，以tab页展现

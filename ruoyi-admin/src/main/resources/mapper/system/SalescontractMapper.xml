@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SalescontractMapper">
+    
+    <resultMap type="Salescontract" id="SalescontractResult">
+        <result property="id"    column="id"    />
+        <result property="contractid"    column="contractid"    />
+        <result property="operator"    column="operator"    />
+        <result property="payway"    column="payway"    />
+        <result property="salesamount"    column="salesamount"    />
+        <result property="firstparty"    column="firstparty"    />
+        <result property="signingtime"    column="signingtime"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectSalescontractVo">
+        select id, contractid, operator, payway, salesamount, firstparty, signingtime, remarks, create_time from salescontract
+    </sql>
+
+    <select id="selectSalescontractList" parameterType="Salescontract" resultMap="SalescontractResult">
+        <include refid="selectSalescontractVo"/>
+        <where>  
+            <if test="contractid != null  and contractid != ''"> and contractid = #{contractid}</if>
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+            <if test="payway != null  and payway != ''"> and payway like concat('%', #{payway}, '%')</if>
+            <if test="firstparty != null  and firstparty != ''"> and firstparty = #{firstparty}</if>
+            <if test="signingtime != null "> and signingtime = #{signingtime}</if>
+        </where>
+    </select>
+    
+    <select id="selectSalescontractById" parameterType="Long" resultMap="SalescontractResult">
+        <include refid="selectSalescontractVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSalescontract" parameterType="Salescontract" useGeneratedKeys="true" keyProperty="id">
+        insert into salescontract
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractid != null  and contractid != ''">contractid,</if>
+            <if test="operator != null  and operator != ''">operator,</if>
+            <if test="payway != null  and payway != ''">payway,</if>
+            <if test="salesamount != null ">salesamount,</if>
+            <if test="firstparty != null  and firstparty != ''">firstparty,</if>
+            <if test="signingtime != null ">signingtime,</if>
+            <if test="remarks != null  and remarks != ''">remarks,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractid != null  and contractid != ''">#{contractid},</if>
+            <if test="operator != null  and operator != ''">#{operator},</if>
+            <if test="payway != null  and payway != ''">#{payway},</if>
+            <if test="salesamount != null ">#{salesamount},</if>
+            <if test="firstparty != null  and firstparty != ''">#{firstparty},</if>
+            <if test="signingtime != null ">#{signingtime},</if>
+            <if test="remarks != null  and remarks != ''">#{remarks},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSalescontract" parameterType="Salescontract">
+        update salescontract
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractid != null  and contractid != ''">contractid = #{contractid},</if>
+            <if test="operator != null  and operator != ''">operator = #{operator},</if>
+            <if test="payway != null  and payway != ''">payway = #{payway},</if>
+            <if test="salesamount != null ">salesamount = #{salesamount},</if>
+            <if test="firstparty != null  and firstparty != ''">firstparty = #{firstparty},</if>
+            <if test="signingtime != null ">signingtime = #{signingtime},</if>
+            <if test="remarks != null  and remarks != ''">remarks = #{remarks},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSalescontractById" parameterType="Long">
+        delete from salescontract where id = #{id}
+    </delete>
+
+    <delete id="deleteSalescontractByIds" parameterType="String">
+        delete from salescontract where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="maxContractid" resultType="String" parameterType="String">
+	 select contractid from salescontract where contractid like '%${type}%'
+	 and SUBSTR(create_time,3,2)=#{newdate}
+	</select>
+
+    <select id="selectSalescontractByContractId" resultMap="SalescontractResult">
+        <include refid="selectSalescontractVo"/>
+        where contractid = #{contractid}
+    </select>
+
+</mapper>

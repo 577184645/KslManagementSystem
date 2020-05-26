@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SellDetailMapper">
+    
+    <resultMap type="SellDetail" id="SellDetailResult">
+        <result property="id"    column="id"    />
+        <result property="productname"    column="productname"    />
+        <result property="price"    column="price"    />
+        <result property="unit"    column="unit"    />
+        <result property="specifications"    column="specifications"    />
+        <result property="producttype"    column="producttype"    />
+        <result property="productnum"    column="productnum"    />
+        <result property="money"    column="money"    />
+        <result property="contractid"    column="contractid"    />
+        <result property="invoicestatus"    column="invoicestatus"    />
+        <result property="purchasestatus"    column="purchasestatus"    />
+        <result property="supplier"    column="supplier"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectSellDetailVo">
+        select id,supplier, productname, price, unit, specifications, producttype, productnum, money, contractid, invoicestatus, purchasestatus, create_time from sell_detail
+    </sql>
+
+    <select id="selectSellDetailList" parameterType="SellDetail" resultMap="SellDetailResult">
+        <include refid="selectSellDetailVo"/>
+        <where>  
+            <if test="productname != null  and productname != ''"> and productname like concat('%', #{productname}, '%')</if>
+            <if test="contractid != null  and contractid != ''"> and contractid = #{contractid}</if>
+            <if test="invoicestatus != null  and invoicestatus != ''"> and invoicestatus = #{invoicestatus}</if>
+            <if test="purchasestatus != null  and purchasestatus != ''"> and purchasestatus = #{purchasestatus}</if>
+
+        </where>
+    </select>
+    
+    <select id="selectSellDetailById" parameterType="Long" resultMap="SellDetailResult">
+        <include refid="selectSellDetailVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectSellDetailByContractId" resultMap="SellDetailResult">
+        <include refid="selectSellDetailVo"/>
+        where contractid = #{contractid}
+
+    </select>
+        
+    <insert id="insertSellDetail" parameterType="SellDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into sell_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">productname,</if>
+            <if test="price != null ">price,</if>
+            <if test="unit != null  and unit != ''">unit,</if>
+            <if test="specifications != null  and specifications != ''">specifications,</if>
+            <if test="producttype != null  and producttype != ''">producttype,</if>
+            <if test="productnum != null ">productnum,</if>
+            <if test="money != null ">money,</if>
+            <if test="contractid != null  and contractid != ''">contractid,</if>
+            <if test="invoicestatus != null ">invoicestatus,</if>
+            <if test="purchasestatus != null ">purchasestatus,</if>
+            <if test="supplier != null ">supplier,</if>
+            <if test="createTime != null ">create_time,</if>
+
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">#{productname},</if>
+            <if test="price != null ">#{price},</if>
+            <if test="unit != null  and unit != ''">#{unit},</if>
+            <if test="specifications != null  and specifications != ''">#{specifications},</if>
+            <if test="producttype != null  and producttype != ''">#{producttype},</if>
+            <if test="productnum != null ">#{productnum},</if>
+            <if test="money != null ">#{money},</if>
+            <if test="contractid != null  and contractid != ''">#{contractid},</if>
+            <if test="invoicestatus != null ">#{invoicestatus},</if>
+            <if test="purchasestatus != null ">#{purchasestatus},</if>
+            <if test="supplier != null ">#{supplier},</if>
+            <if test="createTime != null ">#{createTime},</if>
+
+         </trim>
+    </insert>
+
+    <update id="updateSellDetail" parameterType="SellDetail">
+        update sell_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">productname = #{productname},</if>
+            <if test="price != null ">price = #{price},</if>
+            <if test="unit != null  and unit != ''">unit = #{unit},</if>
+            <if test="specifications != null  and specifications != ''">specifications = #{specifications},</if>
+            <if test="producttype != null  and producttype != ''">producttype = #{producttype},</if>
+            <if test="productnum != null ">productnum = #{productnum},</if>
+            <if test="money != null ">money = #{money},</if>
+            <if test="contractid != null  and contractid != ''">contractid = #{contractid},</if>
+            <if test="invoicestatus != null ">invoicestatus = #{invoicestatus},</if>
+            <if test="purchasestatus != null ">purchasestatus = #{purchasestatus},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="supplier != null ">supplier = #{supplier},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSellDetailById" parameterType="Long">
+        delete from sell_detail where id = #{id}
+    </delete>
+<update id="makeinvoice">
+    update  sell_detail set invoicestatus=1 where  id=#{id}
+</update>
+
+
+    <delete id="deleteSellDetailByIds" parameterType="String">
+        delete from sell_detail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

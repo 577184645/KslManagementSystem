@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PurchasedetailMapper">
+    
+    <resultMap type="Purchasedetail" id="PurchasedetailResult">
+        <result property="id"    column="id"    />
+        <result property="productname"    column="productname"    />
+        <result property="price"    column="price"    />
+        <result property="unit"    column="unit"    />
+        <result property="supplier"    column="supplier"    />
+        <result property="specifications"    column="specifications"    />
+        <result property="purchasecontractid"    column="purchasecontractid"    />
+        <result property="producttype"    column="producttype"    />
+        <result property="productnum"    column="productnum"    />
+        <result property="money"    column="money"    />
+        <result property="purchaseinvoicestatus"    column="purchaseinvoicestatus"    />
+        <result property="selldetailid"    column="selldetailid"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectPurchasedetailVo">
+        select id, productname, supplier,price, unit, specifications, purchasecontractid, producttype, productnum, money, purchaseinvoicestatus, selldetailid, create_time from purchasedetail
+    </sql>
+
+    <select id="selectPurchasedetailList" parameterType="Purchasedetail" resultMap="PurchasedetailResult">
+        <include refid="selectPurchasedetailVo"/>
+        <where>  
+            <if test="productname != null  and productname != ''"> and productname like concat('%', #{productname}, '%')</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''"> and purchasecontractid = #{purchasecontractid}</if>
+            <if test="purchaseinvoicestatus != null "> and purchaseinvoicestatus = #{purchaseinvoicestatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectPurchasedetailById" parameterType="Long" resultMap="PurchasedetailResult">
+        <include refid="selectPurchasedetailVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectPurchasedetailListByPurchasecontractId" parameterType="String" resultMap="PurchasedetailResult">
+        <include refid="selectPurchasedetailVo"/>
+        where purchasecontractid = #{purchasecontractid}
+    </select>
+        
+    <insert id="insertPurchasedetail" parameterType="Purchasedetail" useGeneratedKeys="true" keyProperty="id">
+        insert into purchasedetail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">productname,</if>
+            <if test="price != null ">price,</if>
+            <if test="unit != null  and unit != ''">unit,</if>
+            <if test="specifications != null  and specifications != ''">specifications,</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid,</if>
+            <if test="producttype != null  and producttype != ''">producttype,</if>
+            <if test="productnum != null ">productnum,</if>
+            <if test="money != null ">money,</if>
+            <if test="purchaseinvoicestatus != null ">purchaseinvoicestatus,</if>
+            <if test="selldetailid != null ">selldetailid,</if>
+            <if test="supplier != null ">supplier,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">#{productname},</if>
+            <if test="price != null ">#{price},</if>
+            <if test="unit != null  and unit != ''">#{unit},</if>
+            <if test="specifications != null  and specifications != ''">#{specifications},</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''">#{purchasecontractid},</if>
+            <if test="producttype != null  and producttype != ''">#{producttype},</if>
+            <if test="productnum != null ">#{productnum},</if>
+            <if test="money != null ">#{money},</if>
+            <if test="purchaseinvoicestatus != null ">#{purchaseinvoicestatus},</if>
+            <if test="selldetailid != null ">#{selldetailid},</if>
+            <if test="supplier != null ">#{supplier},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchasedetail" parameterType="Purchasedetail">
+        update purchasedetail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">productname = #{productname},</if>
+            <if test="price != null ">price = #{price},</if>
+            <if test="unit != null  and unit != ''">unit = #{unit},</if>
+            <if test="specifications != null  and specifications != ''">specifications = #{specifications},</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid = #{purchasecontractid},</if>
+            <if test="producttype != null  and producttype != ''">producttype = #{producttype},</if>
+            <if test="productnum != null ">productnum = #{productnum},</if>
+            <if test="money != null ">money = #{money},</if>
+            <if test="purchaseinvoicestatus != null ">purchaseinvoicestatus = #{purchaseinvoicestatus},</if>
+            <if test="selldetailid != null ">selldetailid = #{selldetailid},</if>
+            <if test="supplier != null ">#{supplier},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchasedetailById" parameterType="Long">
+        delete from purchasedetail where id = #{id}
+    </delete>
+
+    <delete id="deletePurchasedetailByIds" parameterType="String">
+        delete from purchasedetail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

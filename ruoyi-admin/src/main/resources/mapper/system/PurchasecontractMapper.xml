@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PurchasecontractMapper">
+    
+    <resultMap type="Purchasecontract" id="PurchasecontractResult">
+        <result property="id"    column="id"    />
+        <result property="purchasecontractid"    column="purchasecontractid"    />
+        <result property="purchasesamount"    column="purchasesamount"    />
+        <result property="partyb"    column="partyb"    />
+        <result property="signingtime"    column="signingtime"    />
+        <result property="payway"    column="payway"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="contractid"    column="contractid"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="maxpurchasecontractid"    column="maxpurchasecontractid"    />
+
+    </resultMap>
+
+    <sql id="selectPurchasecontractVo">
+        select id, purchasecontractid, purchasesamount, partyb, signingtime, payway, remarks, contractid, create_time from purchasecontract
+    </sql>
+
+    <select id="selectPurchasecontractList" parameterType="Purchasecontract" resultMap="PurchasecontractResult">
+        <include refid="selectPurchasecontractVo"/>
+        <where>  
+            <if test="purchasecontractid != null  and purchasecontractid != ''"> and purchasecontractid = #{purchasecontractid}</if>
+            <if test="partyb != null  and partyb != ''"> and partyb = #{partyb}</if>
+            <if test="contractid != null  and contractid != ''"> and contractid = #{contractid}</if>
+        </where>
+    </select>
+    
+    <select id="selectPurchasecontractById" parameterType="Long" resultMap="PurchasecontractResult">
+        <include refid="selectPurchasecontractVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPurchasecontract" parameterType="Purchasecontract" useGeneratedKeys="true" keyProperty="id">
+        insert into purchasecontract
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid,</if>
+            <if test="purchasesamount != null ">purchasesamount,</if>
+            <if test="partyb != null  and partyb != ''">partyb,</if>
+            <if test="signingtime != null ">signingtime,</if>
+            <if test="payway != null  and payway != ''">payway,</if>
+            <if test="remarks != null  and remarks != ''">remarks,</if>
+            <if test="contractid != null  and contractid != ''">contractid,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="purchasecontractid != null  and purchasecontractid != ''">#{purchasecontractid},</if>
+            <if test="purchasesamount != null ">#{purchasesamount},</if>
+            <if test="partyb != null  and partyb != ''">#{partyb},</if>
+            <if test="signingtime != null ">#{signingtime},</if>
+            <if test="payway != null  and payway != ''">#{payway},</if>
+            <if test="remarks != null  and remarks != ''">#{remarks},</if>
+            <if test="contractid != null  and contractid != ''">#{contractid},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchasecontract" parameterType="Purchasecontract">
+        update purchasecontract
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid = #{purchasecontractid},</if>
+            <if test="purchasesamount != null ">purchasesamount = #{purchasesamount},</if>
+            <if test="partyb != null  and partyb != ''">partyb = #{partyb},</if>
+            <if test="signingtime != null ">signingtime = #{signingtime},</if>
+            <if test="payway != null  and payway != ''">payway = #{payway},</if>
+            <if test="remarks != null  and remarks != ''">remarks = #{remarks},</if>
+            <if test="contractid != null  and contractid != ''">contractid = #{contractid},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchasecontractById" parameterType="Long">
+        delete from purchasecontract where id = #{id}
+    </delete>
+
+    <delete id="deletePurchasecontractByIds" parameterType="String">
+        delete from purchasecontract where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectPurchasecontractByContractId" resultMap="PurchasecontractResult" >
+        <include refid="selectPurchasecontractVo"/>
+         where contractid=#{contractid}
+	 </select>
+
+
+    <select id="selectMaxPurchasecontractByContractId" resultType="String">
+        select  max(purchasecontractid)    from purchasecontract
+        where contractid=#{contractid}
+    </select>
+
+
+
+
+</mapper>
