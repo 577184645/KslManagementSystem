@@ -22,6 +22,10 @@ public class PurchasedetailChildServiceImpl implements IPurchasedetailChildServi
     private PurchasedetailChildMapper purchasedetailChildMapper;
 
 
+    @Override
+    public List<PurchasedetailChild> selectPurchasedetailChildPurchasedetailid(Long purchasedetailid) {
+        return purchasedetailChildMapper.selectPurchasedetailChildPurchasedetailid(purchasedetailid);
+    }
 
     /**
      * 查询采购订单子

@@ -46,6 +46,29 @@ public class PurchasecontractController extends BaseController
     private IPurchasedetailService purchasedetailService;
 
 
+
+    @PostMapping(value = "PurchasesamountBymonth")
+    @ResponseBody
+    public Map<String, Object> PurchasesamountBymonth(@RequestParam("newdate") String newdate) {
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+
+        queryMap.put("result", purchasecontractService.selectPurchasesamountByMonth(newdate));
+
+        return  queryMap;
+    }
+
+    @PostMapping(value = "PurchasesamountByday")
+    @ResponseBody
+    public Map<String, Object> PurchasesamountByday(@RequestParam("newyear") String newyear,@RequestParam("newmonth") String newmonth) {
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+        queryMap.put("result", purchasecontractService.selectPurchasesamountByday(newyear,newmonth));
+
+        return  queryMap;
+    }
+
+
+
+
     @RequiresPermissions("system:purchasecontract:view")
     @GetMapping()
     public String purchasecontract()
@@ -157,5 +180,18 @@ public class PurchasecontractController extends BaseController
             return AjaxResult.error("操作失败,采购合同下有订单信息!");
         }
         return toAjax(purchasecontractService.deletePurchasecontractByIds(ids));
+    }
+
+
+    /**
+     * 查看合同信息
+     */
+    @RequiresPermissions("system:purchasecontract:purchaseinfo")
+    @GetMapping("/purchaseInfo/{id}")
+    public String purchaseInfo(@PathVariable("id") Long id, ModelMap mmap)
+    {
+        Purchasecontract purchasecontract = purchasecontractService.selectPurchasecontractById(id);
+        mmap.put("purchasecontract", purchasecontract);
+        return prefix + "/purchaseinfo";
     }
 }

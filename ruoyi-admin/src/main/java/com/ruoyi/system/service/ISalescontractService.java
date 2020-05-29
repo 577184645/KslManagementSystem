@@ -1,7 +1,11 @@
 package com.ruoyi.system.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.Salescontract;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 销售合同列表Service接口
@@ -11,6 +15,20 @@ import com.ruoyi.system.domain.Salescontract;
  */
 public interface ISalescontractService 
 {
+
+
+
+
+    /**
+     * 当前年的销售金额
+     * @param newDate
+     * @return
+     */
+    Double sumMoneyGYear(@Param("newDate") String newDate);
+
+
+
+
     /**
      * 查询销售合同列表
      * 
@@ -65,5 +83,26 @@ public interface ISalescontractService
      * @return
      */
     String getContractid(String type);
+
+
+    /**
+     * 根据某一年查询每个月的总金额
+     * @param newdate
+     *
+     * @return
+     */
+    public List<Map<String,Object>> selectSalesamountBmonth(String newdate );
+
+
+    /**
+     * 根据某一个月查询每天的总金额
+     * @param newyear
+     *    @param newmonth
+     * @return
+     */
+    public List<Map<String,Object>> selectSalesamountByday(String newyear , String newmonth);
+
+
+
 
 }

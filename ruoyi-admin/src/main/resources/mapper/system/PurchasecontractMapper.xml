@@ -100,5 +100,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 
+    <select id="selectPurchasesamountByMonth" resultType="Map">
+    select month(signingtime) as months  ,sum(purchasesamount) as  datas
+from purchasecontract
+WHERE year(signingtime)=#{newdate}
+group by
+month(signingtime)
+
+</select>
+
+
+    <select id="selectPurchasesamountByday" resultType="Map">
+   select day(signingtime) as days ,sum(purchasesamount) as datas from purchasecontract WHERE year(signingtime)=#{newyear} and month(signingtime)=#{newmonth}  group by day(signingtime)
+   </select>
+
+    <select id="selectPurchasesamountsumByContractId" resultType="Double">
+
+        SELECT sum(purchasesamount) from purchasecontract WHERE contractid=#{contractid}
+
+    </select>
 
 </mapper>

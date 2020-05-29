@@ -1,9 +1,14 @@
 package com.ruoyi.system.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.system.domain.SellDetail;
 import com.ruoyi.system.service.ISellDetailService;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +38,20 @@ import com.ruoyi.common.core.page.TableDataInfo;
 public class InvoiceController extends BaseController
 {
     private String prefix = "system/invoice";
+
+
+
+    @GetMapping(value = "sumMoneyGYear")
+    @ResponseBody
+    public Map<String, Object> sumMoneyGYear() throws Exception{
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+        Date date=new Date();
+        SimpleDateFormat format=new SimpleDateFormat("yyyy");
+        String format1 = format.format(date);
+        queryMap.put("summoney", invoiceService.sumMoneyGYear(format1)!=null?invoiceService.sumMoneyGYear(format1):0);
+        return  queryMap;
+    }
+
 
     @Autowired
     private IInvoiceService invoiceService;

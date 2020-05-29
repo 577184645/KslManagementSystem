@@ -11,6 +11,14 @@ import com.ruoyi.system.domain.Invoice;
  */
 public interface IInvoiceService 
 {
+
+    /**
+     * 当前年的发票金额
+     * @param newDate
+     * @return
+     */
+    Double sumMoneyGYear(String newDate);
+
     /**
      * 查询销售发票列表
      * 

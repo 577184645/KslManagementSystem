@@ -81,6 +81,9 @@
     	    $(childTable).bootstrapTable({
     	        url: prefix + "/list",
     	        method: 'post',
+                onExpandRow : function(index, row, $detail) {
+                    initChildTable(index, row, $detail);
+                },
     	        sidePagination: "server",
     	        contentType: "application/x-www-form-urlencoded",
     	        queryParams : {
@@ -107,6 +110,9 @@
                     }
                 }]
     	    });
+
+
+
 		};
     </script>
 </body>

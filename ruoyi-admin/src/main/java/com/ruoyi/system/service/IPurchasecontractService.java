@@ -1,7 +1,10 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.Purchasecontract;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 采购合同Service接口
@@ -74,5 +77,31 @@ public interface IPurchasecontractService
      * @return
      */
     String findcontractid(String contractid);
+
+    /**
+     * 根据销售合同查询所有的采购金额
+     * @param contractid
+     * @return
+     */
+    public Double selectPurchasesamountsumByContractId(String contractid);
+
+
+    /**
+     * 根据某一年查询每个月的总金额
+     * @param newdate
+     * @return
+     */
+    public List<Map<String,Object>> selectPurchasesamountByMonth( String newdate);
+
+
+
+    /**
+     * 根据某一个月查询每天的总金额
+     * @param newyear
+     *    @param newmonth
+     * @return
+     */
+    public List<Map<String,Object>> selectPurchasesamountByday(String newyear,String newmonth);
+
 
 }

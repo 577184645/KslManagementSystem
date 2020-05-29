@@ -3,6 +3,8 @@ package com.ruoyi.system.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,11 @@ public class SalescontractServiceImpl implements ISalescontractService
 {
     @Autowired
     private SalescontractMapper salescontractMapper;
+
+    @Override
+    public Double sumMoneyGYear(String newDate) {
+        return salescontractMapper.sumMoneyGYear(newDate);
+    }
 
     /**
      * 查询销售合同列表
@@ -183,5 +190,15 @@ public class SalescontractServiceImpl implements ISalescontractService
         }
 
         return contractid;
+    }
+
+    @Override
+    public List<Map<String,Object>> selectSalesamountBmonth(String newdate) {
+        return salescontractMapper.selectSalesamountBmonth(newdate);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectSalesamountByday(String newyear, String newmonth) {
+        return salescontractMapper.selectSalesamountByday(newyear,newmonth);
     }
 }

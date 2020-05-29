@@ -19,7 +19,7 @@
                             <input type="text" name="buyer"/>
                         </li>
                         <li>
-                            采购状态：<select name="invoicestatus" th:with="type=${@dict.getType('purchase_status')}">
+                            采购状态：<select name="purchasestatus" th:with="type=${@dict.getType('purchase_status')}">
                             <option value="">所有</option>
                             <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                         </select>

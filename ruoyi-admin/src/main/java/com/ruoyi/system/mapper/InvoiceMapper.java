@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.Invoice;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 销售发票列表Mapper接口
@@ -11,6 +12,14 @@ import com.ruoyi.system.domain.Invoice;
  */
 public interface InvoiceMapper 
 {
+
+    /**
+     * 当前年的发票金额
+     * @param newDate
+     * @return
+     */
+    Double sumMoneyGYear(@Param("newDate") String newDate);
+
     /**
      * 查询销售发票列表
      * 

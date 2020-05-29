@@ -33,6 +33,16 @@ public interface PurchasedetailChildMapper
      */
     public List<PurchasedetailChild> selectPurchasedetailChildList(PurchasedetailChild purchasedetailChild);
 
+
+
+    /**
+     * 查询采购订单子列表
+     *
+     * @param purchasedetailid 采购订单子
+     * @return 采购订单子集合
+     */
+    public List<PurchasedetailChild> selectPurchasedetailChildPurchasedetailid(Long purchasedetailid);
+
     /**
      * 新增采购订单子
      * 

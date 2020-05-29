@@ -1,6 +1,8 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -120,5 +122,20 @@ public class PurchasecontractServiceImpl implements IPurchasecontractService
         }
 
 
+    }
+
+    @Override
+    public Double selectPurchasesamountsumByContractId(String contractid) {
+        return purchasecontractMapper.selectPurchasesamountsumByContractId(contractid);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectPurchasesamountByMonth(String newdate) {
+        return purchasecontractMapper.selectPurchasesamountByMonth(newdate);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectPurchasesamountByday(String newyear, String newmonth) {
+        return purchasecontractMapper.selectPurchasesamountByday(newyear,newmonth);
     }
 }

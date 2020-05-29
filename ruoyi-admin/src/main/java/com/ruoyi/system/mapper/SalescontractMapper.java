@@ -1,9 +1,16 @@
 package com.ruoyi.system.mapper;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.Salescontract;
 import com.ruoyi.system.domain.SellDetail;
 import org.apache.ibatis.annotations.Param;
+
+
+
+
 
 /**
  * 销售合同列表Mapper接口
@@ -13,6 +20,18 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface SalescontractMapper 
 {
+
+
+
+    /**
+     * 当前年的销售金额
+     * @param newDate
+     * @return
+     */
+    Double sumMoneyGYear(@Param("newDate") String newDate);
+
+
+
     /**
      * 查询销售合同列表
      * 
@@ -75,4 +94,22 @@ public interface SalescontractMapper
      * @return
      */
     List<String> maxContractid(@Param("type")String type, @Param("newdate") String newdate);
+
+    /**
+     * 根据某一年查询每个月的总金额
+     * @param newdate
+     * @return
+     */
+    public List<Map<String,Object>> selectSalesamountBmonth(@Param("newdate") String newdate);
+
+    /**
+     * 根据某一个月查询每天的总金额
+     * @param newyear
+     *    @param newmonth
+     * @return
+     */
+    public List<Map<String,Object>> selectSalesamountByday(@Param("newyear") String newyear,@Param("newmonth") String newmonth);
+
+
+
 }

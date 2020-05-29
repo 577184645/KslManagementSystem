@@ -96,4 +96,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where contractid = #{contractid}
     </select>
 
+    <select id="sumMoneyGYear" resultType="Double">
+     select sum(salesamount) from salescontract
+     where signingtime like '%${newDate}%'
+     group by year(#{newDate})
+</select>
+
+
+<select id="selectSalesamountBmonth" resultType="Map">
+    select month(signingtime) as months  ,sum(salesamount) as  datas
+from salescontract
+WHERE year(signingtime)=#{newdate}
+group by
+month(signingtime)
+
+</select>
+
+
+    <select id="selectSalesamountByday" resultType="Map">
+ select day(signingtime) as days ,sum(salesamount) as datas from salescontract WHERE year(signingtime)=#{newyear} and month(signingtime)=#{newmonth}  group by day(signingtime)
+
+</select>
+
+
+
 </mapper>

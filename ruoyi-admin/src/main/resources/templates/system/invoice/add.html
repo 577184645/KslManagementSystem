@@ -39,9 +39,8 @@
 </div>
 <th:block th:include="include :: footer" />
 <script th:inline="javascript">
-    var editFlag = [[${@permission.hasPermi('system:invoice:edit')}]];
-    var removeFlag = [[${@permission.hasPermi('system:invoice:remove')}]];
-    var makeinvoiceFlag = [[${@permission.hasPermi('system:invoice:makeinvoice')}]];
+    var addFlag = [[${@permission.hasPermi('system:invoice:add')}]];
+
     var invoicestatusDatas = [[${@dict.getType('invoice_status')}]];
     var purchasestatusDatas = [[${@dict.getType('purchase_status')}]];
     var prefix = ctx + "system/detail";
@@ -121,7 +120,7 @@
                         var actions = [];
                       
                         if(row['invoicestatus']==1) {
-                            actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-add"></i>开票</a> ');
+                            actions.push('<a class="btn btn-success btn-xs ' + addFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-add"></i>开票</a> ');
                         }
                         return actions.join('');
                     }

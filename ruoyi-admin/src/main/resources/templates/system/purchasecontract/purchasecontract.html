@@ -32,6 +32,9 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-primary single disabled" shiro:hasPermission="system:purchasecontract:purchaseinfo"  onclick="purchaseInfo()" >
+                    <i class="fa fa-edit"></i> 查看
+                </a>
                 <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:purchasecontract:add">
                     <i class="fa fa-plus"></i> 添加
                 </a>
@@ -117,6 +120,48 @@
             };
             $.table.init(options);
         });
+
+
+        function purchaseInfo(id) {
+            table.set();
+            if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+                var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                if ($.common.isEmpty(row)) {
+                    $.modal.alertWarning("请至少选择一条记录");
+                    return;
+                }
+                var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
+
+                $.modal.openTab("修改" + table.options.modalName, url);
+            } else {
+
+
+                $.modal.openTab("采购合同信息",editUrl(id));
+
+
+            }
+        }
+
+
+        function editUrl(id) {
+            var url = "/404.html";
+            if ($.common.isNotEmpty(id)) {
+
+                url = table.options.updateUrl.replace("{id}", id);
+
+            } else {
+                var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+
+                if (id.length == 0) {
+                    $.modal.alertWarning("请至少选择一条记录");
+                    return;
+                }
+                url = prefix+"/purchaseInfo/"+(id);
+
+            }
+            return url;
+        }
     </script>
+
 </body>
 </html>

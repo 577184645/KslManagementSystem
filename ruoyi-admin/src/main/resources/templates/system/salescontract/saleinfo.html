@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改销售合同列表')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-salescontract-edit" th:object="${salescontract}">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">销售合同号：</label>
+                <div class="col-sm-8">
+                    <input name="operator" id="contractid" readonly th:field="*{contractid}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">经办人：</label>
+                <div class="col-sm-8">
+                        <input name="operator" readonly th:field="*{operator}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">付款方式：</label>
+                <div class="col-sm-8">
+                    <input name="payway" readonly th:field="*{payway}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">甲方：</label>
+                <div class="col-sm-8">
+                        <input name="firstparty" readonly th:field="*{firstparty}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">签订时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input name="signingtime" readonly th:value="${#dates.format(salescontract.signingtime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input name="remarks" readonly th:field="*{remarks}" class="form-control" type="text">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">销售合同金额：</label>
+                <div class="col-sm-8">
+                    <input name="salesamount" readonly th:field="*{salesamount}" class="form-control" type="text">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">采购总金额：</label>
+                <div class="col-sm-8">
+                    <input name="purchasesamount" readonly th:value="${purchasesamount}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-12 select-table table-striped">
+        <table id="bootstrap-table"></table>
+    </div>
+
+
+
+    <div class="col-sm-12 select-table table-striped">
+        <table id="bootstrap-table1"></table>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var invoicestatusDatas = [[${@dict.getType('invoice_status')}]];
+        var purchasestatusDatas = [[${@dict.getType('purchase_status')}]];
+        var prefix = ctx + "system/salescontract";
+        var prefix1 = ctx + "system/detail";
+        var prefix2 = ctx + "system/invoice";
+        $("#form-salescontract-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-salescontract-edit').serialize());
+            }
+        }
+
+        $("input[name='signingtime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+
+        $(function() {
+            var options = {
+                url: prefix1 + "/list",
+                queryParams : {
+                    contractid: $("#contractid").val()
+                },
+                modalName: "销售订单",
+                onExpandRow : function(index, row, $detail) {
+                    initChildTable(index, row, $detail);
+                },
+                showSearch: false,
+                showRefresh: false,
+                showToggle: false,
+                showColumns: false,
+                detailView: true,
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'id',
+                        title: 'id',
+                        visible: false
+                    },
+                    {
+                        field: 'productname',
+                        title: '商品名称'
+                    },
+                    {
+                        field: 'price',
+                        title: '单价'
+                    },
+                    {
+                        field: 'unit',
+                        title: '单位'
+                    },
+                    {
+                        field: 'specifications',
+                        title: '型号'
+                    },
+                    {
+                        field: 'supplier',
+                        title: '供应商'
+                    },
+                    {
+                        field: 'producttype',
+                        title: '商品类型'
+                    },
+                    {
+                        field: 'productnum',
+                        title: '数量'
+                    },
+                    {
+                        field: 'money',
+                        title: '总价'
+                    },
+                    {
+                        field: 'contractid',
+                        title: '所属销售合同'
+                    },
+                    {
+                        field: 'invoicestatus',
+                        title: '发票状态',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(invoicestatusDatas, value);
+                        }
+                    },
+                    {
+                        field: 'purchasestatus',
+                        title: '采购状态',
+                        formatter: function(value, row, index) {
+
+                            return $.table.selectDictLabel(purchasestatusDatas, value);
+                        }
+                    },
+                    {
+                        field: 'createTime',
+                        title: '创建时间'
+                    }
+                   ]
+            };
+            $.table.init(options);
+
+
+
+            initChildTable = function(index, row1, $detail) {
+
+                var childTable = $detail.html('<table style="table-layout:fixed"></table>').find('table');
+                $(childTable).bootstrapTable({
+
+                    url: prefix2 + "/list",
+                    method: 'post',
+                    sidePagination: "server",
+                    contentType: "application/x-www-form-urlencoded",
+                    queryParams : {
+                        selldetailid:row1.id
+                    },
+                    columns: [
+
+                        {
+                            field: 'id',
+                            title: 'id',
+                            visible: false
+                        },
+                        {
+                            field: 'invoiceid',
+                            title: '发票编号'
+                        },
+
+                        {
+                            field: 'contractid',
+                            title: '所属销售合同'
+                        },
+                        {
+                            field: 'buyer',
+                            title: '采购方'
+                        },
+                        {
+                            field: 'money',
+                            title: '发票金额'
+                        },
+                        {
+                            field: 'invoicetime',
+                            title: '开票时间'
+                        },
+                        {
+                            field: 'createTime',
+                            title: '创建时间'
+                        },
+                      ]
+                });
+            };
+
+
+
+
+        });
+
+    </script>
+</body>
+</html>

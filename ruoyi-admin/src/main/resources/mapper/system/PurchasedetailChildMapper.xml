@@ -44,6 +44,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPurchasedetailChildVo"/>
         where id = #{id}
     </select>
+
+    <select id="selectPurchasedetailChildPurchasedetailid" parameterType="Long" resultMap="PurchasedetailChildResult">
+        <include refid="selectPurchasedetailChildVo"/>
+        where purchasedetailid = #{purchasedetailid}
+    </select>
         
     <insert id="insertPurchasedetailChild" parameterType="PurchasedetailChild" useGeneratedKeys="true" keyProperty="id">
         insert into purchasedetail_child

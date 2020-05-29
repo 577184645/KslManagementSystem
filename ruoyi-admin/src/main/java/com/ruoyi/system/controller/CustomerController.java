@@ -38,7 +38,7 @@ public class CustomerController extends BaseController
 
 
 
-1
+
 
 
     @RequiresPermissions("system:customer:view")
@@ -58,6 +58,7 @@ public class CustomerController extends BaseController
     {
         startPage();
         List<Customer> list = customerService.selectCustomerList(customer);
+
         return getDataTable(list);
     }
 

@@ -24,6 +24,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="contractid != null  and contractid != ''"> and contractid = #{contractid}</if>
             <if test="buyer != null  and buyer != ''"> and buyer = #{buyer}</if>
+            <if test="selldetailid != null  and selldetailid != ''"> and selldetailid = #{selldetailid}</if>
+
         </where>
     </select>
     
@@ -78,5 +80,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+
+    <select id="sumMoneyGYear" resultType="Double">
+     select sum(money)  from invoice
+     where invoicetime like '%${newDate}%'
+     group by year(#{newDate})
+</select>
     
 </mapper>

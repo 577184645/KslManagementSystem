@@ -21,6 +21,11 @@ public class InvoiceServiceImpl implements IInvoiceService
     @Autowired
     private InvoiceMapper invoiceMapper;
 
+    @Override
+    public Double sumMoneyGYear(String newDate) {
+        return invoiceMapper.sumMoneyGYear(newDate);
+    }
+
     /**
      * 查询销售发票列表
      * 

@@ -1,5 +1,7 @@
 package com.ruoyi.system.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +62,39 @@ public class SalescontractController extends BaseController
     }
 
 
+
+    @PostMapping(value = "salesamountBymonth")
+    @ResponseBody
+    public Map<String, Object> SalesamountBymonth(@RequestParam("newdate") String newdate) {
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+
+        queryMap.put("result", salescontractService.selectSalesamountBmonth(newdate));
+
+        return  queryMap;
+    }
+
+    @PostMapping(value = "salesamountByday")
+    @ResponseBody
+    public Map<String, Object> salesamountByday(@RequestParam("newyear") String newyear,@RequestParam("newmonth") String newmonth) {
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+        queryMap.put("result", salescontractService.selectSalesamountByday(newyear,newmonth));
+
+        return  queryMap;
+    }
+
+
+
+
+    @GetMapping(value = "sumMoneyGYear")
+    @ResponseBody
+    public Map<String, Object> sumMoneyGYear() throws Exception{
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+        Date date=new Date();
+        SimpleDateFormat format=new SimpleDateFormat("yyyy");
+        String format1 = format.format(date);
+        queryMap.put("summoney", salescontractService.sumMoneyGYear(format1)!=null?salescontractService.sumMoneyGYear(format1):0);
+        return  queryMap;
+    }
 
 
     @RequestMapping(value = { "/getContractid" }, method = { RequestMethod.POST })
@@ -169,5 +204,21 @@ public class SalescontractController extends BaseController
             return AjaxResult.error("操作失败,销售合同下有采购合同!");
         }
         return toAjax(salescontractService.deleteSalescontractByIds(ids));
+    }
+
+
+
+    /**
+     * 查看合同信息
+     */
+    @RequiresPermissions("system:salescontract:saleinfo")
+    @GetMapping("/saleInfo/{id}")
+    public String saleInfo(@PathVariable("id") Long id, ModelMap mmap)
+    {
+        Salescontract salescontract = salescontractService.selectSalescontractById(id);
+         Double purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;
+        mmap.put("salescontract", salescontract);
+        mmap.put("purchasesamount", purchasesamount);
+        return prefix + "/saleinfo";
     }
 }

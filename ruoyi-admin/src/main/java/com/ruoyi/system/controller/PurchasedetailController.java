@@ -40,6 +40,8 @@ public class PurchasedetailController extends BaseController
     private IPurchasecontractService purchasecontractService;
     @Autowired
     private ISupplierService supplierService;
+    @Autowired
+    private IPurchasedetailChildService purchasedetailChildService;
 
 
     @RequiresPermissions("system:purchasedetail:view")
@@ -177,6 +179,9 @@ public class PurchasedetailController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
+        if(purchasedetailChildService.selectPurchasedetailChildPurchasedetailid(Long.valueOf(ids)).size()>0){
+            return AjaxResult.error("操作失败,采购订单下有订单信息!");
+        }
         return toAjax(purchasedetailService.deletePurchasedetailByIds(ids));
     }
 }
