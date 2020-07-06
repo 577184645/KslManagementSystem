@@ -33,7 +33,7 @@ public class Invoice extends BaseEntity
 
     /** 发票金额 */
     @Excel(name = "发票金额")
-    private Double money;
+    private Float money;
 
     /** 开票时间 */
     @Excel(name = "开票时间", width = 30, dateFormat = "yyyy-MM-dd")
@@ -78,16 +78,16 @@ public class Invoice extends BaseEntity
     {
         return buyer;
     }
-    public void setMoney(Double money) 
-    {
+
+    public Float getMoney() {
+        return money;
+    }
+
+    public void setMoney(Float money) {
         this.money = money;
     }
 
-    public Double getMoney() 
-    {
-        return money;
-    }
-    public void setInvoicetime(Date invoicetime) 
+    public void setInvoicetime(Date invoicetime)
     {
         this.invoicetime = invoicetime;
     }

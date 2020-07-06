@@ -93,7 +93,7 @@ public interface SalescontractMapper
      * @param newdate
      * @return
      */
-    List<String> maxContractid(@Param("type")String type, @Param("newdate") String newdate);
+    String maxContractid(@Param("type")String type, @Param("newdate") String newdate);
 
     /**
      * 根据某一年查询每个月的总金额

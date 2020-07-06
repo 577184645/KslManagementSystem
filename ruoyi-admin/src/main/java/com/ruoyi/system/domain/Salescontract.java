@@ -33,7 +33,7 @@ public class Salescontract extends BaseEntity
 
     /** 合同金额 */
     @Excel(name = "合同金额")
-    private Double salesamount;
+    private Float salesamount;
 
     /** 甲方 */
     @Excel(name = "甲方")
@@ -83,16 +83,16 @@ public class Salescontract extends BaseEntity
     {
         return payway;
     }
-    public void setSalesamount(Double salesamount) 
-    {
+
+    public Float getSalesamount() {
+        return salesamount;
+    }
+
+    public void setSalesamount(Float salesamount) {
         this.salesamount = salesamount;
     }
 
-    public Double getSalesamount() 
-    {
-        return salesamount;
-    }
-    public void setFirstparty(String firstparty) 
+    public void setFirstparty(String firstparty)
     {
         this.firstparty = firstparty;
     }

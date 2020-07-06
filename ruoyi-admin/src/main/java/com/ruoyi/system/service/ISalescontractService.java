@@ -45,13 +45,19 @@ public interface ISalescontractService
      */
     public List<Salescontract> selectSalescontractList(Salescontract salescontract);
 
+
+
+
     /**
      * 新增销售合同列表
      * 
-     * @param salescontract 销售合同列表
+     * @param salescontract  salescontractList 销售合同列表
      * @return 结果
      */
-    public int insertSalescontract(Salescontract salescontract);
+
+
+
+    public int insertSalescontractAndSelldetail(String salescontractList,Salescontract salescontract);
 
     /**
      * 修改销售合同列表

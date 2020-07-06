@@ -134,7 +134,7 @@ public class SellDetailServiceImpl implements ISellDetailService
         {
             try
             {
-                insertSellDetail(sellDetail);
+               
                     successNum++;
             }
             catch (Exception e)

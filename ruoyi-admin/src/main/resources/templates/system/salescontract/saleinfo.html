@@ -7,59 +7,92 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-salescontract-edit" th:object="${salescontract}">
-            <div class="form-group">
-                <label class="col-sm-3 control-label">销售合同号：</label>
-                <div class="col-sm-8">
-                    <input name="operator" id="contractid" readonly th:field="*{contractid}" class="form-control" type="text">
+
+            <h4 class="form-header h4">基本信息</h4>
+
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">销售合同号：</label>
+                        <div class="col-sm-8">
+                            <input name="operator" id="contractid" readonly th:field="*{contractid}" class="form-control" type="text">
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">经办人：</label>
-                <div class="col-sm-8">
-                        <input name="operator" readonly th:field="*{operator}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">付款方式：</label>
-                <div class="col-sm-8">
-                    <input name="payway" readonly th:field="*{payway}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">甲方：</label>
-                <div class="col-sm-8">
-                        <input name="firstparty" readonly th:field="*{firstparty}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">签订时间：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="signingtime" readonly th:value="${#dates.format(salescontract.signingtime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">经办人：</label>
+                        <div class="col-sm-8">
+                            <input name="operator" readonly th:field="*{operator}" class="form-control" type="text">
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">备注：</label>
-                <div class="col-sm-8">
-                    <input name="remarks" readonly th:field="*{remarks}" class="form-control" type="text">
+
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">付款方式：</label>
+                        <div class="col-sm-8">
+                            <input name="payway" readonly th:field="*{payway}" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">甲方：</label>
+                        <div class="col-sm-8">
+                            <input name="firstparty" readonly th:field="*{firstparty}" class="form-control" type="text">
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-sm-3 control-label">销售合同金额：</label>
-                <div class="col-sm-8">
-                    <input name="salesamount" readonly th:field="*{salesamount}" class="form-control" type="text">
+
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">签订时间：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input name="signingtime" readonly th:value="${#dates.format(salescontract.signingtime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">备注：</label>
+                        <div class="col-sm-8">
+                            <input name="remarks" readonly th:field="*{remarks}" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">销售合同金额：</label>
+                        <div class="col-sm-8">
+                            <input name="salesamount" readonly th:field="*{salesamount}" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">采购总金额：</label>
+                        <div class="col-sm-8">
+                            <input name="purchasesamount" readonly th:value="${purchasesamount}" class="form-control" type="text">
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-sm-3 control-label">采购总金额：</label>
-                <div class="col-sm-8">
-                    <input name="purchasesamount" readonly th:value="${purchasesamount}" class="form-control" type="text">
-                </div>
-            </div>
         </form>
     </div>
     <div class="col-sm-12 select-table table-striped">

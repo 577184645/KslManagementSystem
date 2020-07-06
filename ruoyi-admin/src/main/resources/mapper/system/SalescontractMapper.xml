@@ -87,7 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <select id="maxContractid" resultType="String" parameterType="String">
-	 select contractid from salescontract where contractid like '%${type}%'
+	 select max(contractid) from salescontract where contractid like '%${type}%'
 	 and SUBSTR(create_time,3,2)=#{newdate}
 	</select>
 

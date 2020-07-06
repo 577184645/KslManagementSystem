@@ -73,7 +73,7 @@
                 <a class="btn btn-primary single disabled" onclick="saleInfo()" shiro:hasPermission="system:salescontract:saleinfo" >
                     <i class="fa fa-edit"></i> 查看
                 </a>
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:salescontract:add">
+                <a class="btn btn-success" onclick="addTab()" shiro:hasPermission="system:salescontract:add">
                     <i class="fa fa-plus"></i> 添加
                 </a>
                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:salescontract:edit">
@@ -199,7 +199,10 @@
             return url;
         }
 
-
+        function  addTab() {
+            table.set();
+            $.modal.openTab("添加销售合同", $.operate.addUrl());
+        }
     </script>
 
 </body>

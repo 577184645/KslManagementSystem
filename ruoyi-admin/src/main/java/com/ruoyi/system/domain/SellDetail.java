@@ -22,9 +22,7 @@ public class SellDetail extends BaseEntity
     @Excel(name = "商品名称")
     private String productname;
 
-    /** 单价 */
-    @Excel(name = "单价")
-    private Double price;
+
 
     /** 单位 */
     @Excel(name = "单位")
@@ -38,16 +36,24 @@ public class SellDetail extends BaseEntity
     @Excel(name = "商品类型")
     private String producttype;
 
+
+    /** 甲方 */
+    @Excel(name = "供应商")
+    private String supplier;
     /** 数量 */
     @Excel(name = "数量")
     private Long productnum;
 
+    /** 单价 */
+    @Excel(name = "单价")
+    private Float price;
+
     /** 总价 */
     @Excel(name = "总价")
-    private Double money;
+    private Float money;
 
     /** 所属销售合同 */
-    @Excel(name = "所属销售合同")
+    @Excel(name = "所属销售合同",type = Excel.Type.EXPORT)
     private String contractid;
 
     /** 发票状态 */
@@ -58,9 +64,7 @@ public class SellDetail extends BaseEntity
     @Excel(name = "采购状态",type = Excel.Type.EXPORT)
     private Long purchasestatus;
 
-    /** 甲方 */
-    @Excel(name = "供应商")
-    private String supplier;
+
 
 
 
@@ -91,15 +95,7 @@ public class SellDetail extends BaseEntity
     {
         return productname;
     }
-    public void setPrice(Double price) 
-    {
-        this.price = price;
-    }
 
-    public Double getPrice() 
-    {
-        return price;
-    }
     public void setUnit(String unit) 
     {
         this.unit = unit;
@@ -136,16 +132,24 @@ public class SellDetail extends BaseEntity
     {
         return productnum;
     }
-    public void setMoney(Double money) 
-    {
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public Float getMoney() {
+        return money;
+    }
+
+    public void setMoney(Float money) {
         this.money = money;
     }
 
-    public Double getMoney() 
-    {
-        return money;
-    }
-    public void setContractid(String contractid) 
+    public void setContractid(String contractid)
     {
         this.contractid = contractid;
     }

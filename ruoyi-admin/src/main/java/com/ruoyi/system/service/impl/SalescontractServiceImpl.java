@@ -6,12 +6,19 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.domain.SellDetail;
+import com.ruoyi.system.mapper.SellDetailMapper;
+import com.ruoyi.system.util.dateUtil;
+import com.ruoyi.system.util.numberUtil;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SalescontractMapper;
 import com.ruoyi.system.domain.Salescontract;
 import com.ruoyi.system.service.ISalescontractService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 销售合同列表Service业务层处理
@@ -20,10 +27,11 @@ import com.ruoyi.common.core.text.Convert;
  * @date 2020-05-20
  */
 @Service
-public class SalescontractServiceImpl implements ISalescontractService 
-{
+public class SalescontractServiceImpl implements ISalescontractService {
     @Autowired
     private SalescontractMapper salescontractMapper;
+    @Autowired
+    private SellDetailMapper sellDetailMapper;
 
     @Override
     public Double sumMoneyGYear(String newDate) {
@@ -32,27 +40,60 @@ public class SalescontractServiceImpl implements ISalescontractService
 
     /**
      * 查询销售合同列表
-     * 
+     *
      * @param id 销售合同列表ID
      * @return 销售合同列表
      */
     @Override
-    public Salescontract selectSalescontractById(Long id)
-    {
+    public Salescontract selectSalescontractById(Long id) {
         return salescontractMapper.selectSalescontractById(id);
     }
 
     /**
      * 查询销售合同列表列表
-     * 
+     *
      * @param salescontract 销售合同列表
      * @return 销售合同列表
      */
     @Override
-    public List<Salescontract> selectSalescontractList(Salescontract salescontract)
-    {
+    public List<Salescontract> selectSalescontractList(Salescontract salescontract) {
         return salescontractMapper.selectSalescontractList(salescontract);
     }
+
+    @Override
+    @Transactional
+    public int insertSalescontractAndSelldetail(String salescontractList, Salescontract salescontract) {
+
+        JSONArray productArray = JSONArray.fromObject(salescontractList);
+       Float sum=0f;
+        for (int i = 0; i < productArray.size(); i++) {
+            JSONObject jsonObject = productArray.getJSONObject(i);
+            Salescontract salescontract1 = new Salescontract();
+            SellDetail sellDetail = new SellDetail();
+            sellDetail.setProductname(jsonObject.getString("productname"));
+            sellDetail.setUnit(jsonObject.getString("unit"));
+            sellDetail.setSpecifications(jsonObject.getString("specifications"));
+            sellDetail.setSupplier(jsonObject.getString("supplier"));
+            sellDetail.setProducttype(jsonObject.getString("producttype"));
+
+            if (!jsonObject.getString("price").equals("")) {
+                sellDetail.setPrice(Float.valueOf(jsonObject.getString("price")));
+            }
+
+            if (!jsonObject.getString("money").equals("")) {
+                sellDetail.setMoney(Float.valueOf(jsonObject.getString("money")));
+            }
+            if (!jsonObject.getString("productnum").equals("")) {
+                sellDetail.setProductnum(Long.valueOf(jsonObject.getString("productnum")));
+            }
+            sum+=Float.valueOf(jsonObject.getString("money"));
+            sellDetail.setContractid(salescontract.getContractid());
+            sellDetailMapper.insertSellDetail(sellDetail);
+        }
+       salescontract.setSalesamount(sum);
+        return salescontractMapper.insertSalescontract(salescontract);
+    }
+
 
     /**
      * 新增销售合同列表
@@ -60,12 +101,6 @@ public class SalescontractServiceImpl implements ISalescontractService
      * @param salescontract 销售合同列表
      * @return 结果
      */
-    @Override
-    public int insertSalescontract(Salescontract salescontract)
-    {
-        salescontract.setCreateTime(DateUtils.getNowDate());
-        return salescontractMapper.insertSalescontract(salescontract);
-    }
 
     /**
      * 修改销售合同列表
@@ -105,87 +140,35 @@ public class SalescontractServiceImpl implements ISalescontractService
 
     @Override
     public String getContractid(String type) {
-        Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy");
-        String data = format.format(date);
-        data = data.substring(2, data.length());
-        List<String> list = salescontractMapper.maxContractid(type,data);
 
-        String contractid = data;
-        int index = 0;
-        int number = 0;
-        if (list.size() == 0 && type.equals("G")) {
-            contractid = contractid + "G" + "0001";
-        } else if (list.size() == 0 && type.equals("Z")) {
-            contractid = contractid + "Z" + "0001";
-        }else if (list.size() == 0 && type.equals("X")) {
-            contractid = contractid + "X" + "0001";
-        }
+       String date= dateUtil.dataToString("yyyy",new Date());
+        String datetwo = date.substring(2, date.length());
+        String maxContractid = salescontractMapper.maxContractid(type,datetwo);
+        String contractid="";
 
-        else if (type.equals("G")) {
-            for (int i = 0; i < list.size(); i++) {
-                contractid = list.get(i);
-                index = contractid.indexOf("G");
-                if (number < Integer.valueOf(contractid.substring(index + 1, contractid.length()))) {
-                    number = Integer.valueOf(contractid.substring(index + 1, contractid.length()));
-                }
+        if(maxContractid==null||maxContractid.equals("null")){
+           if (type.equals("G")){
+               contractid = datetwo + "G" + "0001";
+           }else if (type.equals("Z")){
+               contractid = datetwo + "Z" + "0001";
+           }else if(type.equals("X")){
+               contractid = datetwo + "X" + "0001";
+           }
+        }else{
 
+            String size = numberUtil.numberToStringAddOne(Integer.valueOf(maxContractid.substring(3)));
+            if (type.equals("G")) {
+
+             contractid = datetwo + "G" + size;
+         }
+            if (type.equals("Z")) {
+
+                contractid = datetwo + "Z" + size;
             }
-            number++;
+            if (type.equals("X")) {
 
-            String numbers = String.valueOf(number);
-            if (numbers.length() == 1) {
-                numbers = "000" + numbers;
-            } else if (numbers.length() == 2) {
-                numbers = "00" + numbers;
-            } else if (numbers.length() == 3) {
-                numbers = "0" + numbers;
+                contractid = datetwo + "X" + size;
             }
-            contractid = data + "G" + numbers;
-        } else if (type.equals("Z")) {
-            for (int i = 0; i < list.size(); i++) {
-                contractid = list.get(i);
-                index = contractid.indexOf("Z");
-                if (number < Integer.valueOf(contractid.substring(index + 1, contractid.length()))) {
-                    number = Integer.valueOf(contractid.substring(index + 1, contractid.length()));
-                }
-
-            }
-            number++;
-
-            String numbers = String.valueOf(number);
-            if (numbers.length() == 1) {
-                numbers = "000" + numbers;
-            } else if (numbers.length() == 2) {
-                numbers = "00" + numbers;
-            } else if (numbers.length() == 3) {
-                numbers = "0" + numbers;
-            }
-
-            contractid = data + "Z" + numbers;
-
-        }
-        else if (type.equals("X")) {
-            for (int i = 0; i < list.size(); i++) {
-                contractid = list.get(i);
-                index = contractid.indexOf("X");
-                if (number < Integer.valueOf(contractid.substring(index + 1, contractid.length()))) {
-                    number = Integer.valueOf(contractid.substring(index + 1, contractid.length()));
-                }
-
-            }
-            number++;
-
-            String numbers = String.valueOf(number);
-            if (numbers.length() == 1) {
-                numbers = "000" + numbers;
-            } else if (numbers.length() == 2) {
-                numbers = "00" + numbers;
-            } else if (numbers.length() == 3) {
-                numbers = "0" + numbers;
-            }
-
-            contractid = data + "Z" + numbers;
 
         }
 

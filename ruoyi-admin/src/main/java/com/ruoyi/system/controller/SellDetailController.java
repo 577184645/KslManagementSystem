@@ -29,6 +29,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 /**
  * 销售订单列表Controller
  * 
@@ -49,16 +52,31 @@ public class SellDetailController extends BaseController
 
     List<SellDetail> sellDetailList=new ArrayList<>();
 
+
+
+
     @PostMapping("/importData")
     @Log(title = "销售订单列表", businessType = BusinessType.IMPORT)
     @RequiresPermissions("system:detail:import")
     @ResponseBody
-    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    public AjaxResult importData(MultipartFile file, boolean updateSupport, HttpServletRequest request) throws Exception
     {
         ExcelUtil<SellDetail> util = new ExcelUtil<SellDetail>(SellDetail.class);
         sellDetailList = util.importExcel(file.getInputStream());
+        HttpSession session = request.getSession();
+        session.setAttribute("sellDetailList",sellDetailList);
+        session.setMaxInactiveInterval(1);
         String message = sellDetailService.importUser(sellDetailList);
         return AjaxResult.success(message);
+    }
+
+
+    @PostMapping("/listimport")
+    @ResponseBody
+    public TableDataInfo listimport(SellDetail sellDetail,HttpServletRequest request)
+    {
+        startPage();
+        return getDataTable((List<SellDetail>) (request.getSession().getAttribute("sellDetailList"))!=null?(List<SellDetail>) (request.getSession().getAttribute("sellDetailList")):new ArrayList<SellDetail>());
     }
 
     @RequiresPermissions("system:detail:view")

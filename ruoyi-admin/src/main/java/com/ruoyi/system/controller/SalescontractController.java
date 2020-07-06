@@ -143,7 +143,6 @@ public class SalescontractController extends BaseController
     @GetMapping("/add")
     public ModelAndView add(ModelAndView model)
     {
-
         model.addObject("customerList",customerService.findList());
         model.addObject("kslcusromeruserList",kslcusromeruserService.selectKslcusromeruserList(null));
         model.setViewName(prefix + "/add");
@@ -157,9 +156,9 @@ public class SalescontractController extends BaseController
     @Log(title = "销售合同列表", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Salescontract salescontract)
+    public AjaxResult addSave(String salescontractList,Salescontract salescontract)
     {
-        return toAjax(salescontractService.insertSalescontract(salescontract));
+        return toAjax(salescontractService.insertSalescontractAndSelldetail(salescontractList,salescontract));
     }
 
     /**

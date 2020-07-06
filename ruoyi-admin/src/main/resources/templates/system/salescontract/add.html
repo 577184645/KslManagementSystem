@@ -8,99 +8,178 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-salescontract-add">
-            <div class="form-group">
-                <label class="col-sm-3 control-label">合同类型：</label>
-                <div class="col-sm-8">
-                    <select id="satype" class="form-control m-b">
-                        <option value="">请选择</option>
-                        <option value="G">公司合同</option>
-                        <option value="Z">垫本合同</option>
-                        <option value="X">线上销售合同 </option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">销售合同号：</label>
-                <div class="col-sm-8">
-                    <input id="contractid" required name="contractid" class="form-control" type="text" readonly>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">经办人：</label>
-                <div class="col-sm-8">
-                    <select required name="operator" class="form-control m-b">
-                        <option value="">所有</option>
-                        <option  th:each="ksluser:${kslcusromeruserList}"
-                                th:value="${ksluser.username}"
-                                th:text="${ksluser.username}"
-                        ></option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">付款方式：</label>
-                <div class="col-sm-8">
-                    <input name="payway" class="form-control" type="text">
-                </div>
-            </div>
+            <h4 class="form-header h4">基本信息</h4>
 
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">甲方：</label>
-                <div class="col-sm-8">
-                    <select required id="firstparty" name="firstparty" class="form-control m-b">
-                        <option value="">所有</option>
-                        <option  th:each="cust:${customerList}"
-                                th:value="${cust.name}"
-                                th:text="${cust.name}"
-                        ></option>
-                    </select>
 
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">合同类型：
+                            </label>
+                        <div class="col-sm-8">
+                            <select id="satype" class="form-control m-b">
+                                <option value="">请选择</option>
+                                <option value="G">公司合同</option>
+                                <option value="Z">垫本合同</option>
+                                <option value="X">线上销售合同 </option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">签订时间：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input required name="signingtime" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">销售合同号
+                            ：</label>
+                        <div class="col-sm-8">
+                            <input name="contractid" required id="contractid" class="form-control" type="text">
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">经办人：</label>
+                        <div class="col-sm-8">
+                            <select required name="operator" id="operator"  class="form-control m-b">
+                                <option value="">所有</option>
+                                <option  th:each="ksluser:${kslcusromeruserList}"
+                                         th:value="${ksluser.username}"
+                                         th:text="${ksluser.username}"
+                                ></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">付款方式：</label>
+                        <div class="col-sm-8">
+                            <input name="payway" id="payway" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">甲方：</label>
+                        <div class="col-sm-8">
+                            <select required id="firstparty" name="firstparty" class="form-control m-b">
+                                <option value="">所有</option>
+                                <option  th:each="cust:${customerList}"
+                                         th:value="${cust.name}"
+                                         th:text="${cust.name}"
+                                ></option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">签订时间：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input required name="signingtime" id="signingtime" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
             <div class="form-group">    
                 <label class="col-sm-3 control-label">备注：</label>
                 <div class="col-sm-8">
-                    <input name="remarks" class="form-control" type="text">
+                    <input name="remarks" id="remarks" class="form-control" type="text">
                 </div>
             </div>
         </form>
     </div>
+
+    </div>
+
+    <h4 class="form-header h4">商品信息</h4>
     <div class="container-div">
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-danger" onclick="removeRowAll()">
+                <i class="fa fa-remove"></i> 删除所有行
+            </a>
+            <a class="btn btn-info" onclick="$.table.importExcel()">
+                <i class="fa fa-upload"></i> 导入
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped" style="margin-bottom: 2%">
+            <table id="bootstrap-table"></table>
+        </div>
         <div class="row">
-            <div class="col-sm-12 select-table table-striped">
-                <table id="bootstrap-table"></table>
+            <div class="col-sm-offset-5 col-sm-10">
+                <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+                <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
             </div>
         </div>
-    </div>
-    <div class="btn-group-sm" id="toolbar" role="group">
-
-
-
-
-    </div>
 
     <th:block th:include="include :: footer" />
 
     <th:block th:include="include :: datetimepicker-js" />
     <script type="text/javascript">
         var prefix = ctx + "system/salescontract"
+        var prefix1 = ctx + "system/detail"
         $("#form-salescontract-add").validate({
             focusCleanup: true
         });
 
         function submitHandler() {
-            if ($.validate.form()) {
-                $.operate.save(prefix + "/add", $('#form-salescontract-add').serialize());
+            if($("#deptId").val()==""){
+                alert("请选择子仓库");
+                return;
             }
+            if ($.validate.form()) {
+
+                var data = $("#bootstrap-table" ).bootstrapTable('getData');
+                if(data==null||data.length==0){
+                    alert("请填写销售产品!");
+                    return;
+                }
+
+
+
+                $.ajax({
+                    url:  ctx + "system/salescontract/add",
+                    type: "post",
+                    dataType: "json",
+                    beforeSend: function () {
+                        $.modal.loading("正在处理中，请稍后...");
+                    },
+                    data: {
+                        "salescontractList": JSON.stringify(data),
+                        "contractid": $("#contractid").val(),
+                        "operator": $("#operator").val(),
+                        "payway": $("#payway").val(),
+                        "signingtime": $("#signingtime").val(),
+                        "remarks": $("#remarks").val()
+
+                    },
+                    success: function(result) {
+                        if (typeof callback == "function") {
+                            callback(result);
+                        }
+                        $.operate.successTabCallback(result);
+                    }
+                })
+            };
         }
 
         $("input[name='signingtime']").datetimepicker({
@@ -122,9 +201,109 @@
         });
 
 
+        $(function() {
+
+            var options = {
+                url: prefix1 + "/listimport",
+                importUrl: prefix1 + "/importData",
+                importTemplateUrl: prefix1 + "/importTemplate",
+                modalName: "销售商品",
+                showFooter: true,
+                columns: [{
+                    checkbox: true
+                },
+
+                    {
+                        field: 'no',
+                        title: '序号',
+                        align: "center",
+                        width: 40,
+                        formatter: function (value, row, index) {
+                            //获取每页显示的数量
+                            var pageSize=$('#bootstrap-table').bootstrapTable('getOptions').pageSize;
+                            //获取当前是第几页
+                            var pageNumber=$('#bootstrap-table').bootstrapTable('getOptions').pageNumber;
+                            //返回序号，注意index是从0开始的，所以要加上1
+                            return pageSize * (pageNumber - 1) + index + 1;
+                        }
+                    },
+                    {
+                        field: 'id',
+                        title: 'id',
+                        visible: false
+                    },
+
+                    {
+                        field: 'productname',
+                        title: '商品名称'
+                    },
+                    {
+                        field: 'price',
+                        title: '单价'
+                    },
+                    {
+                        field: 'unit',
+                        title: '单位'
+                    },
+                    {
+                        field: 'specifications',
+                        title: '型号'
+                    },
+                    {
+                        field: 'supplier',
+                        title: '供应商'
+                    },
+                    {
+                        field: 'producttype',
+                        title: '商品类型'
+                    },
+                    {
+                        field: 'productnum',
+                        title: '数量'
+                    },
+                    {
+                        field: 'money',
+                        title: '总价'
+                    },     {
+                        field: 'money',
+                        title: '总价',
+                        editable: {
+                            title : '总价'
+                        },footerFormatter:function (value) {
+                            var sumBalance = 0;
+                            for (var i in value) {
+                                sumBalance += parseFloat(value[i].money);
+                            }
+                            return "总金额：" + sumBalance;
+                        }
+                    },
+
+                 ]
+            };
+
+            $.table.init(options);
+
+        });
+
+        function removeRowAll(){
+
+            $("#" + table.options.id).bootstrapTable('removeAll')
+        }
 
 
     </script>
-
+        <script id="importTpl" type="text/template">
+            <form enctype="multipart/form-data" class="mt20 mb10">
+                <div class="col-xs-offset-1">
+                    <input type="file" id="file" name="file"/>
+                    <div class="mt10 pt5">
+                        &nbsp;	<a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 下载模板</a>
+                    </div>
+                    <font color="red" class="pull-left mt10">
+                        提示：仅允许导入“xls”或“xlsx”格式文件！
+                    </font>
+                </div>
+            </form>
+        </script>
 </body>
 </html>
