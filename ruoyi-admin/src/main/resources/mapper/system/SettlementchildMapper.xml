@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SettlementchildMapper">
+    
+    <resultMap type="Settlementchild" id="SettlementchildResult">
+        <result property="id"    column="id"    />
+        <result property="serialnumber"    column="serialnumber"    />
+        <result property="purchasecontractids"    column="purchasecontractids"    />
+        <result property="contractid"    column="contractid"    />
+        <result property="customers"    column="customers"    />
+        <result property="invoiceid"    column="invoiceid"    />
+        <result property="salemoney"    column="salemoney"    />
+        <result property="suppliers"    column="suppliers"    />
+        <result property="purchasemoney"    column="purchasemoney"    />
+        <result property="purchaseinvoiceid"    column="purchaseinvoiceid"    />
+        <result property="taxrate"    column="taxrate"    />
+        <result property="costprice"    column="costprice"    />
+        <result property="saletaxrate"    column="saletaxrate"    />
+        <result property="revenue"    column="revenue"    />
+        <result property="discount"    column="discount"    />
+        <result property="personalincome"    column="personalincome"    />
+    </resultMap>
+
+    <sql id="selectSettlementchildVo">
+        select id, purchasecontractids,serialnumber, contractid, customers, invoiceid, salemoney, suppliers, purchasemoney, purchaseinvoiceid, taxrate, costprice, saletaxrate, revenue, discount, personalincome from settlementchild
+    </sql>
+
+    <select id="selectSettlementchildList" parameterType="Settlementchild" resultMap="SettlementchildResult">
+        <include refid="selectSettlementchildVo"/>
+        <where>  
+            <if test="serialnumber != null  and serialnumber != ''"> and serialnumber = #{serialnumber}</if>
+            <if test="contractid != null  and contractid != ''"> and contractid = #{contractid}</if>
+            <if test="customers != null  and customers != ''"> and customers = #{customers}</if>
+            <if test="invoiceid != null  and invoiceid != ''"> and invoiceid = #{invoiceid}</if>
+            <if test="salemoney != null "> and salemoney = #{salemoney}</if>
+            <if test="suppliers != null  and suppliers != ''"> and suppliers = #{suppliers}</if>
+            <if test="purchasemoney != null "> and purchasemoney = #{purchasemoney}</if>
+            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''"> and purchaseinvoiceid = #{purchaseinvoiceid}</if>
+            <if test="taxrate != null "> and taxrate = #{taxrate}</if>
+            <if test="costprice != null "> and costprice = #{costprice}</if>
+            <if test="saletaxrate != null "> and saletaxrate = #{saletaxrate}</if>
+            <if test="revenue != null "> and revenue = #{revenue}</if>
+            <if test="discount != null "> and discount = #{discount}</if>
+            <if test="personalincome != null "> and personalincome = #{personalincome}</if>
+        </where>
+    </select>
+    
+    <select id="selectSettlementchildById" parameterType="Long" resultMap="SettlementchildResult">
+        <include refid="selectSettlementchildVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSettlementchild" parameterType="Settlementchild" useGeneratedKeys="true" keyProperty="id">
+        insert into settlementchild
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+
+
+            <if test="purchasecontractids != null  and purchasecontractids != ''">purchasecontractids,</if>
+
+            <if test="serialnumber != null  and serialnumber != ''">serialnumber,</if>
+            <if test="contractid != null  and contractid != ''">contractid,</if>
+            <if test="customers != null  and customers != ''">customers,</if>
+            <if test="invoiceid != null  and invoiceid != ''">invoiceid,</if>
+            <if test="salemoney != null ">salemoney,</if>
+            <if test="suppliers != null  and suppliers != ''">suppliers,</if>
+            <if test="purchasemoney != null ">purchasemoney,</if>
+            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">purchaseinvoiceid,</if>
+            <if test="taxrate != null ">taxrate,</if>
+            <if test="costprice != null ">costprice,</if>
+            <if test="saletaxrate != null ">saletaxrate,</if>
+            <if test="revenue != null ">revenue,</if>
+            <if test="discount != null ">discount,</if>
+            <if test="personalincome != null ">personalincome,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            <if test="purchasecontractids != null  and purchasecontractids != ''">#{purchasecontractids},</if>
+            <if test="serialnumber != null  and serialnumber != ''">#{serialnumber},</if>
+            <if test="contractid != null  and contractid != ''">#{contractid},</if>
+            <if test="customers != null  and customers != ''">#{customers},</if>
+            <if test="invoiceid != null  and invoiceid != ''">#{invoiceid},</if>
+            <if test="salemoney != null ">#{salemoney},</if>
+            <if test="suppliers != null  and suppliers != ''">#{suppliers},</if>
+            <if test="purchasemoney != null ">#{purchasemoney},</if>
+            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">#{purchaseinvoiceid},</if>
+            <if test="taxrate != null ">#{taxrate},</if>
+            <if test="costprice != null ">#{costprice},</if>
+            <if test="saletaxrate != null ">#{saletaxrate},</if>
+            <if test="revenue != null ">#{revenue},</if>
+            <if test="discount != null ">#{discount},</if>
+            <if test="personalincome != null ">#{personalincome},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSettlementchild" parameterType="Settlementchild">
+        update settlementchild
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serialnumber != null  and serialnumber != ''">serialnumber = #{serialnumber},</if>
+            <if test="contractid != null  and contractid != ''">contractid = #{contractid},</if>
+            <if test="customers != null  and customers != ''">customers = #{customers},</if>
+            <if test="invoiceid != null  and invoiceid != ''">invoiceid = #{invoiceid},</if>
+            <if test="salemoney != null ">salemoney = #{salemoney},</if>
+            <if test="suppliers != null  and suppliers != ''">suppliers = #{suppliers},</if>
+            <if test="purchasemoney != null ">purchasemoney = #{purchasemoney},</if>
+            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">purchaseinvoiceid = #{purchaseinvoiceid},</if>
+            <if test="taxrate != null ">taxrate = #{taxrate},</if>
+            <if test="costprice != null ">costprice = #{costprice},</if>
+            <if test="saletaxrate != null ">saletaxrate = #{saletaxrate},</if>
+            <if test="revenue != null ">revenue = #{revenue},</if>
+            <if test="discount != null ">discount = #{discount},</if>
+            <if test="personalincome != null ">personalincome = #{personalincome},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSettlementchildById" parameterType="Long">
+        delete from settlementchild where id = #{id}
+    </delete>
+
+    <delete id="deleteSettlementchildByIds" parameterType="String">
+        delete from settlementchild where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

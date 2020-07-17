@@ -9,7 +9,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="productname"    column="productname"    />
         <result property="price"    column="price"    />
         <result property="unit"    column="unit"    />
-        <result property="supplier"    column="supplier"    />
         <result property="specifications"    column="specifications"    />
         <result property="purchasecontractid"    column="purchasecontractid"    />
         <result property="producttype"    column="producttype"    />
@@ -21,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPurchasedetailVo">
-        select id, productname, supplier,price, unit, specifications, purchasecontractid, producttype, productnum, money, purchaseinvoicestatus, selldetailid, create_time from purchasedetail
+        select id, productname,price, unit, specifications, purchasecontractid, producttype, productnum, money, purchaseinvoicestatus, selldetailid, create_time from purchasedetail
     </sql>
 
     <select id="selectPurchasedetailList" parameterType="Purchasedetail" resultMap="PurchasedetailResult">
@@ -57,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="money != null ">money,</if>
             <if test="purchaseinvoicestatus != null ">purchaseinvoicestatus,</if>
             <if test="selldetailid != null ">selldetailid,</if>
-            <if test="supplier != null ">supplier,</if>
+
             <if test="createTime != null ">create_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -71,7 +70,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="money != null ">#{money},</if>
             <if test="purchaseinvoicestatus != null ">#{purchaseinvoicestatus},</if>
             <if test="selldetailid != null ">#{selldetailid},</if>
-            <if test="supplier != null ">#{supplier},</if>
+
             <if test="createTime != null ">#{createTime},</if>
          </trim>
     </insert>
@@ -89,7 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="money != null ">money = #{money},</if>
             <if test="purchaseinvoicestatus != null ">purchaseinvoicestatus = #{purchaseinvoicestatus},</if>
             <if test="selldetailid != null ">selldetailid = #{selldetailid},</if>
-            <if test="supplier != null ">#{supplier},</if>
+
             <if test="createTime != null ">create_time = #{createTime},</if>
         </trim>
         where id = #{id}

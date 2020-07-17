@@ -5,6 +5,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.ruoyi.system.mapper.SalescontractMapper">
     
     <resultMap type="Salescontract" id="SalescontractResult">
+
+        <result property="settlementstatus"    column="settlementstatus"    />
         <result property="id"    column="id"    />
         <result property="contractid"    column="contractid"    />
         <result property="operator"    column="operator"    />
@@ -17,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSalescontractVo">
-        select id, contractid, operator, payway, salesamount, firstparty, signingtime, remarks, create_time from salescontract
+        select id, settlementstatus,contractid, operator, payway, salesamount, firstparty, signingtime, remarks, create_time from salescontract
     </sql>
 
     <select id="selectSalescontractList" parameterType="Salescontract" resultMap="SalescontractResult">
@@ -25,10 +27,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="contractid != null  and contractid != ''"> and contractid = #{contractid}</if>
             <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
-            <if test="payway != null  and payway != ''"> and payway like concat('%', #{payway}, '%')</if>
             <if test="firstparty != null  and firstparty != ''"> and firstparty = #{firstparty}</if>
-            <if test="signingtime != null "> and signingtime = #{signingtime}</if>
+            <if test="islookstatus != null  and islookstatus != ''"> and settlementstatus = 0</if>
+
+
         </where>
+        order by contractid
     </select>
     
     <select id="selectSalescontractById" parameterType="Long" resultMap="SalescontractResult">
@@ -75,6 +79,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="updateSettlementstatus">
+         update salescontract set settlementstatus=1 where contractid=#{contractid}
+    </update>
+
+
     <delete id="deleteSalescontractById" parameterType="Long">
         delete from salescontract where id = #{id}
     </delete>
@@ -101,7 +110,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      where signingtime like '%${newDate}%'
      group by year(#{newDate})
 </select>
-
 
 <select id="selectSalesamountBmonth" resultType="Map">
     select month(signingtime) as months  ,sum(salesamount) as  datas

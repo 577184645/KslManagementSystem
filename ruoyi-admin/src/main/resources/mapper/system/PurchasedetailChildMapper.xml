@@ -14,12 +14,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="productnum"    column="productnum"    />
         <result property="money"    column="money"    />
         <result property="purchasedetailid"    column="purchasedetailid"    />
-        <result property="supplier"    column="supplier"    />
         <result property="createTime"    column="create_time"    />
     </resultMap>
 
     <sql id="selectPurchasedetailChildVo">
-        select id, productname, price, unit, specifications, producttype, productnum, money, purchasedetailid, supplier, create_time from purchasedetail_child
+        select id, productname, price, unit, specifications, producttype, productnum, money, purchasedetailid, create_time from purchasedetail_child
     </sql>
 
 
@@ -36,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productnum != null "> and productnum = #{productnum}</if>
             <if test="money != null "> and money = #{money}</if>
             <if test="purchasedetailid != null "> and purchasedetailid = #{purchasedetailid}</if>
-            <if test="supplier != null  and supplier != ''"> and supplier = #{supplier}</if>
+
         </where>
     </select>
     
@@ -61,7 +60,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productnum != null ">productnum,</if>
             <if test="money != null ">money,</if>
             <if test="purchasedetailid != null ">purchasedetailid,</if>
-            <if test="supplier != null  and supplier != ''">supplier,</if>
             <if test="createTime != null ">create_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -73,7 +71,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productnum != null ">#{productnum},</if>
             <if test="money != null ">#{money},</if>
             <if test="purchasedetailid != null ">#{purchasedetailid},</if>
-            <if test="supplier != null  and supplier != ''">#{supplier},</if>
             <if test="createTime != null ">#{createTime},</if>
          </trim>
     </insert>
@@ -90,7 +87,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="money != null ">money = #{money},</if>
 
             <if test="purchasedetailid != null ">purchasedetailid = #{purchasedetailid},</if>
-            <if test="supplier != null  and supplier != ''">supplier = #{supplier},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
         </trim>
         where id = #{id}

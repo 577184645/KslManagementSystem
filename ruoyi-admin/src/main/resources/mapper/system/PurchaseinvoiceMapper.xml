@@ -7,48 +7,66 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="Purchaseinvoice" id="PurchaseinvoiceResult">
         <result property="id"    column="id"    />
         <result property="purchaseinvoiceid"    column="purchaseinvoiceid"    />
-        <result property="purchasecontractid"    column="purchasecontractid"    />
-        <result property="buyer"    column="buyer"    />
         <result property="money"    column="money"    />
+        <result property="productnum"    column="productnum"    />
         <result property="purchaseinvoicetime"    column="purchaseinvoicetime"    />
         <result property="purchasedetailid"    column="purchasedetailid"    />
         <result property="createTime"    column="create_time"    />
+        <result property="purchasecontractid"    column="purchasecontractid"    />
+        <result property="supplier"    column="supplier"    />
+
+
     </resultMap>
 
     <sql id="selectPurchaseinvoiceVo">
-        select id, purchaseinvoiceid, purchasecontractid, buyer, money, purchaseinvoicetime, purchasedetailid, create_time from purchaseinvoice
+        select id, purchaseinvoiceid, money,purchasecontractid, productnum, purchaseinvoicetime, purchasedetailid, create_time from purchaseinvoice
     </sql>
 
+    <select id="selectPurchaseinvoiceByContractid" resultMap="PurchaseinvoiceResult">
+SELECT purchaseinvoiceid from purchaseinvoice p  LEFT JOIN purchasecontract p1 on p.purchasecontractid=p1.purchasecontractid LEFT JOIN salescontract s on p1.contractid=s.contractid
+where s.contractid=#{contractid}
+        group  by  p.purchaseinvoiceid,p.purchasecontractid
+
+    </select>
+
     <select id="selectPurchaseinvoiceList" parameterType="Purchaseinvoice" resultMap="PurchaseinvoiceResult">
-        <include refid="selectPurchaseinvoiceVo"/>
+
+        select p2.partyb as supplier, p.id, p.purchaseinvoiceid, p.money,p2.purchasecontractid, p.productnum, purchaseinvoicetime, purchasedetailid, p.create_time from purchaseinvoice p
+        LEFT JOIN purchasedetail p1  on  p.purchasedetailid=p1.id  LEFT JOIN purchasecontract p2 on p1.purchasecontractid= p2.purchasecontractid
+
         <where>  
-            <if test="purchasecontractid != null  and purchasecontractid != ''"> and purchasecontractid = #{purchasecontractid}</if>
-            <if test="buyer != null  and buyer != ''"> and buyer = #{buyer}</if>
-            <if test="purchaseinvoicetime != null "> and purchaseinvoicetime = #{purchaseinvoicetime}</if>
+            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''"> and purchaseinvoiceid = #{purchaseinvoiceid}</if>
+            <if test="purchasedetailid != null "> and p.purchasedetailid = #{purchasedetailid}</if>
         </where>
+        group  by  p.purchaseinvoiceid,p.money
+        order by   p2.purchasecontractid
     </select>
     
     <select id="selectPurchaseinvoiceById" parameterType="Long" resultMap="PurchaseinvoiceResult">
         <include refid="selectPurchaseinvoiceVo"/>
         where id = #{id}
     </select>
+
+
         
     <insert id="insertPurchaseinvoice" parameterType="Purchaseinvoice" useGeneratedKeys="true" keyProperty="id">
         insert into purchaseinvoice
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">purchaseinvoiceid,</if>
+
             <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid,</if>
-            <if test="buyer != null  and buyer != ''">buyer,</if>
+            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">purchaseinvoiceid,</if>
             <if test="money != null ">money,</if>
+            <if test="productnum != null ">productnum,</if>
             <if test="purchaseinvoicetime != null ">purchaseinvoicetime,</if>
             <if test="purchasedetailid != null ">purchasedetailid,</if>
             <if test="createTime != null ">create_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">#{purchaseinvoiceid},</if>
+
             <if test="purchasecontractid != null  and purchasecontractid != ''">#{purchasecontractid},</if>
-            <if test="buyer != null  and buyer != ''">#{buyer},</if>
+            <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">#{purchaseinvoiceid},</if>
             <if test="money != null ">#{money},</if>
+            <if test="productnum != null ">#{productnum},</if>
             <if test="purchaseinvoicetime != null ">#{purchaseinvoicetime},</if>
             <if test="purchasedetailid != null ">#{purchasedetailid},</if>
             <if test="createTime != null ">#{createTime},</if>
@@ -59,9 +77,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update purchaseinvoice
         <trim prefix="SET" suffixOverrides=",">
             <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">purchaseinvoiceid = #{purchaseinvoiceid},</if>
-            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid = #{purchasecontractid},</if>
-            <if test="buyer != null  and buyer != ''">buyer = #{buyer},</if>
             <if test="money != null ">money = #{money},</if>
+            <if test="productnum != null ">productnum = #{productnum},</if>
             <if test="purchaseinvoicetime != null ">purchaseinvoicetime = #{purchaseinvoicetime},</if>
             <if test="purchasedetailid != null ">purchasedetailid = #{purchasedetailid},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>

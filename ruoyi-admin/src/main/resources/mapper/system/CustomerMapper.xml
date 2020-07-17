@@ -16,11 +16,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="openingbank"    column="openingbank"    />
         <result property="accountnumber"    column="accountnumber"    />
         <result property="createTime"    column="create_time"    />
-        <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectCustomerVo">
-        select id, name, tel, address, legalrepresentativename, agentname, fax, email, openingbank, accountnumber, create_time, update_time from customer
+        select id, name, tel, address, legalrepresentativename, agentname, fax, email, openingbank, accountnumber, create_time from customer
     </sql>
     <select id="findList"  resultMap="CustomerResult">
         <include refid="selectCustomerVo"/>
@@ -52,7 +51,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="openingbank != null  and openingbank != ''">openingbank,</if>
             <if test="accountnumber != null  and accountnumber != ''">accountnumber,</if>
             <if test="createTime != null ">create_time,</if>
-            <if test="updateTime != null ">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null  and name != ''">#{name},</if>
@@ -82,7 +80,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="openingbank != null  and openingbank != ''">openingbank = #{openingbank},</if>
             <if test="accountnumber != null  and accountnumber != ''">accountnumber = #{accountnumber},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
     </update>

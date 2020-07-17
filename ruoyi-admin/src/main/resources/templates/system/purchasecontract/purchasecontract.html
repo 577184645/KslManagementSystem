@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
+    <link href="/css/bootstrap-select.css" rel="stylesheet">
     <th:block th:include="include :: header('采购合同列表')" />
 </head>
 <body class="gray-bg">
@@ -12,7 +13,7 @@
                         <ul>
                             <li>
                                 <label>采购合同号：</label>
-                                <input type="text" name="purchasecontractid"/>
+                                <input  type="text" name="purchasecontractid"/>
                             </li>
                             <li>
                                 <label>乙方：</label>
@@ -35,7 +36,7 @@
                 <a class="btn btn-primary single disabled" shiro:hasPermission="system:purchasecontract:purchaseinfo"  onclick="purchaseInfo()" >
                     <i class="fa fa-edit"></i> 查看
                 </a>
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:purchasecontract:add">
+                <a class="btn btn-success" onclick="addTab()" shiro:hasPermission="system:purchasecontract:add">
                     <i class="fa fa-plus"></i> 添加
                 </a>
                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:purchasecontract:edit">
@@ -47,12 +48,16 @@
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:purchasecontract:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
+                <a class="btn btn-primary single disabled" shiro:hasPermission="system:purchasecontract:print"  onclick="print()" >
+                    <i class="fa fa-print"></i> 打印
+                </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
             </div>
         </div>
     </div>
+
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('system:purchasecontract:edit')}]];
@@ -79,14 +84,15 @@
                     field: 'purchasecontractid', 
                     title: '采购合同号'
                 },
-                {
-                    field: 'purchasesamount', 
-                    title: '合同金额'
-                },
+
                 {
                     field: 'partyb', 
                     title: '乙方'
                 },
+                    {
+                        field: 'purchasesamount',
+                        title: '合同金额'
+                    },
                 {
                     field: 'signingtime', 
                     title: '签订日期'
@@ -120,7 +126,10 @@
             };
             $.table.init(options);
         });
-
+        function  addTab() {
+            table.set();
+            $.modal.openTab("添加采购合同", $.operate.addUrl());
+        }
 
         function purchaseInfo(id) {
             table.set();
@@ -157,6 +166,47 @@
                     return;
                 }
                 url = prefix+"/purchaseInfo/"+(id);
+
+            }
+            return url;
+        }
+
+
+        function print(id) {
+            table.set();
+            if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+                var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                if ($.common.isEmpty(row)) {
+                    $.modal.alertWarning("请至少选择一条记录");
+                    return;
+                }
+                var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
+
+                $.modal.openTab("修改" + table.options.modalName, url);
+            } else {
+
+
+                $.modal.openTab("打印采购合同信息",editUrl1(id));
+
+
+            }
+        }
+
+
+        function editUrl1(id) {
+            var url = "/404.html";
+            if ($.common.isNotEmpty(id)) {
+
+                url = table.options.updateUrl.replace("{id}", id);
+
+            } else {
+                var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+
+                if (id.length == 0) {
+                    $.modal.alertWarning("请至少选择一条记录");
+                    return;
+                }
+                url = prefix+"/print/"+(id);
 
             }
             return url;

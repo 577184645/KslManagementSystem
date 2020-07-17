@@ -4,11 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ruoyi.system.domain.Salescontract;
-import com.ruoyi.system.domain.Supplier;
-import com.ruoyi.system.service.IPurchasedetailService;
-import com.ruoyi.system.service.ISalescontractService;
-import com.ruoyi.system.service.ISupplierService;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.service.*;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,8 +14,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.Purchasecontract;
-import com.ruoyi.system.service.IPurchasecontractService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -44,10 +39,11 @@ public class PurchasecontractController extends BaseController
     private ISupplierService supplierService;
     @Autowired
     private IPurchasedetailService purchasedetailService;
+    @Autowired
+    private IPurchasedetailChildService purchasedetailChildService;
 
 
-
-    @PostMapping(value = "PurchasesamountBymonth")
+    @PostMapping(value = "/PurchasesamountBymonth")
     @ResponseBody
     public Map<String, Object> PurchasesamountBymonth(@RequestParam("newdate") String newdate) {
         Map<String, Object> queryMap = new HashMap<String, Object>();
@@ -57,7 +53,7 @@ public class PurchasecontractController extends BaseController
         return  queryMap;
     }
 
-    @PostMapping(value = "PurchasesamountByday")
+    @PostMapping(value = "/PurchasesamountByday")
     @ResponseBody
     public Map<String, Object> PurchasesamountByday(@RequestParam("newyear") String newyear,@RequestParam("newmonth") String newmonth) {
         Map<String, Object> queryMap = new HashMap<String, Object>();
@@ -110,9 +106,9 @@ public class PurchasecontractController extends BaseController
     public Map<String, String> getContractid(
             @RequestParam(value = "contractid", required = false, defaultValue = "") String contractid) {
         Map<String, String> map = new HashMap<String, String>();
-        if (null != contractid && contractid.length() == 0) {
+        if (contractid.length() == 0) {
 
-        } else {
+        }else{
             map.put("purchasecontractid", purchasecontractService.findcontractid(contractid));
         }
         return map;
@@ -138,9 +134,9 @@ public class PurchasecontractController extends BaseController
     @Log(title = "采购合同", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Purchasecontract purchasecontract)
+    public AjaxResult addSave(String purchasecontractList,Purchasecontract purchasecontract)
     {
-        return toAjax(purchasecontractService.insertPurchasecontract(purchasecontract));
+        return toAjax(purchasecontractService.addPurchasecontract(purchasecontractList,purchasecontract));
     }
 
     /**
@@ -150,6 +146,8 @@ public class PurchasecontractController extends BaseController
     public String edit(@PathVariable("id") Long id, ModelMap mmap)
     {
         Purchasecontract purchasecontract = purchasecontractService.selectPurchasecontractById(id);
+        List<Supplier> suppliersList = supplierService.findList();
+        mmap.put("suppliersList", suppliersList);
         mmap.put("purchasecontract", purchasecontract);
         return prefix + "/edit";
     }
@@ -193,5 +191,32 @@ public class PurchasecontractController extends BaseController
         Purchasecontract purchasecontract = purchasecontractService.selectPurchasecontractById(id);
         mmap.put("purchasecontract", purchasecontract);
         return prefix + "/purchaseinfo";
+    }
+
+    @RequiresPermissions("system:purchasecontract:print")
+    @GetMapping("/print/{id}")
+    public String print(@PathVariable("id") Long id, ModelMap mmap)
+    {
+        Purchasecontract purchasecontract = purchasecontractService.selectPurchasecontractById(id);
+        List<Purchasedetail> purchasedetails = purchasedetailService.selectPurchasedetailListByPurchasecontractId(purchasecontract.getPurchasecontractid());
+        List<PurchasedetailChild> purchasedetailChildren = purchasedetailChildService.selectPurchasedetailChildList(null);
+        if(purchasedetails.size()>0){
+        for (Purchasedetail purchasedetail: purchasedetails) {
+            if (purchasedetail.getSpecifications()!=null&&purchasedetail.getSpecifications().length() > 20) {
+                purchasedetail.setSpecifications(purchasedetail.getSpecifications().substring(0, 20));
+            }
+        }
+    }
+        if(purchasedetailChildren.size()>0) {
+            for (PurchasedetailChild purchasedetailChildrens : purchasedetailChildren) {
+                if (purchasedetailChildrens.getSpecifications()!=null&&purchasedetailChildrens.getSpecifications().length() > 20) {
+                    purchasedetailChildrens.setSpecifications(purchasedetailChildrens.getSpecifications().substring(0, 20));
+                }
+            }
+        }
+        mmap.put("purchasecontract", purchasecontract);
+        mmap.put("purchasedetails", purchasedetails);
+        mmap.put("purchasedetailChildren", purchasedetailChildren);
+        return prefix + "/print";
     }
 }

@@ -24,14 +24,12 @@ public class Purchasedetail extends BaseEntity
 
 
 
-    @Excel(name = "供应商")
-    private String supplier;
 
 
 
     /** 单价 */
     @Excel(name = "单价")
-    private Double price;
+    private Float price;
 
     /** 单位 */
     @Excel(name = "单位")
@@ -51,11 +49,11 @@ public class Purchasedetail extends BaseEntity
 
     /** 商品数量 */
     @Excel(name = "商品数量")
-    private Long productnum;
+    private Float productnum;
 
     /** 金额 */
     @Excel(name = "金额")
-    private Double money;
+    private Float money;
 
     /** 发票状态 */
     private Long purchaseinvoicestatus;
@@ -73,13 +71,6 @@ public class Purchasedetail extends BaseEntity
         return id;
     }
 
-    public String getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(String supplier) {
-        this.supplier = supplier;
-    }
 
     public void setProductname(String productname)
     {
@@ -90,15 +81,7 @@ public class Purchasedetail extends BaseEntity
     {
         return productname;
     }
-    public void setPrice(Double price) 
-    {
-        this.price = price;
-    }
 
-    public Double getPrice() 
-    {
-        return price;
-    }
     public void setUnit(String unit) 
     {
         this.unit = unit;
@@ -135,25 +118,32 @@ public class Purchasedetail extends BaseEntity
     {
         return producttype;
     }
-    public void setProductnum(Long productnum) 
-    {
+
+    public Float getProductnum() {
+        return productnum;
+    }
+
+    public void setProductnum(Float productnum) {
         this.productnum = productnum;
     }
 
-    public Long getProductnum() 
-    {
-        return productnum;
+    public Float getPrice() {
+        return price;
     }
-    public void setMoney(Double money) 
-    {
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public Float getMoney() {
+        return money;
+    }
+
+    public void setMoney(Float money) {
         this.money = money;
     }
 
-    public Double getMoney() 
-    {
-        return money;
-    }
-    public void setPurchaseinvoicestatus(Long purchaseinvoicestatus) 
+    public void setPurchaseinvoicestatus(Long purchaseinvoicestatus)
     {
         this.purchaseinvoicestatus = purchaseinvoicestatus;
     }
@@ -186,7 +176,6 @@ public class Purchasedetail extends BaseEntity
             .append("money", getMoney())
             .append("purchaseinvoicestatus", getPurchaseinvoicestatus())
             .append("selldetailid", getSelldetailid())
-                .append("supplier", getSupplier())
             .append("createTime", getCreateTime())
             .toString();
     }

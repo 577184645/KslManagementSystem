@@ -2,13 +2,12 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 
-import com.ruoyi.system.domain.Invoice;
 import com.ruoyi.system.domain.Purchasedetail;
-import com.ruoyi.system.domain.SellDetail;
 import com.ruoyi.system.service.IPurchasedetailService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,10 +24,10 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
- * 采购发票列表Controller
+ * 采购发票Controller
  * 
  * @author ruoyi
- * @date 2020-05-25
+ * @date 2020-07-09
  */
 @Controller
 @RequestMapping("/system/purchaseinvoice")
@@ -49,7 +48,7 @@ public class PurchaseinvoiceController extends BaseController
     }
 
     /**
-     * 查询采购发票列表列表
+     * 查询采购发票列表
      */
     @RequiresPermissions("system:purchaseinvoice:list")
     @PostMapping("/list")
@@ -62,10 +61,10 @@ public class PurchaseinvoiceController extends BaseController
     }
 
     /**
-     * 导出采购发票列表列表
+     * 导出采购发票列表
      */
     @RequiresPermissions("system:purchaseinvoice:export")
-    @Log(title = "采购发票列表", businessType = BusinessType.EXPORT)
+    @Log(title = "采购发票", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(Purchaseinvoice purchaseinvoice)
@@ -75,20 +74,38 @@ public class PurchaseinvoiceController extends BaseController
         return util.exportExcel(list, "purchaseinvoice");
     }
 
+
     /**
-     * 新增采购发票列表
+     * 新增采购发票
      */
-    @GetMapping("/add")
-    public String add()
+    @GetMapping("/add/{id}")
+    public String add(ModelMap map, @PathVariable("id") String ids)
     {
-        return prefix + "/add";
+        String[] split = ids.split(",");
+        if (split.length==1) {
+            Purchasedetail purchasedetail = purchasedetailService.selectPurchasedetailById(Long.valueOf(split[0]));
+            map.put("purchasedetail", purchasedetail);
+            return prefix + "/add";
+        }else {
+            Purchasedetail purchasedetail = purchasedetailService.selectPurchasedetailById(Long.valueOf(split[0]));
+
+            Float sum=0f;
+            for (int i=0;i<split.length;i++){
+                sum+=purchasedetailService.selectPurchasedetailById(Long.valueOf(split[i])).getMoney();
+            }
+            map.put("purchasecontractid", purchasedetail.getPurchasecontractid());
+            map.put("sum",sum);
+            map.put("ids",ids);
+            return prefix + "/adds";
+        }
+
     }
 
     /**
-     * 新增保存采购发票列表
+     * 新增保存采购发票
      */
     @RequiresPermissions("system:purchaseinvoice:add")
-    @Log(title = "采购发票列表", businessType = BusinessType.INSERT)
+    @Log(title = "采购发票", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(Purchaseinvoice purchaseinvoice)
@@ -97,7 +114,7 @@ public class PurchaseinvoiceController extends BaseController
     }
 
     /**
-     * 修改采购发票列表
+     * 修改采购发票
      */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long id, ModelMap mmap)
@@ -108,10 +125,10 @@ public class PurchaseinvoiceController extends BaseController
     }
 
     /**
-     * 修改保存采购发票列表
+     * 修改保存采购发票
      */
     @RequiresPermissions("system:purchaseinvoice:edit")
-    @Log(title = "采购发票列表", businessType = BusinessType.UPDATE)
+    @Log(title = "采购发票", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(Purchaseinvoice purchaseinvoice)
@@ -120,44 +137,14 @@ public class PurchaseinvoiceController extends BaseController
     }
 
     /**
-     * 删除采购发票列表
+     * 删除采购发票
      */
     @RequiresPermissions("system:purchaseinvoice:remove")
-    @Log(title = "采购发票列表", businessType = BusinessType.DELETE)
+    @Log(title = "采购发票", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
     public AjaxResult remove(String ids)
     {
         return toAjax(purchaseinvoiceService.deletePurchaseinvoiceByIds(ids));
     }
-
-
-    /**
-     * 修改销售发票列表
-     */
-    @GetMapping("/makeinvoice/{id}")
-    public String makeinvoice(@PathVariable("id") Long id, ModelMap mmap)
-    {
-        Purchasedetail purchasedetail = purchasedetailService.selectPurchasedetailById(id);
-        Purchaseinvoice purchaseinvoice=new Purchaseinvoice();
-        purchaseinvoice.setPurchasedetailid(purchasedetail.getId());
-        purchaseinvoice.setBuyer(purchasedetail.getSupplier());
-        purchaseinvoice.setPurchasecontractid(purchasedetail.getPurchasecontractid());
-        purchaseinvoice.setMoney(purchasedetail.getMoney());
-        mmap.put("purchasedetailinvoice", purchaseinvoice);
-        return prefix + "/makeinvoice";
-    }
-
-    /**
-     * 修改保存销售发票列表
-     */
-
-    @Log(title = "采购开票", businessType = BusinessType.INSERT)
-    @PostMapping("/makeinvoice")
-    @ResponseBody
-    public AjaxResult makeinvoiceSave(Purchaseinvoice purchaseinvoice)
-    {
-        return toAjax(purchaseinvoiceService.insertPurchaseinvoice(purchaseinvoice));
-    }
-
 }

@@ -45,7 +45,7 @@ public class PurchasedetailChildController extends BaseController
     /**
      * 查询采购订单子列表
      */
-    @RequiresPermissions("system:child:list")
+
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(PurchasedetailChild purchasedetailChild)
@@ -61,7 +61,7 @@ public class PurchasedetailChildController extends BaseController
     /**
      * 导出采购订单子列表
      */
-    @RequiresPermissions("system:child:export")
+
     @Log(title = "采购订单子", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
@@ -100,8 +100,6 @@ public class PurchasedetailChildController extends BaseController
     public String edit(@PathVariable("id") Long id, ModelMap mmap)
     {
         PurchasedetailChild purchasedetailChild = purchasedetailChildService.selectPurchasedetailChildById(id);
-        List<Supplier> suppliersList = supplierService.findList();
-        mmap.put("suppliersList", suppliersList);
         mmap.put("purchasedetailChild", purchasedetailChild);
         return prefix + "/edit";
     }

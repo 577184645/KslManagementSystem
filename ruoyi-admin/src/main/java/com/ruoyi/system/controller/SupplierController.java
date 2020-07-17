@@ -41,6 +41,12 @@ public class SupplierController extends BaseController
         return prefix + "/supplier";
     }
 
+    @GetMapping("/findSupplier")
+    @ResponseBody
+    public List<Supplier> findSupplier()
+    {
+        return supplierService.findList();
+    }
     /**
      * 查询供应商列表列表
      */

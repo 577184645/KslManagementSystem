@@ -36,7 +36,7 @@ public interface IPurchasecontractService
      * @param purchasecontract 采购合同
      * @return 结果
      */
-    public int insertPurchasecontract(Purchasecontract purchasecontract);
+    public int addPurchasecontract(String purchasecontractList,Purchasecontract purchasecontract);
 
     /**
      * 修改采购合同
@@ -83,7 +83,7 @@ public interface IPurchasecontractService
      * @param contractid
      * @return
      */
-    public Double selectPurchasesamountsumByContractId(String contractid);
+    public Float selectPurchasesamountsumByContractId(String contractid);
 
 
     /**

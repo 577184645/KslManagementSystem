@@ -31,6 +31,10 @@ public interface PurchasecontractMapper
      */
     public List<Purchasecontract> selectPurchasecontractList(Purchasecontract purchasecontract);
 
+
+
+
+
     /**
      * 新增采购合同
      * 
@@ -80,12 +84,14 @@ public interface PurchasecontractMapper
     public String selectMaxPurchasecontractByContractId(String contractid);
 
 
+
+
     /**
      * 根据销售合同查询所有的采购金额
      * @param contractid
      * @return
      */
-    public Double selectPurchasesamountsumByContractId(String contractid);
+    public Float selectPurchasesamountsumByContractId(String contractid);
 
 
 

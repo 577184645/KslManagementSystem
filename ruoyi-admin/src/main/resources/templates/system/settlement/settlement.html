@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('结算列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>经办人：</label>
+                                <input type="text" name="operator"/>
+                            </li>
+                            <li>
+                                <label>个人所得：</label>
+                                <input type="text" name="personalincome"/>
+                            </li>
+                            <li class="select-time">
+                                <label>结算时间：</label>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginSettlementtime]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endSettlementtime]"/>
+                            </li>
+                            <li>
+                                <label>序号：</label>
+                                <input type="text" name="serialnumber"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+
+                <a class="btn btn-primary single disabled" onclick="saleInfo()" shiro:hasPermission="system:settlement:print">
+                    <i class="fa fa-print"></i> 打印
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:settlement:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+
+        var prefix = ctx + "system/settlement";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "结算",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id', 
+                    title: '序号',
+                    visible: false
+                },
+                    {
+                        field: 'serialnumber',
+                        title: '序号'
+                    },
+                {
+                    field: 'operator', 
+                    title: '经办人'
+                },
+                {
+                    field: 'personalincome', 
+                    title: '个人所得'
+                },
+                {
+                    field: 'settlementtime', 
+                    title: '结算时间'
+                }
+
+          ]
+            };
+            $.table.init(options);
+        });
+
+
+
+        function saleInfo(id) {
+            table.set();
+            if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+                var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                if ($.common.isEmpty(row)) {
+                    $.modal.alertWarning("请至少选择一条记录");
+                    return;
+                }
+                var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
+
+                $.modal.openTab("修改" + table.options.modalName, url);
+            } else {
+
+
+                $.modal.openTab("销售汇总信息",editUrl(id));
+
+
+            }
+        }
+
+
+        function editUrl(id) {
+            var url = "/404.html";
+            if ($.common.isNotEmpty(id)) {
+
+                url = table.options.updateUrl.replace("{id}", id);
+
+            } else {
+                var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+
+                if (id.length == 0) {
+                    $.modal.alertWarning("请至少选择一条记录");
+                    return;
+                }
+                url = prefix+"/print/"+(id);
+
+            }
+            return url;
+        }
+    </script>
+</body>
+</html>

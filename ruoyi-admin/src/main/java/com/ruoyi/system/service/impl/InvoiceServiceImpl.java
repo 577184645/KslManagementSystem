@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.mapper.SellDetailMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.InvoiceMapper;
@@ -10,27 +11,25 @@ import com.ruoyi.system.service.IInvoiceService;
 import com.ruoyi.common.core.text.Convert;
 
 /**
- * 销售发票列表Service业务层处理
+ * 发票Service业务层处理
  * 
  * @author ruoyi
- * @date 2020-05-21
+ * @date 2020-07-09
  */
 @Service
 public class InvoiceServiceImpl implements IInvoiceService 
 {
     @Autowired
     private InvoiceMapper invoiceMapper;
+    @Autowired
+    private SellDetailMapper sellDetailMapper;
 
-    @Override
-    public Double sumMoneyGYear(String newDate) {
-        return invoiceMapper.sumMoneyGYear(newDate);
-    }
 
     /**
-     * 查询销售发票列表
+     * 查询发票
      * 
-     * @param id 销售发票列表ID
-     * @return 销售发票列表
+     * @param id 发票ID
+     * @return 发票
      */
     @Override
     public Invoice selectInvoiceById(Long id)
@@ -39,10 +38,10 @@ public class InvoiceServiceImpl implements IInvoiceService
     }
 
     /**
-     * 查询销售发票列表列表
+     * 查询发票列表
      * 
-     * @param invoice 销售发票列表
-     * @return 销售发票列表
+     * @param invoice 发票
+     * @return 发票
      */
     @Override
     public List<Invoice> selectInvoiceList(Invoice invoice)
@@ -51,22 +50,34 @@ public class InvoiceServiceImpl implements IInvoiceService
     }
 
     /**
-     * 新增销售发票列表
+     * 新增发票
      * 
-     * @param invoice 销售发票列表
+     * @param invoice 发票
      * @return 结果
      */
     @Override
     public int insertInvoice(Invoice invoice)
     {
-        invoice.setCreateTime(DateUtils.getNowDate());
-        return invoiceMapper.insertInvoice(invoice);
+
+        if(invoice.getSelldetailids()!=null){
+            String[] split = invoice.getSelldetailids().split(",");
+            for (int i=0;i<split.length;i++){
+                invoice.setSelldetailid(Long.valueOf(split[i]));
+                invoiceMapper.insertInvoice(invoice);
+            }
+            return 1;
+        }else{
+            invoice.setCreateTime(DateUtils.getNowDate());
+            return invoiceMapper.insertInvoice(invoice);
+        }
+
+
     }
 
     /**
-     * 修改销售发票列表
+     * 修改发票
      * 
-     * @param invoice 销售发票列表
+     * @param invoice 发票
      * @return 结果
      */
     @Override
@@ -76,7 +87,7 @@ public class InvoiceServiceImpl implements IInvoiceService
     }
 
     /**
-     * 删除销售发票列表对象
+     * 删除发票对象
      * 
      * @param ids 需要删除的数据ID
      * @return 结果
@@ -84,18 +95,35 @@ public class InvoiceServiceImpl implements IInvoiceService
     @Override
     public int deleteInvoiceByIds(String ids)
     {
+
         return invoiceMapper.deleteInvoiceByIds(Convert.toStrArray(ids));
     }
 
+    @Override
+    public List<Invoice> selectInvoiceListbycontractid(String contractid) {
+        return invoiceMapper.selectInvoiceListbycontractid(contractid);
+    }
+
     /**
-     * 删除销售发票列表信息
+     * 删除发票信息
      * 
-     * @param id 销售发票列表ID
+     * @param id 发票ID
      * @return 结果
      */
     @Override
     public int deleteInvoiceById(Long id)
     {
+
         return invoiceMapper.deleteInvoiceById(id);
+    }
+
+    @Override
+    public List<Invoice> sumMoneyGYear(String newDate) {
+        return invoiceMapper.sumMoneyGYear(newDate);
+    }
+
+    @Override
+    public List<Invoice> findList() {
+        return invoiceMapper.findList();
     }
 }

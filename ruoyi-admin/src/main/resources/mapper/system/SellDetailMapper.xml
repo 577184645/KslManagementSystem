@@ -6,6 +6,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="SellDetail" id="SellDetailResult">
         <result property="id"    column="id"    />
+        <result property="rownum"    column="rownum"    />
+        <result property="purchasecontractid"    column="purchasecontractid"    />
+
         <result property="productname"    column="productname"    />
         <result property="price"    column="price"    />
         <result property="unit"    column="unit"    />
@@ -16,36 +19,56 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contractid"    column="contractid"    />
         <result property="invoicestatus"    column="invoicestatus"    />
         <result property="purchasestatus"    column="purchasestatus"    />
-        <result property="supplier"    column="supplier"    />
         <result property="createTime"    column="create_time"    />
+        <collection   property="invoiceList" javaType="ArrayList" ofType="Invoice">
+            <result property="invoiceid" column="invoiceid"/>
+        </collection  >
     </resultMap>
 
     <sql id="selectSellDetailVo">
-        select id,supplier, productname, price, unit, specifications, producttype, productnum, money, contractid, invoicestatus, purchasestatus, create_time from sell_detail
+        select @rowNum:=@rowNum + 1 as rownum, id, purchasecontractid,productname, price, unit, specifications, producttype, productnum, money, contractid, invoicestatus, purchasestatus, create_time from sell_detail ,(SELECT @rowNum:=0) b
     </sql>
 
-    <select id="selectSellDetailList" parameterType="SellDetail" resultMap="SellDetailResult">
+    <select id="selectSellDetailListAndInvoice" resultMap="SellDetailResult">
+        select  productname,price,specifications,s.money,invoiceid,i.productnum,i.money,invoicetime from sell_detail s LEFT JOIN invoice i on i.selldetailid=s.id
+where contractid=#{contractid}
+    </select>
+
+    <select id="selectSellDetailList"  resultMap="SellDetailResult">
         <include refid="selectSellDetailVo"/>
-        <where>  
+        <where>
+            <if test="contractid != null  and contractid != ''">contractid=#{contractid}</if>
             <if test="productname != null  and productname != ''"> and productname like concat('%', #{productname}, '%')</if>
-            <if test="contractid != null  and contractid != ''"> and contractid = #{contractid}</if>
             <if test="invoicestatus != null  and invoicestatus != ''"> and invoicestatus = #{invoicestatus}</if>
             <if test="purchasestatus != null  and purchasestatus != ''"> and purchasestatus = #{purchasestatus}</if>
 
         </where>
     </select>
-    
+
+    <select id="selectSellDetailByInContractId"  resultMap="SellDetailResult">
+        <include refid="selectSellDetailVo"/>
+         where  purchasestatus=1 and
+                contractid in
+                <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+                                 #{item}
+                </foreach>
+
+
+    </select>
     <select id="selectSellDetailById" parameterType="Long" resultMap="SellDetailResult">
         <include refid="selectSellDetailVo"/>
         where id = #{id}
     </select>
+
+
 
     <select id="selectSellDetailByContractId" resultMap="SellDetailResult">
         <include refid="selectSellDetailVo"/>
         where contractid = #{contractid}
 
     </select>
-        
+
+
     <insert id="insertSellDetail" parameterType="SellDetail" useGeneratedKeys="true" keyProperty="id">
         insert into sell_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -59,7 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contractid != null  and contractid != ''">contractid,</if>
             <if test="invoicestatus != null ">invoicestatus,</if>
             <if test="purchasestatus != null ">purchasestatus,</if>
-            <if test="supplier != null ">supplier,</if>
+
             <if test="createTime != null ">create_time,</if>
 
          </trim>
@@ -74,7 +97,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contractid != null  and contractid != ''">#{contractid},</if>
             <if test="invoicestatus != null ">#{invoicestatus},</if>
             <if test="purchasestatus != null ">#{purchasestatus},</if>
-            <if test="supplier != null ">#{supplier},</if>
             <if test="createTime != null ">#{createTime},</if>
 
          </trim>
@@ -94,21 +116,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="invoicestatus != null ">invoicestatus = #{invoicestatus},</if>
             <if test="purchasestatus != null ">purchasestatus = #{purchasestatus},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
-            <if test="supplier != null ">supplier = #{supplier},</if>
         </trim>
         where id = #{id}
     </update>
 
+    <update id="updatePurchasestatusAndPurchasecontractid">
+     update sell_detail set  purchasestatus=2 , purchasecontractid=#{purchasecontractid} where id=#{id}
+ </update>
+
+
     <delete id="deleteSellDetailById" parameterType="Long">
         delete from sell_detail where id = #{id}
     </delete>
-<update id="makeinvoice">
-    update  sell_detail set invoicestatus=1 where  id=#{id}
-</update>
+
+
+
 
 
     <delete id="deleteSellDetailByIds" parameterType="String">
-        delete from sell_detail where id in 
+        delete from sell_detail where    id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

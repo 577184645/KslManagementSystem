@@ -24,7 +24,7 @@ public class PurchasedetailChild extends BaseEntity
 
     /** 单价 */
     @Excel(name = "单价")
-    private Double price;
+    private Float price;
 
     /** 单位 */
     @Excel(name = "单位")
@@ -40,20 +40,18 @@ public class PurchasedetailChild extends BaseEntity
 
     /** 商品数量 */
     @Excel(name = "商品数量")
-    private Long productnum;
+    private Float productnum;
 
     /** 金额 */
     @Excel(name = "金额")
-    private Double money;
+    private Float money;
 
 
     /** 所属采购订单号 */
     @Excel(name = "所属采购订单号")
     private Long purchasedetailid;
 
-    /** 供应商 */
-    @Excel(name = "供应商")
-    private String supplier;
+
 
     public void setId(Long id) 
     {
@@ -73,15 +71,7 @@ public class PurchasedetailChild extends BaseEntity
     {
         return productname;
     }
-    public void setPrice(Double price) 
-    {
-        this.price = price;
-    }
 
-    public Double getPrice() 
-    {
-        return price;
-    }
     public void setUnit(String unit) 
     {
         this.unit = unit;
@@ -109,26 +99,32 @@ public class PurchasedetailChild extends BaseEntity
     {
         return producttype;
     }
-    public void setProductnum(Long productnum) 
-    {
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public Float getProductnum() {
+        return productnum;
+    }
+
+    public void setProductnum(Float productnum) {
         this.productnum = productnum;
     }
 
-    public Long getProductnum() 
-    {
-        return productnum;
-    }
-    public void setMoney(Double money) 
-    {
-        this.money = money;
-    }
-
-    public Double getMoney() 
-    {
+    public Float getMoney() {
         return money;
     }
 
-    public void setPurchasedetailid(Long purchasedetailid) 
+    public void setMoney(Float money) {
+        this.money = money;
+    }
+
+    public void setPurchasedetailid(Long purchasedetailid)
     {
         this.purchasedetailid = purchasedetailid;
     }
@@ -137,15 +133,7 @@ public class PurchasedetailChild extends BaseEntity
     {
         return purchasedetailid;
     }
-    public void setSupplier(String supplier) 
-    {
-        this.supplier = supplier;
-    }
 
-    public String getSupplier() 
-    {
-        return supplier;
-    }
 
     @Override
     public String toString() {
@@ -159,7 +147,6 @@ public class PurchasedetailChild extends BaseEntity
             .append("productnum", getProductnum())
             .append("money", getMoney())
             .append("purchasedetailid", getPurchasedetailid())
-            .append("supplier", getSupplier())
             .append("createTime", getCreateTime())
             .toString();
     }

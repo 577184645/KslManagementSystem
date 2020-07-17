@@ -19,6 +19,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 采购订单列表Controller
@@ -42,6 +43,8 @@ public class PurchasedetailController extends BaseController
     private ISupplierService supplierService;
     @Autowired
     private IPurchasedetailChildService purchasedetailChildService;
+    @Autowired
+    private  IPurchaseinvoiceService purchaseinvoiceService;
 
 
     @RequiresPermissions("system:purchasedetail:view")
@@ -81,10 +84,12 @@ public class PurchasedetailController extends BaseController
     /**
      * 新增采购订单列表
      */
-    @GetMapping("/add")
-    public String add()
+    @GetMapping("/add/{purchasecontractid}")
+    public ModelAndView add(ModelAndView model,@PathVariable("purchasecontractid") String purchasecontractid)
     {
-        return prefix + "/add";
+        model.addObject("purchasecontractid",purchasecontractid);
+        model.setViewName(prefix + "/add");
+         return model;
     }
 
 
@@ -94,8 +99,6 @@ public class PurchasedetailController extends BaseController
      */
     @GetMapping("/addchild/{id}")
     public String addchild(@PathVariable("id") Long id, ModelMap mmap){
-        List<Supplier> suppliersList = supplierService.findList();
-        mmap.put("suppliersList", suppliersList);
           mmap.put("id",id);
           return prefix + "/addchild";
     }
@@ -180,8 +183,13 @@ public class PurchasedetailController extends BaseController
     public AjaxResult remove(String ids)
     {
         if(purchasedetailChildService.selectPurchasedetailChildPurchasedetailid(Long.valueOf(ids)).size()>0){
-            return AjaxResult.error("操作失败,采购订单下有订单信息!");
+            return AjaxResult.error("操作失败,采购订单下有子订单信息!");
         }
-        return toAjax(purchasedetailService.deletePurchasedetailByIds(ids));
+        Purchaseinvoice purchaseinvoice=  new Purchaseinvoice();
+        purchaseinvoice.setPurchasedetailid(Long.valueOf(ids));
+        List<Purchaseinvoice> purchaseinvoices = purchaseinvoiceService.selectPurchaseinvoiceList(purchaseinvoice);
+        if(purchaseinvoices.size()>0){
+            return AjaxResult.error("操作失败,采购订单下有发票信息!");
+        }        return toAjax(purchasedetailService.deletePurchasedetailByIds(ids));
     }
 }

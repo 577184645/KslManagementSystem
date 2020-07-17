@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SettlementMapper">
+    
+    <resultMap type="Settlement" id="SettlementResult">
+        <result property="id"    column="id"    />
+        <result property="operator"    column="operator"    />
+        <result property="personalincome"    column="personalincome"    />
+        <result property="settlementtime"    column="settlementtime"    />
+        <result property="serialnumber"    column="serialnumber"    />
+    </resultMap>
+
+    <sql id="selectSettlementVo">
+        select id, operator, personalincome, settlementtime, serialnumber from settlement
+    </sql>
+
+    <select id="selectSettlementList" parameterType="Settlement" resultMap="SettlementResult">
+        <include refid="selectSettlementVo"/>
+        <where>  
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+            <if test="personalincome != null "> and personalincome = #{personalincome}</if>
+            <if test="settlementtime != null "> and settlementtime = #{settlementtime}</if>
+            <if test="serialnumber != null  and serialnumber != ''"> and serialnumber = #{serialnumber}</if>
+        </where>
+    </select>
+    
+    <select id="selectSettlementById" parameterType="Long" resultMap="SettlementResult">
+        <include refid="selectSettlementVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSettlement" parameterType="Settlement" useGeneratedKeys="true" keyProperty="id">
+        insert into settlement
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="operator != null  and operator != ''">operator,</if>
+            <if test="personalincome != null ">personalincome,</if>
+            <if test="settlementtime != null ">settlementtime,</if>
+            <if test="serialnumber != null  and serialnumber != ''">serialnumber,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="operator != null  and operator != ''">#{operator},</if>
+            <if test="personalincome != null ">#{personalincome},</if>
+            <if test="settlementtime != null ">#{settlementtime},</if>
+            <if test="serialnumber != null  and serialnumber != ''">#{serialnumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSettlement" parameterType="Settlement">
+        update settlement
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="operator != null  and operator != ''">operator = #{operator},</if>
+            <if test="personalincome != null ">personalincome = #{personalincome},</if>
+            <if test="settlementtime != null ">settlementtime = #{settlementtime},</if>
+            <if test="serialnumber != null  and serialnumber != ''">serialnumber = #{serialnumber},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSettlementById" parameterType="Long">
+        delete from settlement where id = #{id}
+    </delete>
+
+    <delete id="deleteSettlementByIds" parameterType="String">
+        delete from settlement where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

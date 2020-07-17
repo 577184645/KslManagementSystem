@@ -7,8 +7,12 @@ import java.util.Map;
 
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.Invoice;
+import com.ruoyi.system.domain.Purchaseinvoice;
 import com.ruoyi.system.domain.SysUser;
+import com.ruoyi.system.service.IInvoiceService;
 import com.ruoyi.system.service.ISupplierService;
+import com.ruoyi.system.service.impl.InvoiceServiceImpl;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,6 +54,9 @@ public class SellDetailController extends BaseController
     @Autowired
     private ISupplierService supplierService;
 
+    @Autowired
+    private IInvoiceService invoiceService;
+
     List<SellDetail> sellDetailList=new ArrayList<>();
 
 
@@ -63,20 +70,25 @@ public class SellDetailController extends BaseController
     {
         ExcelUtil<SellDetail> util = new ExcelUtil<SellDetail>(SellDetail.class);
         sellDetailList = util.importExcel(file.getInputStream());
-        HttpSession session = request.getSession();
-        session.setAttribute("sellDetailList",sellDetailList);
-        session.setMaxInactiveInterval(1);
         String message = sellDetailService.importUser(sellDetailList);
         return AjaxResult.success(message);
     }
 
+    @GetMapping("/clearsellDetailList")
+    @ResponseBody
+    public Map clearsellDetailList(){
+        Map<String,Object> ret=new HashMap<>();
+        ret.put("msg","succee");
+        sellDetailList.clear();
+        return  ret;
+    }
 
     @PostMapping("/listimport")
     @ResponseBody
     public TableDataInfo listimport(SellDetail sellDetail,HttpServletRequest request)
     {
         startPage();
-        return getDataTable((List<SellDetail>) (request.getSession().getAttribute("sellDetailList"))!=null?(List<SellDetail>) (request.getSession().getAttribute("sellDetailList")):new ArrayList<SellDetail>());
+        return getDataTable(sellDetailList);
     }
 
     @RequiresPermissions("system:detail:view")
@@ -109,6 +121,17 @@ public class SellDetailController extends BaseController
         return getDataTable(list);
     }
 
+    @RequiresPermissions("system:detail:list")
+    @PostMapping("/listInContractid")
+    @ResponseBody
+    public TableDataInfo listInContractid(@Param("contractid") String contractid)
+    {
+        String [] arr=contractid.split(",");
+        startPage();
+        List<SellDetail> list = sellDetailService.selectSellDetailByInContractId(arr);
+        return getDataTable(list);
+    }
+
     /**
      * 导出销售订单列表列表
      */
@@ -126,10 +149,10 @@ public class SellDetailController extends BaseController
     /**
      * 新增销售订单列表
      */
-    @GetMapping("/add")
-    public ModelAndView add(ModelAndView model)
+    @GetMapping("/add/{contractid}")
+    public ModelAndView add(ModelAndView model,@PathVariable("contractid") String contractid)
     {
-        model.addObject("supplierList",supplierService.findList());
+        model.addObject("contractid",contractid);
         model.setViewName(prefix + "/add");
          return model;
     }
@@ -173,14 +196,6 @@ public class SellDetailController extends BaseController
 
 
 
-    @Log(title = "销售开票", businessType = BusinessType.UPDATE)
-    @PostMapping("/makeinvoice/{id}")
-    @ResponseBody
-    public AjaxResult makeInvoice(@PathVariable("id") Long id)
-    {
-
-        return toAjax(sellDetailService.makeinvoice(id));
-    }
 
     /**
      * 删除销售订单列表
@@ -191,6 +206,13 @@ public class SellDetailController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
+        Invoice invoice=  new Invoice();
+        invoice.setSelldetailid(Long.valueOf(ids));
+        List<Invoice> invoices = invoiceService.selectInvoiceList(invoice);
+      if(invoices.size()>0){
+          return AjaxResult.error("操作失败,销售订单下有发票信息!");
+
+      }
         return toAjax(sellDetailService.deleteSellDetailByIds(ids));
     }
 }

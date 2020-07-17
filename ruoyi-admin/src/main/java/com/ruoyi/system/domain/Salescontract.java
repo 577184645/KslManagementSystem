@@ -23,6 +23,13 @@ public class Salescontract extends BaseEntity
     @Excel(name = "销售合同号")
     private String contractid;
 
+
+
+private Integer settlementstatus;
+
+
+
+
     /** 经办人 */
     @Excel(name = "经办人")
     private String operator;
@@ -47,12 +54,30 @@ public class Salescontract extends BaseEntity
     @Excel(name = "备注")
     private String remarks;
 
-    public void setId(Long id) 
+    private Boolean islookstatus;
+
+    public Boolean getIslookstatus() {
+        return islookstatus;
+    }
+
+    public void setIslookstatus(Boolean islookstatus) {
+        this.islookstatus = islookstatus;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Integer getSettlementstatus() {
+        return settlementstatus;
+    }
+
+    public void setSettlementstatus(Integer settlementstatus) {
+        this.settlementstatus = settlementstatus;
+    }
+
+    public Long getId()
     {
         return id;
     }

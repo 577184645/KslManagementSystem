@@ -3,6 +3,7 @@ package com.ruoyi.system.service;
 import java.util.List;
 import com.ruoyi.system.domain.SellDetail;
 import com.ruoyi.system.domain.SysUser;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 销售订单列表Service接口
@@ -27,6 +28,12 @@ public interface ISellDetailService
      * @return 销售订单列表集合
      */
     public List<SellDetail> selectSellDetailList(SellDetail sellDetail);
+
+    public List<SellDetail>  selectSellDetailByInContractId(String [] contracts);
+
+
+
+    public List<SellDetail> selectSellDetailListAndInvoice( String contractid);
 
     /**
      * 新增销售订单列表
@@ -54,12 +61,7 @@ public interface ISellDetailService
     public List<SellDetail>  selectSellDetailByContractId(String contractId);
 
 
-    /**
-     * 开票
-     * @param id
-     * @return
-     */
-    public int makeinvoice(Long id);
+
     /**
      * 批量删除销售订单列表
      * 
@@ -85,4 +87,8 @@ public interface ISellDetailService
      * @return 结果
      */
     public String importUser(List<SellDetail> sellDetailList);
+
+
+
+
 }

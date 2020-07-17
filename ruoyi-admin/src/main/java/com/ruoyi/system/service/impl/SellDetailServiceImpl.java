@@ -53,6 +53,16 @@ public class SellDetailServiceImpl implements ISellDetailService
         return sellDetailMapper.selectSellDetailList(sellDetail);
     }
 
+    @Override
+    public List<SellDetail> selectSellDetailByInContractId(String[] contracts) {
+        return sellDetailMapper.selectSellDetailByInContractId(contracts);
+    }
+
+    @Override
+    public List<SellDetail> selectSellDetailListAndInvoice(String contractid) {
+        return sellDetailMapper.selectSellDetailListAndInvoice(contractid);
+    }
+
     /**
      * 新增销售订单列表
      * 
@@ -84,10 +94,6 @@ public class SellDetailServiceImpl implements ISellDetailService
     }
 
 
-    @Override
-    public int makeinvoice(Long id) {
-        return sellDetailMapper.makeinvoice(id);
-    }
 
     /**
      * 删除销售订单列表对象

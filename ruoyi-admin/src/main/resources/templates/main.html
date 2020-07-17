@@ -215,6 +215,15 @@
 
 
 
+            $.ajax({
+                url:'invoice/sumMoneyGYear',
+                dataType:'json',
+                success:function(result){
+
+                    $("#invoicesum").html("￥"+result.summoney);
+
+                }
+            });
 
 
             $.ajax({

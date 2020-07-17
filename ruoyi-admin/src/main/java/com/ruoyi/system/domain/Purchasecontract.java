@@ -27,7 +27,7 @@ public class Purchasecontract extends BaseEntity
 
     /** 合同金额 */
     @Excel(name = "合同金额")
-    private Double purchasesamount;
+    private Float purchasesamount;
 
     /** 乙方 */
     @Excel(name = "乙方")
@@ -67,16 +67,16 @@ public class Purchasecontract extends BaseEntity
     {
         return purchasecontractid;
     }
-    public void setPurchasesamount(Double purchasesamount) 
-    {
+
+    public Float getPurchasesamount() {
+        return purchasesamount;
+    }
+
+    public void setPurchasesamount(Float purchasesamount) {
         this.purchasesamount = purchasesamount;
     }
 
-    public Double getPurchasesamount() 
-    {
-        return purchasesamount;
-    }
-    public void setPartyb(String partyb) 
+    public void setPartyb(String partyb)
     {
         this.partyb = partyb;
     }

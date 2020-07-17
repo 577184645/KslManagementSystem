@@ -36,11 +36,6 @@
                             </li>
 
 
-
-                            <li>
-                                <label>付款方式：</label>
-                                <input type="text" name="payway"/>
-                            </li>
                             <li>
                                 <label>甲方：</label>
                                 <select name="firstparty">
@@ -52,12 +47,7 @@
                                     </option>
                                 </select>
                             </li>
-                            <li class="select-time">
-                                <label>签订时间：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginSigningtime]"/>
-                                <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endSigningtime]"/>
-                            </li>
+
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
@@ -94,6 +84,7 @@
         var editFlag = [[${@permission.hasPermi('system:salescontract:edit')}]];
         var removeFlag = [[${@permission.hasPermi('system:salescontract:remove')}]];
         var prefix = ctx + "system/salescontract";
+        var settlementstatus = [[${@dict.getType('settlementstatus')}]];
 
         $(function() {
             var options = {
@@ -115,6 +106,10 @@
                     field: 'contractid', 
                     title: '销售合同号'
                 },
+                    {
+                        field: 'firstparty',
+                        title: '甲方'
+                    },
                 {
                     field: 'operator', 
                     title: '经办人'
@@ -127,18 +122,23 @@
                     field: 'salesamount', 
                     title: '合同金额'
                 },
-                {
-                    field: 'firstparty', 
-                    title: '甲方'
-                },
+
                 {
                     field: 'signingtime', 
                     title: '签订时间'
                 },
+                    {
+                        field: 'settlementstatus',
+                        title: '结算状态',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(settlementstatus, value);
+                        }
+                    },
                 {
                     field: 'remarks', 
                     title: '备注'
                 },
+
                 {
                     field: 'createTime', 
                     title: '创建时间'

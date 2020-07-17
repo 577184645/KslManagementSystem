@@ -1,79 +1,173 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('新增采购合同')" />
     <th:block th:include="include :: datetimepicker-css" />
+    <th:block th:include="include :: layout-latest-css" />
+    <th:block th:include="include :: ztree-css" />
+    <th:block th:include="include :: bootstrap-editable-css" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
         <form class="form-horizontal m" id="form-purchasecontract-add">
-            <div class="form-group">
-                <label class="col-sm-3 control-label">所属销售合同号：</label>
-                <div class="col-sm-8">
-                    <select id="contractid"  name="contractid" class="form-control m-b">
-                        <option value="">所有</option>
-                        <option  th:each="salescontracts:${salescontractsList}"
-                                 th:value="${salescontracts.contractid}"
-                                 th:text="${salescontracts.contractid}"
-                        ></option>
-                    </select>
 
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">采购合同号：</label>
-                <div class="col-sm-8">
-                    <input id="purchasecontractid" name="purchasecontractid" readonly class="form-control" type="text" required>
-                </div>
-            </div>
+            <h4 class="form-header h4">基本信息</h4>
 
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">乙方：</label>
-                <div class="col-sm-8">
-                    <select id="partyb" required     name="partyb" class="form-control m-b">
-                        <option value="">所有</option>
-                        <option  th:each="supplier:${suppliersList}"
-                                 th:value="${supplier.name}"
-                                 th:text="${supplier.name}"
-                        ></option>
-                    </select>
+
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <label class="col-sm-3 control-label">所属销售合同：</label>
+                    <div class="col-sm-8">
+                        <select multiple  name="contractid" class="selectpicker" data-live-search="true">
+                            <option value="">全部</option>
+                            <option    th:each="salescontracts:${salescontractsList}"
+                                       th:value="${salescontracts.contractid}"
+                                       th:text="${salescontracts.contractid}"
+                            ></option>
+                        </select>
+                        <a class="btn btn-primary single " onclick="getPurchaseContractid()" >
+                            <i class="fa fa-edit"></i> 生成合同号
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">签订日期：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="signingtime" required class="form-control" placeholder="yyyy-MM-dd" type="text">
+                <div class="col-sm-6">
+                    <label class="col-sm-3 control-label is-required">采购合同号：</label>
+                    <div class="col-sm-8">
+                        <input id="purchasecontractid" name="purchasecontractid" readonly class="form-control" type="text" required>
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">付款方式：</label>
-                <div class="col-sm-8">
-                    <input name="payway" class="form-control" type="text">
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <label class="col-sm-3 control-label">乙方：</label>
+                    <div class="col-sm-8">
+                        <select id="partyb" required     name="partyb" class="form-control m-b">
+                            <option value="">所有</option>
+                            <option  th:each="supplier:${suppliersList}"
+                                     th:value="${supplier.name}"
+                                     th:text="${supplier.name}"
+                            ></option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">备注：</label>
-                <div class="col-sm-8">
-                    <input name="remarks" class="form-control" type="text">
+
+                <div class="col-sm-6">
+                    <label class="col-sm-3 control-label">签订日期：</label>
+                    <div class="col-sm-8">
+                        <div class="input-group date">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="signingtime" name="signingtime" required class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <label class="col-sm-3 control-label">付款方式：</label>
+                    <div class="col-sm-8">
+                        <input name="payway" id="payway" class="form-control" type="text">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-sm-3 control-label">备注：</label>
+                    <div class="col-sm-8">
+                        <input name="remarks" id="remarks" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+
+
+
+
         </form>
+    </div>
+    <h4 class="form-header h4">商品信息</h4>
+
+    <div class="col-sm-12 select-table table-striped" style="margin-bottom: 2%">
+        <table id="bootstrap-table"></table>
+    </div>
+    <div class="row">
+        <div class="col-sm-offset-5 col-sm-10">
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+        </div>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
-    <script type="text/javascript">
+    <th:block th:include="include :: layout-latest-js" />
+    <th:block th:include="include :: ztree-js" />
+    <th:block th:include="include :: bootstrap-table-editable-js" />
+                <script type="text/javascript" th:src="@{/js/bootstrap-select.js}"></script>
+    <script th:inline="javascript">
+        var invoicestatusDatas = [[${@dict.getType('invoice_status')}]];
+        var purchasestatusDatas = [[${@dict.getType('purchase_status')}]];
         var prefix = ctx + "system/purchasecontract"
+        var prefix1 = ctx + "system/detail"
+
+
+
+
+
         $("#form-purchasecontract-add").validate({
             focusCleanup: true
         });
 
         function submitHandler() {
             if ($.validate.form()) {
-                $.operate.save(prefix + "/add", $('#form-purchasecontract-add').serialize());
+               var data= $("#bootstrap-table").bootstrapTable('getSelections');
+                if(data==""||data.length==0){
+                    alert("请选择要采购的商品!");
+                    return;
+                }
+
+                for (var i=0;i<data.length;i++){
+                    if (data[i].purchaseprice==null||data[i].purchasemoney==null||data[i].purchaseproductnum==null){
+                        alert("请填写完整信息!");
+                        return;
+                    }
+                }
+
+
+                var contractids = "";
+                var contractid = $(".selectpicker").val();
+                for (var i = 0; i < contractid.length; i++) {
+                    contractids += contractid[i]+",";
+                }
+                contractids=contractids.substring(0, contractids.lastIndexOf(","));
+
+
+
+
+                $.ajax({
+                    url:  ctx + "system/purchasecontract/add",
+                    type: "post",
+                    dataType: "json",
+                    beforeSend: function () {
+                        $.modal.loading("正在处理中，请稍后...");
+                    },
+                    data: {
+                        "purchasecontractList": JSON.stringify(data),
+                        "contractid":contractids,
+                        "purchasecontractid": $("#purchasecontractid").val(),
+                        "partyb":$("#partyb").val(),
+                        "payway": $("#payway").val(),
+                        "signingtime": $("#signingtime").val(),
+                        "remarks": $("#remarks").val()
+
+                    },
+                    success: function(result) {
+                        if (typeof callback == "function") {
+                            callback(result);
+                        }
+                        $.operate.successTabCallback(result);
+                    }
+                })
+
             }
         }
 
@@ -83,18 +177,138 @@
             autoclose: true
         });
 
-        $("#contractid").change(function(){
+        function getPurchaseContractid() {
+
+            var contractids = "";
+            var contractid = $(".selectpicker").val();
+            for (var i = 0; i < contractid.length; i++) {
+                contractids += contractid[i]+",";
+            }
+            contractids=contractids.substring(0, contractids.lastIndexOf(","));
 
             $.ajax({
-                url : 'getPurchaseContractid',
-                dataType : 'json',
-                type : 'post',
-                data :{contractid:$("#contractid").val()},
-                success : function(data) {
+                url: 'getPurchaseContractid',
+                dataType: 'json',
+                type: 'post',
+                data: {contractid: contractids},
+                success: function (data) {
                     $("#purchasecontractid").val(data.purchasecontractid);
                 }
             });
-        });
+
+            $('#bootstrap-table').bootstrapTable('destroy');
+            inittable(contractids);
+
+
+        }
+
+
+        function inittable(contractids) {
+
+            var options = {
+                queryParams : {
+                    contractid: contractids
+                },
+                url: prefix1 + "/listInContractid",
+                pagination:false,
+                modalName: "销售订单",
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'no',
+                        title: '序号',
+                        align: "center",
+                        width: 40,
+                        formatter: function (value, row, index) {
+                            //获取每页显示的数量
+                            var pageSize=$('#bootstrap-table').bootstrapTable('getOptions').pageSize;
+                            //获取当前是第几页
+                            var pageNumber=$('#bootstrap-table').bootstrapTable('getOptions').pageNumber;
+                            //返回序号，注意index是从0开始的，所以要加上1
+                            return pageSize * (pageNumber - 1) + index + 1;
+                        }
+                    },
+
+                    {
+                        field: 'purchaseprice',
+                        title: '采购单价',
+                        editable: {
+                            title : '采购单价'
+                        }
+                    },
+                    {
+                        field: 'purchaseproductnum',
+                        title: '采购数量',
+                        editable: {
+                            title : '采购数量'
+                        }
+                    },
+                    {
+                        field: 'purchasemoney',
+                        title: '采购金额',
+                        editable: {
+                            title : '采购金额'
+                        }
+                    },
+
+                    {
+                        field: 'id',
+                        title: 'id',
+                        visible: false
+                    },
+
+                    {
+                        field: 'productname',
+                        title: '商品名称'
+                    },
+
+                    {
+                        field: 'unit',
+                        title: '单位'
+                    },
+                    {
+                        field: 'specifications',
+                        title: '型号'
+                    },
+                    {
+                        field: 'producttype',
+                        title: '商品类型'
+                    },
+                    {
+                        field: 'productnum',
+                        title: '数量'
+                    },
+                    {
+                        field: 'price',
+                        title: '单价'
+                    },
+                    {
+                        field: 'money',
+                        title: '总价'
+                    },
+
+                ],onEditableSave: function (field, row, oldValue,$el) {
+                    if(row.purchaseprice>0&&row.purchaseproductnum>0) {
+                        row.purchasemoney = (row.purchaseprice * row.purchaseproductnum).toFixed(2);
+                    }
+                    else if (row.purchasemoney>0&&row.purchaseproductnum>0) {
+                        row.purchaseprice = ( row.purchasemoney / row.purchaseproductnum).toFixed(2);
+                    }else if(row.purchaseprice>0&&row.purchasemoney>0){
+                        row.purchaseproductnum = ( row.purchasemoney / row.purchaseprice).toFixed(2);
+
+                    }
+
+
+                    $('#bootstrap-table').bootstrapTable('updateRow', {index: row.randomId, row: row});
+
+                }
+            };
+            $.table.init(options);
+        }
+
+
+
     </script>
 </body>
 </html>

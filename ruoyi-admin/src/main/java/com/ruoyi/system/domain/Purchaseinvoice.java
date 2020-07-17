@@ -7,10 +7,10 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 采购发票列表对象 purchaseinvoice
+ * 采购发票对象 purchaseinvoice
  * 
  * @author ruoyi
- * @date 2020-05-25
+ * @date 2020-07-09
  */
 public class Purchaseinvoice extends BaseEntity
 {
@@ -23,31 +23,46 @@ public class Purchaseinvoice extends BaseEntity
     @Excel(name = "发票编号")
     private String purchaseinvoiceid;
 
-    /** 所属销售合同 */
-    @Excel(name = "所属销售合同")
+
+
+    @Excel(name = "采购合同号")
     private String purchasecontractid;
 
-    /** 采购方 */
-    @Excel(name = "采购方")
-    private String buyer;
+    @Excel(name = "供应商")
+    private String supplier;
 
     /** 发票金额 */
     @Excel(name = "发票金额")
-    private Double money;
+    private Float money;
+
+    /** 商品数量 */
+    @Excel(name = "商品数量")
+    private Float productnum;
 
     /** 开票时间 */
     @Excel(name = "开票时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date purchaseinvoicetime;
 
+
     /** 采购订单号 */
     private Long purchasedetailid;
+
+    private String purchasedetailids;
 
     public void setId(Long id) 
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public String getPurchasecontractid() {
+        return purchasecontractid;
+    }
+
+    public void setPurchasecontractid(String purchasecontractid) {
+        this.purchasecontractid = purchasecontractid;
+    }
+
+    public Long getId()
     {
         return id;
     }
@@ -56,38 +71,15 @@ public class Purchaseinvoice extends BaseEntity
         this.purchaseinvoiceid = purchaseinvoiceid;
     }
 
-    public String getPurchaseinvoiceid() 
-    {
-        return purchaseinvoiceid;
-    }
-    public void setPurchasecontractid(String purchasecontractid) 
-    {
-        this.purchasecontractid = purchasecontractid;
+    public String getSupplier() {
+        return supplier;
     }
 
-    public String getPurchasecontractid() 
-    {
-        return purchasecontractid;
-    }
-    public void setBuyer(String buyer) 
-    {
-        this.buyer = buyer;
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
     }
 
-    public String getBuyer() 
-    {
-        return buyer;
-    }
-    public void setMoney(Double money) 
-    {
-        this.money = money;
-    }
-
-    public Double getMoney() 
-    {
-        return money;
-    }
-    public void setPurchaseinvoicetime(Date purchaseinvoicetime) 
+    public void setPurchaseinvoicetime(Date purchaseinvoicetime)
     {
         this.purchaseinvoicetime = purchaseinvoicetime;
     }
@@ -96,14 +88,41 @@ public class Purchaseinvoice extends BaseEntity
     {
         return purchaseinvoicetime;
     }
-    public void setPurchasedetailid(Long purchasedetailid) 
-    {
+
+    public String getPurchaseinvoiceid() {
+        return purchaseinvoiceid;
+    }
+
+    public Float getMoney() {
+        return money;
+    }
+
+    public void setMoney(Float money) {
+        this.money = money;
+    }
+
+    public Float getProductnum() {
+        return productnum;
+    }
+
+    public void setProductnum(Float productnum) {
+        this.productnum = productnum;
+    }
+
+    public Long getPurchasedetailid() {
+        return purchasedetailid;
+    }
+
+    public void setPurchasedetailid(Long purchasedetailid) {
         this.purchasedetailid = purchasedetailid;
     }
 
-    public Long getPurchasedetailid() 
-    {
-        return purchasedetailid;
+    public String getPurchasedetailids() {
+        return purchasedetailids;
+    }
+
+    public void setPurchasedetailids(String purchasedetailids) {
+        this.purchasedetailids = purchasedetailids;
     }
 
     @Override
@@ -111,9 +130,8 @@ public class Purchaseinvoice extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("purchaseinvoiceid", getPurchaseinvoiceid())
-            .append("purchasecontractid", getPurchasecontractid())
-            .append("buyer", getBuyer())
             .append("money", getMoney())
+            .append("productnum", getProductnum())
             .append("purchaseinvoicetime", getPurchaseinvoicetime())
             .append("purchasedetailid", getPurchasedetailid())
             .append("createTime", getCreateTime())

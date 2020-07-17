@@ -10,10 +10,10 @@ import com.ruoyi.system.service.IPurchaseinvoiceService;
 import com.ruoyi.common.core.text.Convert;
 
 /**
- * 采购发票列表Service业务层处理
+ * 采购发票Service业务层处理
  * 
  * @author ruoyi
- * @date 2020-05-25
+ * @date 2020-07-09
  */
 @Service
 public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService 
@@ -22,10 +22,10 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
     private PurchaseinvoiceMapper purchaseinvoiceMapper;
 
     /**
-     * 查询采购发票列表
+     * 查询采购发票
      * 
-     * @param id 采购发票列表ID
-     * @return 采购发票列表
+     * @param id 采购发票ID
+     * @return 采购发票
      */
     @Override
     public Purchaseinvoice selectPurchaseinvoiceById(Long id)
@@ -33,11 +33,16 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
         return purchaseinvoiceMapper.selectPurchaseinvoiceById(id);
     }
 
+    @Override
+    public List<Purchaseinvoice> selectPurchaseinvoiceByContractid(String contractid) {
+        return purchaseinvoiceMapper.selectPurchaseinvoiceByContractid(contractid);
+    }
+
     /**
-     * 查询采购发票列表列表
+     * 查询采购发票列表
      * 
-     * @param purchaseinvoice 采购发票列表
-     * @return 采购发票列表
+     * @param purchaseinvoice 采购发票
+     * @return 采购发票
      */
     @Override
     public List<Purchaseinvoice> selectPurchaseinvoiceList(Purchaseinvoice purchaseinvoice)
@@ -46,22 +51,32 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
     }
 
     /**
-     * 新增采购发票列表
+     * 新增采购发票
      * 
-     * @param purchaseinvoice 采购发票列表
+     * @param purchaseinvoice 采购发票
      * @return 结果
      */
     @Override
-    public int insertPurchaseinvoice(Purchaseinvoice purchaseinvoice)
-    {
-        purchaseinvoice.setCreateTime(DateUtils.getNowDate());
-        return purchaseinvoiceMapper.insertPurchaseinvoice(purchaseinvoice);
+    public int insertPurchaseinvoice(Purchaseinvoice purchaseinvoice) {
+
+        if (purchaseinvoice.getPurchasedetailids() != null) {
+            String[] split = purchaseinvoice.getPurchasedetailids().split(",");
+            for (int i = 0; i < split.length; i++) {
+                purchaseinvoice.setPurchasedetailid(Long.valueOf(split[i]));
+                purchaseinvoiceMapper.insertPurchaseinvoice(purchaseinvoice);
+            }
+            return 1;
+        } else {
+            purchaseinvoice.setCreateTime(DateUtils.getNowDate());
+            return purchaseinvoiceMapper.insertPurchaseinvoice(purchaseinvoice);
+        }
+
     }
 
     /**
-     * 修改采购发票列表
+     * 修改采购发票
      * 
-     * @param purchaseinvoice 采购发票列表
+     * @param purchaseinvoice 采购发票
      * @return 结果
      */
     @Override
@@ -71,7 +86,7 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
     }
 
     /**
-     * 删除采购发票列表对象
+     * 删除采购发票对象
      * 
      * @param ids 需要删除的数据ID
      * @return 结果
@@ -83,9 +98,9 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
     }
 
     /**
-     * 删除采购发票列表信息
+     * 删除采购发票信息
      * 
-     * @param id 采购发票列表ID
+     * @param id 采购发票ID
      * @return 结果
      */
     @Override

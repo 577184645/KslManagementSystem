@@ -3,6 +3,7 @@ package com.ruoyi.system.mapper;
 import java.util.List;
 import com.ruoyi.system.domain.SellDetail;
 import com.ruoyi.system.domain.Supplier;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 销售订单列表Mapper接口
@@ -28,6 +29,9 @@ public interface SellDetailMapper
      */
     public List<SellDetail>  selectSellDetailByContractId(String contractId);
 
+
+    public List<SellDetail>  selectSellDetailByInContractId( String [] contracts);
+
     /**
      * 查询销售订单列表列表
      * 
@@ -35,6 +39,9 @@ public interface SellDetailMapper
      * @return 销售订单列表集合
      */
     public List<SellDetail> selectSellDetailList(SellDetail sellDetail);
+
+    public List<SellDetail> selectSellDetailListAndInvoice(@Param("contractid") String contractid);
+
 
     /**
      * 新增销售订单列表
@@ -51,6 +58,11 @@ public interface SellDetailMapper
      * @return 结果
      */
     public int updateSellDetail(SellDetail sellDetail);
+
+
+    public int updatePurchasestatusAndPurchasecontractid(SellDetail sellDetail);
+
+
 
     /**
      * 删除销售订单列表
@@ -71,12 +83,7 @@ public interface SellDetailMapper
 
 
 
-    /**
-     * 开票
-     * @param id
-     * @return
-     */
-    public int makeinvoice(Long id);
+
 
 
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('销售发票列表列表')" />
+    <th:block th:include="include :: header('发票列表')" />
 </head>
 <body class="gray-bg">
      <div class="container-div">
@@ -11,12 +11,12 @@
                     <div class="select-list">
                         <ul>
                             <li>
-                                <label>所属销售合同：</label>
-                                <input type="text" name="contractid"/>
+                                <label>发票编号：</label>
+                                <input type="text" name="invoiceid"/>
                             </li>
                             <li>
-                                <label>采购方：</label>
-                                <input type="text" name="buyer"/>
+                                <label>销售订单号：</label>
+                                <input type="text" name="selldetailid"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -28,9 +28,7 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.addTab()" shiro:hasPermission="system:invoice:add">
-                    <i class="fa fa-plus"></i> 开票
-                </a>
+
                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:invoice:edit">
                     <i class="fa fa-edit"></i> 修改
                 </a>
@@ -59,7 +57,7 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
-                modalName: "销售发票",
+                modalName: "发票",
                 columns: [{
                     checkbox: true
                 },
@@ -72,13 +70,17 @@
                     field: 'invoiceid', 
                     title: '发票编号'
                 },
+                    {
+                        field: 'contractid',
+                        title: '销售合同号'
+                    },
+                    {
+                        field: 'customer',
+                        title: '客户'
+                    },
                 {
-                    field: 'contractid', 
-                    title: '所属销售合同'
-                },
-                {
-                    field: 'buyer', 
-                    title: '采购方'
+                    field: 'productnum', 
+                    title: '商品数量'
                 },
                 {
                     field: 'money', 
@@ -88,10 +90,7 @@
                     field: 'invoicetime', 
                     title: '开票时间'
                 },
-                {
-                    field: 'createTime', 
-                    title: '创建时间'
-                },
+
                 {
                     title: '操作',
                     align: 'center',

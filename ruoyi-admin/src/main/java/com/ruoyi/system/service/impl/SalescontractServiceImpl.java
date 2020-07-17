@@ -68,12 +68,10 @@ public class SalescontractServiceImpl implements ISalescontractService {
        Float sum=0f;
         for (int i = 0; i < productArray.size(); i++) {
             JSONObject jsonObject = productArray.getJSONObject(i);
-            Salescontract salescontract1 = new Salescontract();
             SellDetail sellDetail = new SellDetail();
             sellDetail.setProductname(jsonObject.getString("productname"));
             sellDetail.setUnit(jsonObject.getString("unit"));
             sellDetail.setSpecifications(jsonObject.getString("specifications"));
-            sellDetail.setSupplier(jsonObject.getString("supplier"));
             sellDetail.setProducttype(jsonObject.getString("producttype"));
 
             if (!jsonObject.getString("price").equals("")) {
@@ -84,7 +82,7 @@ public class SalescontractServiceImpl implements ISalescontractService {
                 sellDetail.setMoney(Float.valueOf(jsonObject.getString("money")));
             }
             if (!jsonObject.getString("productnum").equals("")) {
-                sellDetail.setProductnum(Long.valueOf(jsonObject.getString("productnum")));
+                sellDetail.setProductnum(Float.valueOf(jsonObject.getString("productnum")));
             }
             sum+=Float.valueOf(jsonObject.getString("money"));
             sellDetail.setContractid(salescontract.getContractid());

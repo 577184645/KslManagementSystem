@@ -7,10 +7,10 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 销售发票列表对象 invoice
+ * 发票对象 invoice
  * 
  * @author ruoyi
- * @date 2020-05-21
+ * @date 2020-07-09
  */
 public class Invoice extends BaseEntity
 {
@@ -23,13 +23,16 @@ public class Invoice extends BaseEntity
     @Excel(name = "发票编号")
     private String invoiceid;
 
-    /** 所属销售合同 */
-    @Excel(name = "所属销售合同")
+    /** 销售合同号 */
+    @Excel(name = "销售合同号")
     private String contractid;
 
-    /** 采购方 */
-    @Excel(name = "采购方")
-    private String buyer;
+    @Excel(name = "客户")
+    private String customer;
+
+    /** 商品数量 */
+    @Excel(name = "商品数量")
+    private Float productnum;
 
     /** 发票金额 */
     @Excel(name = "发票金额")
@@ -40,9 +43,30 @@ public class Invoice extends BaseEntity
     private Date invoicetime;
 
     /** 销售订单号 */
+
     private Long selldetailid;
 
-    public void setId(Long id) 
+
+
+    private String selldetailids;
+
+    public String getContractid() {
+        return contractid;
+    }
+
+    public void setContractid(String contractid) {
+        this.contractid = contractid;
+    }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
@@ -60,23 +84,21 @@ public class Invoice extends BaseEntity
     {
         return invoiceid;
     }
-    public void setContractid(String contractid) 
-    {
-        this.contractid = contractid;
+
+    public String getSelldetailids() {
+        return selldetailids;
     }
 
-    public String getContractid() 
-    {
-        return contractid;
-    }
-    public void setBuyer(String buyer) 
-    {
-        this.buyer = buyer;
+    public void setSelldetailids(String selldetailids) {
+        this.selldetailids = selldetailids;
     }
 
-    public String getBuyer() 
-    {
-        return buyer;
+    public Float getProductnum() {
+        return productnum;
+    }
+
+    public void setProductnum(Float productnum) {
+        this.productnum = productnum;
     }
 
     public Float getMoney() {
@@ -96,14 +118,14 @@ public class Invoice extends BaseEntity
     {
         return invoicetime;
     }
-    public void setSelldetailid(Long selldetailid) 
-    {
-        this.selldetailid = selldetailid;
+
+
+    public Long getSelldetailid() {
+        return selldetailid;
     }
 
-    public Long getSelldetailid() 
-    {
-        return selldetailid;
+    public void setSelldetailid(Long selldetailid) {
+        this.selldetailid = selldetailid;
     }
 
     @Override
@@ -111,8 +133,7 @@ public class Invoice extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("invoiceid", getInvoiceid())
-            .append("contractid", getContractid())
-            .append("buyer", getBuyer())
+            .append("productnum", getProductnum())
             .append("money", getMoney())
             .append("invoicetime", getInvoicetime())
             .append("selldetailid", getSelldetailid())

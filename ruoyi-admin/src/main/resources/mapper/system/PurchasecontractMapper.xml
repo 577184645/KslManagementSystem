@@ -25,10 +25,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPurchasecontractList" parameterType="Purchasecontract" resultMap="PurchasecontractResult">
         <include refid="selectPurchasecontractVo"/>
         <where>  
-            <if test="purchasecontractid != null  and purchasecontractid != ''"> and purchasecontractid = #{purchasecontractid}</if>
-            <if test="partyb != null  and partyb != ''"> and partyb = #{partyb}</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''"> and purchasecontractid like concat('%', #{purchasecontractid}, '%')</if>
+            <if test="partyb != null  and partyb != ''"> and partyb like concat('%', #{partyb}, '%')</if>
             <if test="contractid != null  and contractid != ''"> and contractid = #{contractid}</if>
         </where>
+        order by purchasecontractid
     </select>
     
     <select id="selectPurchasecontractById" parameterType="Long" resultMap="PurchasecontractResult">
@@ -100,6 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 
+
     <select id="selectPurchasesamountByMonth" resultType="Map">
     select month(signingtime) as months  ,sum(purchasesamount) as  datas
 from purchasecontract
@@ -114,7 +116,7 @@ month(signingtime)
    select day(signingtime) as days ,sum(purchasesamount) as datas from purchasecontract WHERE year(signingtime)=#{newyear} and month(signingtime)=#{newmonth}  group by day(signingtime)
    </select>
 
-    <select id="selectPurchasesamountsumByContractId" resultType="Double">
+    <select id="selectPurchasesamountsumByContractId" resultType="Float">
 
         SELECT sum(purchasesamount) from purchasecontract WHERE contractid=#{contractid}
 

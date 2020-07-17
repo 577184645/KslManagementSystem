@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.ruoyi.system.domain.SellDetail;
 import com.ruoyi.system.service.ISellDetailService;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,16 +27,27 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
- * 销售发票列表Controller
+ * 发票Controller
  * 
  * @author ruoyi
- * @date 2020-05-21
+ * @date 2020-07-09
  */
 @Controller
 @RequestMapping("/system/invoice")
 public class InvoiceController extends BaseController
 {
     private String prefix = "system/invoice";
+
+    @Autowired
+    private IInvoiceService invoiceService;
+    @Autowired
+    private ISellDetailService sellDetailService;
+    @RequiresPermissions("system:invoice:view")
+    @GetMapping()
+    public String invoice()
+    {
+        return prefix + "/invoice";
+    }
 
 
 
@@ -48,41 +58,39 @@ public class InvoiceController extends BaseController
         Date date=new Date();
         SimpleDateFormat format=new SimpleDateFormat("yyyy");
         String format1 = format.format(date);
-        queryMap.put("summoney", invoiceService.sumMoneyGYear(format1)!=null?invoiceService.sumMoneyGYear(format1):0);
+        Float summoney=0f;
+        List<Invoice> invoices = invoiceService.sumMoneyGYear(format1);
+        for (Invoice invoice:
+        invoices) {
+            summoney+=invoice.getMoney();
+        }
+        queryMap.put("summoney",summoney);
         return  queryMap;
     }
 
 
-    @Autowired
-    private IInvoiceService invoiceService;
-    @Autowired
-    private ISellDetailService sellDetailService;
-
-    @RequiresPermissions("system:invoice:view")
-    @GetMapping()
-    public String invoice()
-    {
-        return prefix + "/invoice";
-    }
-
     /**
-     * 查询销售发票列表列表
+     * 查询发票列表
      */
     @RequiresPermissions("system:invoice:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(Invoice invoice)
     {
-        startPage();
-        List<Invoice> list = invoiceService.selectInvoiceList(invoice);
-        return getDataTable(list);
+
+            startPage();
+            List<Invoice> list = invoiceService.selectInvoiceList(invoice);
+            return getDataTable(list);
+
+
+
     }
 
     /**
-     * 导出销售发票列表列表
+     * 导出发票列表
      */
     @RequiresPermissions("system:invoice:export")
-    @Log(title = "销售发票列表", businessType = BusinessType.EXPORT)
+    @Log(title = "发票", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(Invoice invoice)
@@ -93,19 +101,36 @@ public class InvoiceController extends BaseController
     }
 
     /**
-     * 新增销售发票列表
+     * 新增发票
      */
-    @GetMapping("/add")
-    public String add()
+
+    @GetMapping("/add/{id}")
+    public String add(ModelMap map, @PathVariable("id") String ids)
     {
-        return prefix + "/add";
+
+        String[] split = ids.split(",");
+        if (split.length==1) {
+            SellDetail sellDetail = sellDetailService.selectSellDetailById(Long.valueOf(split[0]));
+            map.put("sellDetail",sellDetail);
+            return prefix + "/add";
+        }else{
+            Float sum=0f;
+            for (int i=0;i<split.length;i++){
+                sum+=sellDetailService.selectSellDetailById(Long.valueOf(split[i])).getMoney();
+            }
+            map.put("sum",sum);
+            map.put("ids",ids);
+            return prefix + "/adds";
+
+        }
+
     }
 
     /**
-     * 新增保存销售发票列表
+     * 新增保存发票
      */
     @RequiresPermissions("system:invoice:add")
-    @Log(title = "销售发票列表", businessType = BusinessType.INSERT)
+    @Log(title = "发票", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(Invoice invoice)
@@ -113,51 +138,25 @@ public class InvoiceController extends BaseController
         return toAjax(invoiceService.insertInvoice(invoice));
     }
 
-
     /**
-     *
+     * 修改发票
      */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long id, ModelMap mmap)
     {
-        Invoice invoice = invoiceService.selectInvoiceById(id);
-        mmap.put("invoice", invoice);
-        return prefix + "/edit";
+
+
+            Invoice invoice = invoiceService.selectInvoiceById(id);
+            mmap.put("invoice", invoice);
+            return prefix + "/edit";
+
     }
 
     /**
-     * 修改销售发票列表
-     */
-    @GetMapping("/makeinvoice/{id}")
-    public String makeinvoice(@PathVariable("id") Long id, ModelMap mmap)
-    {
-        SellDetail sellDetail = sellDetailService.selectSellDetailById(id);
-        Invoice invoice=new Invoice();
-        invoice.setSelldetailid(sellDetail.getId());
-        invoice.setBuyer(sellDetail.getSupplier());
-        invoice.setContractid(sellDetail.getContractid());
-        invoice.setMoney(sellDetail.getMoney());
-        mmap.put("invoice", invoice);
-        return prefix + "/makeinvoice";
-    }
-
-    /**
-     * 修改保存销售发票列表
-     */
-
-    @Log(title = "销售开票", businessType = BusinessType.INSERT)
-    @PostMapping("/makeinvoice")
-    @ResponseBody
-    public AjaxResult makeinvoiceSave(Invoice invoice)
-    {
-        return toAjax(invoiceService.insertInvoice(invoice));
-    }
-
-    /**
-     * 修改保存销售发票列表
+     * 修改保存发票
      */
     @RequiresPermissions("system:invoice:edit")
-    @Log(title = "销售发票列表", businessType = BusinessType.UPDATE)
+    @Log(title = "发票", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(Invoice invoice)
@@ -166,10 +165,10 @@ public class InvoiceController extends BaseController
     }
 
     /**
-     * 删除销售发票列表
+     * 删除发票
      */
     @RequiresPermissions("system:invoice:remove")
-    @Log(title = "销售发票列表", businessType = BusinessType.DELETE)
+    @Log(title = "发票", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
     public AjaxResult remove(String ids)

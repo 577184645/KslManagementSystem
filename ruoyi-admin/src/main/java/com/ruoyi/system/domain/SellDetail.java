@@ -5,6 +5,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.beans.Transient;
+import java.util.List;
+
 /**
  * 销售订单列表对象 sell_detail
  * 
@@ -37,12 +40,10 @@ public class SellDetail extends BaseEntity
     private String producttype;
 
 
-    /** 甲方 */
-    @Excel(name = "供应商")
-    private String supplier;
+
     /** 数量 */
     @Excel(name = "数量")
-    private Long productnum;
+    private Float productnum;
 
     /** 单价 */
     @Excel(name = "单价")
@@ -58,23 +59,49 @@ public class SellDetail extends BaseEntity
 
     /** 发票状态 */
     @Excel(name = "发票状态",type = Excel.Type.EXPORT)
-    private Long invoicestatus;
+    private Integer invoicestatus;
 
     /** 采购状态 */
     @Excel(name = "采购状态",type = Excel.Type.EXPORT)
-    private Long purchasestatus;
+    private Integer purchasestatus;
 
 
+    private List<Invoice> invoiceList;
+
+    private  Integer rownum;
 
 
+    private  String purchasecontractid;
 
 
-    public String getSupplier() {
-        return supplier;
+   private Float purchaseprice;
+
+     private Integer  purchaseproductnum;
+
+    private  Float   purchasemoney;
+
+    public String getPurchasecontractid() {
+        return purchasecontractid;
     }
 
-    public void setSupplier(String supplier) {
-        this.supplier = supplier;
+    public void setPurchasecontractid(String purchasecontractid) {
+        this.purchasecontractid = purchasecontractid;
+    }
+
+    public List<Invoice> getInvoiceList() {
+        return invoiceList;
+    }
+
+    public void setInvoiceList(List<Invoice> invoiceList) {
+        this.invoiceList = invoiceList;
+    }
+
+    public Integer getRownum() {
+        return rownum;
+    }
+
+    public void setRownum(Integer rownum) {
+        this.rownum = rownum;
     }
 
     public void setId(Long id)
@@ -101,7 +128,31 @@ public class SellDetail extends BaseEntity
         this.unit = unit;
     }
 
-    public String getUnit() 
+    public Float getPurchaseprice() {
+        return purchaseprice;
+    }
+
+    public void setPurchaseprice(Float purchaseprice) {
+        this.purchaseprice = purchaseprice;
+    }
+
+    public Integer getPurchaseproductnum() {
+        return purchaseproductnum;
+    }
+
+    public void setPurchaseproductnum(Integer purchaseproductnum) {
+        this.purchaseproductnum = purchaseproductnum;
+    }
+
+    public Float getPurchasemoney() {
+        return purchasemoney;
+    }
+
+    public void setPurchasemoney(Float purchasemoney) {
+        this.purchasemoney = purchasemoney;
+    }
+
+    public String getUnit()
     {
         return unit;
     }
@@ -123,14 +174,13 @@ public class SellDetail extends BaseEntity
     {
         return producttype;
     }
-    public void setProductnum(Long productnum) 
-    {
-        this.productnum = productnum;
+
+    public Float getProductnum() {
+        return productnum;
     }
 
-    public Long getProductnum() 
-    {
-        return productnum;
+    public void setProductnum(Float productnum) {
+        this.productnum = productnum;
     }
 
     public Float getPrice() {
@@ -158,23 +208,21 @@ public class SellDetail extends BaseEntity
     {
         return contractid;
     }
-    public void setInvoicestatus(Long invoicestatus) 
-    {
+
+    public Integer getInvoicestatus() {
+        return invoicestatus;
+    }
+
+    public void setInvoicestatus(Integer invoicestatus) {
         this.invoicestatus = invoicestatus;
     }
 
-    public Long getInvoicestatus() 
-    {
-        return invoicestatus;
-    }
-    public void setPurchasestatus(Long purchasestatus) 
-    {
-        this.purchasestatus = purchasestatus;
+    public Integer getPurchasestatus() {
+        return purchasestatus;
     }
 
-    public Long getPurchasestatus() 
-    {
-        return purchasestatus;
+    public void setPurchasestatus(Integer purchasestatus) {
+        this.purchasestatus = purchasestatus;
     }
 
     @Override
@@ -192,7 +240,7 @@ public class SellDetail extends BaseEntity
             .append("invoicestatus", getInvoicestatus())
             .append("purchasestatus", getPurchasestatus())
             .append("createTime", getCreateTime())
-                .append("supplier", getSupplier())
+
             .toString();
     }
 }

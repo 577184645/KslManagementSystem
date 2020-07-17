@@ -13,9 +13,10 @@
                 <div class="col-sm-8">
                     <select name="operator" class="form-control m-b">
                         <option value="">所有</option>
-                        <option th:selected="${salescontract.operator}" th:each="ksluser:${kslcusromeruserList}"
+                        <option  th:each="ksluser:${kslcusromeruserList}"
                                 th:value="${ksluser.username}"
                                 th:text="${ksluser.username}"
+                                 th:selected="${ksluser.username}==${salescontract.operator}"
                         ></option>
                     </select>
                 </div>
