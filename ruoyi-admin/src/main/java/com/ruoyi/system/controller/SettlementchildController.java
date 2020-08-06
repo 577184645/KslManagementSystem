@@ -51,6 +51,25 @@ public class SettlementchildController extends BaseController
     {
         startPage();
         List<Settlementchild> list = settlementchildService.selectSettlementchildList(settlementchild);
+        for (Settlementchild settlementchild1 : list) {
+            if (settlementchild1.getInvoiceid()!=null){
+                settlementchild1.setInvoiceid(settlementchild1.getInvoiceid().replace(",","<br>,"));
+            }
+            settlementchild1.setPurchasecontractids(settlementchild1.getPurchasecontractids().replace(",","<br>,"));
+            settlementchild1.setSuppliers(settlementchild1.getSuppliers().replace(",","<br>,"));
+            if(settlementchild1.getPurchaseinvoiceid()!=null) {
+                settlementchild1.setPurchaseinvoiceid(settlementchild1.getPurchaseinvoiceid().replace(",", "<br>,"));
+            }
+            if(settlementchild1.getPurchasemoney()!=null) {
+                String[] split = settlementchild1.getPurchasemoney().split(",");
+                Float sum=0f;
+                for (String s : split) {
+                    sum+=Float.valueOf(s);
+                }
+                settlementchild1.setPurchasesamount(sum);
+                settlementchild1.setPurchasemoney(settlementchild1.getPurchasemoney().replace(",", "<br>,"));
+            }
+            }
         return getDataTable(list);
     }
 
@@ -59,10 +78,11 @@ public class SettlementchildController extends BaseController
      */
     @RequiresPermissions("system:settlementchild:export")
     @Log(title = "【请填写功能名称】", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
+    @PostMapping("/export/{id}")
     @ResponseBody
-    public AjaxResult export(Settlementchild settlementchild)
+    public AjaxResult export(@PathVariable("id") String id,Settlementchild settlementchild)
     {
+        System.out.println(id);
         List<Settlementchild> list = settlementchildService.selectSettlementchildList(settlementchild);
         ExcelUtil<Settlementchild> util = new ExcelUtil<Settlementchild>(Settlementchild.class);
         return util.exportExcel(list, "settlementchild");

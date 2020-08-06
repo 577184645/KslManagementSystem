@@ -93,10 +93,10 @@ public class InvoiceServiceImpl implements IInvoiceService
      * @return 结果
      */
     @Override
-    public int deleteInvoiceByIds(String ids)
+    public int deleteInvoiceByIds(String invoiceid)
     {
 
-        return invoiceMapper.deleteInvoiceByIds(Convert.toStrArray(ids));
+        return invoiceMapper.deleteInvoiceByIds(invoiceid);
     }
 
     @Override

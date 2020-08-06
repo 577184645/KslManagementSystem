@@ -88,13 +88,16 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
     /**
      * 删除采购发票对象
      * 
-     * @param ids 需要删除的数据ID
+     * @param purchaseinvoiceid 需要删除的数据ID
      * @return 结果
      */
     @Override
-    public int deletePurchaseinvoiceByIds(String ids)
+    public int deletePurchaseinvoiceByIds(String purchaseinvoiceid,String purchasecontractid)
     {
-        return purchaseinvoiceMapper.deletePurchaseinvoiceByIds(Convert.toStrArray(ids));
+
+            return purchaseinvoiceMapper.deletePurchaseinvoiceByIds(purchaseinvoiceid,purchasecontractid);
+
+
     }
 
     /**

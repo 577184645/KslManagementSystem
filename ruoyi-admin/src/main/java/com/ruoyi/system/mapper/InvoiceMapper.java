@@ -74,8 +74,8 @@ public interface InvoiceMapper
     /**
      * 批量删除发票
      * 
-     * @param ids 需要删除的数据ID
+     * @param invoiceid 需要删除的数据ID
      * @return 结果
      */
-    public int deleteInvoiceByIds(String[] ids);
+    public int deleteInvoiceByIds(String invoiceid);
 }

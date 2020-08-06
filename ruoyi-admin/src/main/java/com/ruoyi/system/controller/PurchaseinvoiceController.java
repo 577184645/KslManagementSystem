@@ -143,8 +143,8 @@ public class PurchaseinvoiceController extends BaseController
     @Log(title = "采购发票", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
+    public AjaxResult remove(String purchaseinvoiceid,String purchasecontractid)
     {
-        return toAjax(purchaseinvoiceService.deletePurchaseinvoiceByIds(ids));
+        return toAjax(purchaseinvoiceService.deletePurchaseinvoiceByIds(purchaseinvoiceid,purchasecontractid));
     }
 }

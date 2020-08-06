@@ -40,38 +40,38 @@
     <table class="table" >
 
         <tr >
-            <td style="border:1px solid black;font-size: 14px;" width="40" align="center" >序号</td>
-            <td style="border:1px solid black;font-size: 14px;" width="100" align="center">产品名称</td>
-            <td style="border:1px solid black;font-size: 14px;" width="150" align="center">规格型号</td>
-            <td style="border:1px solid black;font-size: 14px;" width="50" align="center">数量</td>
-            <td style="border:1px solid black;font-size: 14px;" width="50" align="center">单价</td>
-            <td style="border:1px solid black;font-size: 14px;" width="70" align="center">金额</td>
-            <td style="border:1px solid black;font-size: 14px;" width="70" align="center">子商品</td>
+            <td style="border:1px solid black;font-size: 14px;" width="60" align="center" >序号</td>
+            <td style="border:1px solid black;font-size: 14px;" width="150" align="center">产品名称</td>
+            <td style="border:1px solid black;font-size: 14px;" width="200" align="center">规格型号</td>
+            <td style="border:1px solid black;font-size: 14px;" width="60" align="center">数量</td>
+            <td style="border:1px solid black;font-size: 14px;" width="80" align="center">单价</td>
+            <td style="border:1px solid black;font-size: 14px;" width="80" align="center">金额</td>
+            <td style="border:1px solid black;font-size: 14px;" width="400" align="center" >子商品</td>
 
 
         </tr>
         <tr  th:each="purchasedetail : ${purchasedetails}" >
-            <td style="font-size: 10px;border:1px solid black;" align="center" th:text="${purchasedetailStat.count}">
-            <td  style="font-size: 10px;border:1px solid black;" align="center" th:text="${purchasedetail.productname}"></td>
-            <td  style="font-size: 10px;border:1px solid black;" align="center" th:text="${purchasedetail.specifications}"></td>
-            <td style="font-size: 10px;border:1px solid black;" align="center" th:text="${purchasedetail.productnum}"> </td>
-            <td style="font-size: 10px;border:1px solid black;" align="center" th:text="${purchasedetail.price}"> </td>
-            <td style="font-size: 10px;border:1px solid black;" align="center" th:text="${purchasedetail.money}"> </td>
+            <td style="font-size: 10px;border:1px solid black;" width="60" align="center" th:text="${purchasedetailStat.count}">
+            <td  style="font-size: 10px;border:1px solid black;" width="150" align="center" th:text="${purchasedetail.productname}"></td>
+            <td  style="font-size: 10px;border:1px solid black;" width="200" align="center" th:text="${purchasedetail.specifications}"></td>
+            <td style="font-size: 10px;border:1px solid black;" width="60" align="center" th:text="${purchasedetail.productnum}"> </td>
+            <td style="font-size: 10px;border:1px solid black;" width="80" align="center" th:text="${purchasedetail.price}"> </td>
+            <td style="font-size: 10px;border:1px solid black;" width="80" align="center" th:text="${purchasedetail.money}"> </td>
             <td style="font-size: 10px;border:1px solid black;">
-            <table th:each="purchasedetailChildren : ${purchasedetailChildren}" th:if="${purchasedetailChildren.purchasedetailid}==${purchasedetail.id}">
+            <table width="400" th:each="purchasedetailChildren : ${purchasedetailChildren}" th:if="${purchasedetailChildren.purchasedetailid}==${purchasedetail.id}">
                 <tr>
-                <td style="font-size: 10px;border:1px solid black;" width="150" align="center">产品名称</td>
-                <td style="font-size: 10px;border:1px solid black;" width="200" align="center">规格型号</td>
-                <td style="font-size: 10px;border:1px solid black;" width="50" align="center">数量</td>
-                <td style="font-size: 10px;border:1px solid black;" width="50" align="center">单价</td>
-                <td style="font-size: 10px;border:1px solid black;" width="70" align="center">金额</td>
+                <td style="font-size: 5px;border:1px solid black;" width="150" align="center">产品名称</td>
+                <td style="font-size: 5px;border:1px solid black;" width="200" align="center">规格型号</td>
+                <td style="font-size: 5px;border:1px solid black;" width="50" align="center">数量</td>
+                <td style="font-size: 5px;border:1px solid black;" width="50" align="center">单价</td>
+                <td style="font-size: 5px;border:1px solid black;" width="70" align="center">金额</td>
                 </tr>
                 <tr >
   <td  style="border:1px solid black;" align="center" th:text="${purchasedetailChildren.productname}"></td>
-                    <td  style="font-size: 10px;border:1px solid black;" align="center" th:text="${purchasedetailChildren.specifications}"></td>
-                    <td style="font-size: 10px;border:1px solid black;" align="center" th:text="${purchasedetailChildren.productnum}"> </td>
-                    <td style="font-size: 10px;border:1px solid black;" align="center" th:text="${purchasedetailChildren.price}"> </td>
-                    <td style="font-size: 10px;border:1px solid black;" align="center" th:text="${purchasedetailChildren.money}"> </td>
+                    <td  style="font-size: 10px;border:1px solid black;" align="center" width="100"  th:text="${purchasedetailChildren.specifications}"></td>
+                    <td style="font-size: 10px;border:1px solid black;" align="center" width="100" th:text="${purchasedetailChildren.productnum}"> </td>
+                    <td style="font-size: 10px;border:1px solid black;" align="center" width="100" th:text="${purchasedetailChildren.price}"> </td>
+                    <td style="font-size: 10px;border:1px solid black;" align="center" width="100" th:text="${purchasedetailChildren.money}"> </td>
                 </tr>
             </table>
 

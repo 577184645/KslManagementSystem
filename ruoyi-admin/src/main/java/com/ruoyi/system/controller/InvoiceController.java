@@ -171,8 +171,8 @@ public class InvoiceController extends BaseController
     @Log(title = "发票", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
+    public AjaxResult remove(String invoiceid)
     {
-        return toAjax(invoiceService.deleteInvoiceByIds(ids));
+        return toAjax(invoiceService.deleteInvoiceByIds(invoiceid));
     }
 }

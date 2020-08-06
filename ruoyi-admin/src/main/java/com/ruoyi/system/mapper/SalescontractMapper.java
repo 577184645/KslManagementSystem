@@ -73,6 +73,10 @@ public interface SalescontractMapper
 
     public int updateSettlementstatus(String contract);
 
+
+
+    public int  updateSettlementbackstatus(String contract);
+
     /**
      * 删除销售合同列表
      * 

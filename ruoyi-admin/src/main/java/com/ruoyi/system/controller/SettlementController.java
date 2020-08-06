@@ -129,9 +129,10 @@ public class SettlementController extends BaseController
     @Log(title = "结算", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(Settlement settlement)
+    public AjaxResult editSave(Settlement settlement,String settlementList)
     {
-        return toAjax(settlementService.updateSettlement(settlement));
+
+        return toAjax(settlementService.editSettlement(settlement,settlementList));
     }
 
     /**
@@ -141,8 +142,9 @@ public class SettlementController extends BaseController
     @Log(title = "结算", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
+    public AjaxResult remove(String serialnumber)
     {
-        return toAjax(settlementService.deleteSettlementByIds(ids));
+        return toAjax(
+                settlementService.deleteSettlementBySerialNumber(serialnumber));
     }
 }

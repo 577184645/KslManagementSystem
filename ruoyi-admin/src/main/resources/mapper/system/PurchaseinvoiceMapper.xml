@@ -90,11 +90,13 @@ where s.contractid=#{contractid}
         delete from purchaseinvoice where id = #{id}
     </delete>
 
+
+
     <delete id="deletePurchaseinvoiceByIds" parameterType="String">
-        delete from purchaseinvoice where id in 
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}
-        </foreach>
+
+        delete from purchaseinvoice where purchaseinvoiceid=#{purchaseinvoiceid}
+        and purchasecontractid=#{purchasecontractid}
+
     </delete>
     
 </mapper>

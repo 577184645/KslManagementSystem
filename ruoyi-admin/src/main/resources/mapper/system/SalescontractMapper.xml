@@ -83,6 +83,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          update salescontract set settlementstatus=1 where contractid=#{contractid}
     </update>
 
+    <update id="updateSettlementbackstatus">
+         update salescontract set settlementstatus=0 where contractid=#{contractid}
+    </update>
+
 
     <delete id="deleteSalescontractById" parameterType="Long">
         delete from salescontract where id = #{id}

@@ -18,6 +18,10 @@ public class Settlementchild extends BaseEntity
     /** $column.columnComment */
     private Long id;
 
+
+
+    private float purchasesamount;
+
     /** 序号 */
     @Excel(name = "序号")
     private String serialnumber;
@@ -160,6 +164,14 @@ public class Settlementchild extends BaseEntity
 
     public void setPurchaseinvoiceid(String purchaseinvoiceid) {
         this.purchaseinvoiceid = purchaseinvoiceid;
+    }
+
+    public float getPurchasesamount() {
+        return purchasesamount;
+    }
+
+    public void setPurchasesamount(float purchasesamount) {
+        this.purchasesamount = purchasesamount;
     }
 
     public Float getTaxrate() {

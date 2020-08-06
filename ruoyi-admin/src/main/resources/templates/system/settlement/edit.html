@@ -1,61 +1,420 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <th:block th:include="include :: header('修改结算')" />
+    <th:block th:include="include :: header('打印入库产品')" />
     <th:block th:include="include :: datetimepicker-css" />
-</head>
-<body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-settlement-edit" th:object="${settlement}">
-            <input name="id" th:field="*{id}" type="hidden">
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">经办人：</label>
-                <div class="col-sm-8">
-                    <input name="operator" th:field="*{operator}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">个人所得：</label>
-                <div class="col-sm-8">
-                    <input name="personalincome" th:field="*{personalincome}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">结算时间：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="settlementtime" th:value="${#dates.format(settlement.settlementtime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">序号：</label>
-                <div class="col-sm-8">
-                    <input name="serialnumber" th:field="*{serialnumber}" class="form-control" type="text">
-                </div>
-            </div>
-        </form>
-    </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <script type="text/javascript">
-        var prefix = ctx + "system/settlement";
-        $("#form-settlement-edit").validate({
-            focusCleanup: true
-        });
+    <th:block th:include="include :: layout-latest-css" />
+    <th:block th:include="include :: ztree-css" />
+    <th:block th:include="include :: bootstrap-editable-css" />
+    <title>入库单打印</title>
+    <style>
+        fixed-table-body{
+            height: auto;
+        }
+        .div{
 
-        function submitHandler() {
-            if ($.validate.form()) {
-                $.operate.save(prefix + "/edit", $('#form-settlement-edit').serialize());
-            }
+        }
+        .select-table table {
+            table-layout:fixed;
         }
 
-        $("input[name='settlementtime']").datetimepicker({
-            format: "yyyy-mm-dd",
-            minView: "month",
-            autoclose: true
-        });
-    </script>
+        .table{
+            table-layout: fixed;
+        }
+
+        .select-table .table td {
+
+            /*规定段落中的文本不进行换行 */
+            white-space:nowrap;
+            /* 配合宽度来使用 */
+            height:40px;
+        }
+
+
+
+    </style>
+</head>
+<body class="white-bg">
+
+<div >
+
+
+
+
+
+    <div class="row" style="margin-top: 1%">
+
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" style="font-size: 16px;position: relative;top: 5px">业务员：</label>
+                <div class="col-sm-8">
+                    <input type="hidden" id="id" th:value="${settlement.id}">
+                    <input type="hidden" id="settlementtime" th:value="${#dates.format(settlement.settlementtime,'yyyy-MM-dd')}">
+                    <input type="hidden" id="serialnumber" th:value="${settlement.serialnumber}">
+                        <input  id="operator"  readonly th:value="${settlement.operator}" class="form-control" type="text" >
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <label style="font-size: 16px;position: relative;top: 5px" class="col-sm-3 control-label">个人所得：</label>
+            <div class="col-sm-8">
+                <input  id="personalincome" th:value="${settlement.personalincome}"  readonly class="form-control" type="text" >
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+<div class="btn-group-sm" id="toolbar" role="group">
+    <a class="btn btn-success" onclick="insertRow()">
+        <i class="fa fa-plus"></i> 新增行
+    </a>
+    <a class="btn btn-danger" onclick="removeRow()">
+        <i class="fa fa-remove"></i> 删除选择行
+    </a>
+
+</div>
+
+
+<div id="context"  style="margin-bottom: 2%;">
+
+    <h1 style="text-align: center;"  >销售结算汇总表</h1>
+    <!--    <div class="div" style="position: relative;margin-bottom: 1%;" >
+            <span style="position:absolute;left: 20px;" >业务员:</span> <span style="position:absolute;left: 65px;" id="operator"  ></span> <span style="position:absolute;left: 220px;" >个人结算金额: </span> <span style="position:absolute;left: 265px"  ></span> <span style="position:absolute;left: 580px;" >日期: </span> <span th:text="${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd')}"  style="position:absolute;left:610px;" ></span>
+            <span style="position:absolute;left: 810px;" >编号: </span> <span style="position:absolute;left:875px;"  ></span>
+        </div>-->
+
+
+
+    <table  class="table table-bordered"   id="bootstrap-table" style="font-size: 10px;"></table>
+
+
+</div>
+
+
+<div class="row">
+    <div class="col-sm-offset-5 col-sm-10">
+        <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>修 改</button>&nbsp;
+        <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+    </div>
+
+</div>
+
 </body>
+<th:block th:include="include :: footer" />
+
+<th:block th:include="include :: datetimepicker-js" />
+<th:block th:include="include :: layout-latest-js" />
+<th:block th:include="include :: ztree-js" />
+<th:block th:include="include :: bootstrap-table-editable-js" />
+
+<script>
+    var prefix = ctx + "system/settlementchild";
+    var prefix1 = ctx + "system/salescontract";
+
+
+
+
+        var options = {
+            queryParams : {
+                serialnumber:$("#serialnumber").val()
+            },
+            url:prefix+"/list",
+            pagination:false,
+            showSearch: false,
+            showRefresh:false,
+            showColumns:false,
+            showToggle:false,
+            columns: [
+                {
+                    checkbox: true
+                },
+
+                {
+                    field: 'contractid',
+                    title: '销售合同号',
+                    width: 80,
+                    editable: {
+                        type: 'select',
+                        title: '销售合同号',
+                        source: function () {
+                            var result = [];
+                            $.ajax({
+                                url: prefix1 + '/findSalescontract/' + $("#operator").val(),
+                                async: false,
+                                type: "get",
+                                data: {},
+                                success: function (data, status) {
+                                    $.each(data, function (key, value) {
+                                        result.push({value: value.contractid, text: value.contractid});
+                                    });
+                                }
+                            });
+                            return result;
+                        }
+
+
+                    },
+                },
+                {
+                    field: 'oldcontractid',
+                    title: '原销售合同号',
+                    width:80,
+                    formatter: function(value, item, index) {
+                        return item.contractid;
+                    }
+                },
+                {
+                    field: 'customers',
+                    title: '销售单位',
+                    width:150
+
+
+
+                },
+                {
+                    field: 'invoiceid',
+                    width:80,
+                    title: '发票号码'
+                },
+                {
+                    field: 'salemoney',
+                    title: '金额',
+                    width:50
+
+                },
+
+                {
+                    field: 'suppliers',
+                    width:150,
+                    title: '采购单位'
+                },
+
+
+                {
+                    field: 'purchasecontractids',
+                    width:100,
+                    title: '采购合同号'
+                },
+                {
+                    field: 'purchaseinvoiceid',
+                    width:80,
+                    title: '发票号码'
+                },
+                {
+                    field: 'purchasemoney',
+                    width:60,
+                    title: '金额'
+
+                },
+                {
+                    field: 'purchasesamount',
+                    width:80,
+                    title: '采购金额',
+                    visible: false
+                },
+
+                {
+                    field: 'taxrate',
+                    width:80,
+                    title: '采购税率',
+                    editable : {
+                        type : 'text',
+                        title : '采购税率'
+                    }
+                },
+                {
+                    field: 'costprice',
+                    width:80,
+                    title: '采购成本',
+                    editable : {
+                        type : 'text',
+                        title : '采购成本'
+                    }
+                },
+                {
+                    field: 'saletaxrate',
+                    width:60,
+                    title: '税率',
+                    editable : {
+                        type : 'text',
+                        title : '税率'
+                    }
+                },
+                {
+                    field: 'discount',
+                    width:80,
+                    title: '其他费用',
+                    editable : {
+                        type : 'number',
+                        title : '其他费用'
+                    },
+
+                },
+                {
+                    field: 'revenue',
+                    width:60,
+                    title: '税收'
+
+
+                },
+
+                {
+                    field: 'personalincome',
+                    width:80,
+                    title: '个人所得'
+
+                },
+
+
+            ],onEditableSave: function (field, row, oldValue,$el) {
+
+                if(row.contractid!=""){
+                    $.ajax({
+                        url: prefix1+'/findSalescontractInfo/'+row.contractid,
+                        async: false,
+                        type: "get",
+                        data: {},
+                        success: function (data) {
+                            row.customers=data.salescontracts[0].firstparty;
+                            row.salemoney=data.salescontracts[0].salesamount;
+                            row.suppliers= data.suppliers.replace(/,/g,",<br/>");
+                            row.invoiceid= data.invoices.replace(/,/g,",<br/>");
+                            row.purchasecontractids= data.purchasecontractids.replace(/,/g,",<br/>");
+                            row.purchasemoney= data.purcharsemoneys.replace(/,/g,",<br/>");
+                            row.purchasesamount=data.purchasesamount;
+                            row.purchaseinvoiceid=data.purchaseinvoices.replace(/,/g,",<br/>");
+                        }
+                    });
+                }
+
+                    row.costprice=(row.purchasesamount+row.taxrate*row.purchasesamount).toFixed(2);
+
+
+                    row.taxrate=Math.abs((1-row.costprice/row.purchasesamount).toFixed(4));
+
+
+                    row.revenue=((row.salemoney-row.costprice)*row.saletaxrate).toFixed(2);
+
+
+
+
+
+
+                if(row.taxrate>0&&row.saletaxrate>0&&row.saletaxrate>0) {
+                    row.personalincome=(row.salemoney-row.costprice-row.revenue-row.discount).toFixed(2);
+
+
+                    getsum();
+
+                }
+
+                $('#bootstrap-table').bootstrapTable('updateRow', {index: row.randomId, row: row});
+
+            }
+        };
+        $.table.init(options);
+
+
+
+
+    function submitHandler() {
+
+
+        $.modal.confirm("确定要修改吗？", function() {
+            var data= $("#bootstrap-table").bootstrapTable('getData');
+            if(data==""||data.length==0){
+                alert("请填写要结算的销售合同!");
+                return;
+            }
+
+            for (var i=0;i<data.length;i++){
+                if (data[i].personalincome==null){
+                    alert("个人所得数据为空!");
+                    return;
+                }
+            }
+
+
+
+
+
+
+            $.ajax({
+                url:  ctx + "system/settlement/edit",
+                type: "post",
+                dataType: "json",
+                beforeSend: function () {
+                    $.modal.loading("正在处理中，请稍后...");
+                },
+                data: {
+                    "settlementList": JSON.stringify(data),
+                    "id":$("#id").val(),
+                    "serialnumber":$("#serialnumber").val(),
+                    "settlementtime":$("#settlementtime").val(),
+                    "operator":$("#operator").val(),
+                    "personalincome": $("#personalincome").val()
+
+                },
+                success: function(result) {
+                    if (typeof callback == "function") {
+                        callback(result);
+                    }
+                    $.operate.successCallback(result);
+                }
+            })
+        });
+
+
+
+
+    }
+
+
+    function insertRow(){
+        var data = $("#bootstrap-table").bootstrapTable('getData');
+
+        $("#bootstrap-table").bootstrapTable('insertRow', {
+            index: data.length, // 你想插入到哪，0表示第一行
+            row: {
+                contractid:"",
+                taxrate:"",
+                discount:0,
+                saletaxrate:"",
+                costprice:"",
+            }
+        })
+    }
+
+    function removeRow(){
+        var ids = $.table.selectColumns("contractid");
+        if (ids.length == 0) {
+            $.modal.alertWarning("请至少选择一条记录");
+            return;
+        }
+        $("#" + table.options.id).bootstrapTable('remove', {
+            field: 'contractid',
+            values: ids
+        })
+    }
+
+    function getsum() {
+        var data = $("#bootstrap-table").bootstrapTable('getData');
+        var sum=parseFloat(0);
+        for(var i=0;i<data.length;i++) {
+            sum+=parseFloat(data[i].personalincome);
+
+        }
+
+        $("#personalincome").val(sum.toFixed(2));
+    }
+
+</script>
+
 </html>

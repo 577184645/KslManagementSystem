@@ -43,9 +43,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectInvoiceVo"/>
     </select>
     <select id="selectInvoiceById" parameterType="Long" resultMap="InvoiceResult">
-        <include refid="selectInvoiceVo"/>
-        where id = #{id}
-    </select>
+    <include refid="selectInvoiceVo"/>
+    where id = #{id}
+</select>
+
 
     <select id="sumMoneyGYear" resultMap="InvoiceResult">
      select money  from invoice
@@ -93,10 +94,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteInvoiceByIds" parameterType="String">
-        delete from invoice where id in 
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}
-        </foreach>
+        delete from invoice where invoiceid =#{invoiceid}
+
     </delete>
 
 </mapper>

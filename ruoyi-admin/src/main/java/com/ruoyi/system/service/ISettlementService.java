@@ -43,13 +43,16 @@ public interface ISettlementService
      */
     public int updateSettlement(Settlement settlement);
 
+
+    public int editSettlement(Settlement settlement,String settlementList);
+
     /**
      * 批量删除结算
      * 
-     * @param ids 需要删除的数据ID
+     * @param serialnumber 需要删除的数据ID
      * @return 结果
      */
-    public int deleteSettlementByIds(String ids);
+    public int deleteSettlementBySerialNumber(String serialnumber);
 
     /**
      * 删除结算信息

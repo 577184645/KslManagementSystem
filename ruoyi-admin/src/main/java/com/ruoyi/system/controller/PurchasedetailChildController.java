@@ -52,6 +52,7 @@ public class PurchasedetailChildController extends BaseController
     {
         startPage();
         List<PurchasedetailChild> list = purchasedetailChildService.selectPurchasedetailChildList(purchasedetailChild);
+
         return getDataTable(list);
     }
 

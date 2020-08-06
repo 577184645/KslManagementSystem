@@ -47,6 +47,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
+
+    <select id="selectSettlementMaxSerialNumber" resultType="String">
+           select max(serialnumber) from settlement
+    </select>
+
     <update id="updateSettlement" parameterType="Settlement">
         update settlement
         <trim prefix="SET" suffixOverrides=",">
@@ -62,11 +67,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from settlement where id = #{id}
     </delete>
 
-    <delete id="deleteSettlementByIds" parameterType="String">
-        delete from settlement where id in 
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}
-        </foreach>
+    <delete id="deleteSettlementBySerialNumber" parameterType="String">
+        delete from settlement where serialnumber = #{serialnumber}
+
     </delete>
+
+
+
     
 </mapper>

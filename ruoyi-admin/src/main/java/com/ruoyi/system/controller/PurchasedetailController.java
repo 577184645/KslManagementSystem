@@ -1,5 +1,6 @@
 package com.ruoyi.system.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ruoyi.system.domain.*;
@@ -23,14 +24,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 采购订单列表Controller
- * 
+ *
  * @author ruoyi
  * @date 2020-05-25
  */
 @Controller
 @RequestMapping("/system/purchasedetail")
-public class PurchasedetailController extends BaseController
-{
+public class PurchasedetailController extends BaseController {
     private String prefix = "system/purchasedetail";
 
     @Autowired
@@ -44,13 +44,13 @@ public class PurchasedetailController extends BaseController
     @Autowired
     private IPurchasedetailChildService purchasedetailChildService;
     @Autowired
-    private  IPurchaseinvoiceService purchaseinvoiceService;
+    private IPurchaseinvoiceService purchaseinvoiceService;
 
 
     @RequiresPermissions("system:purchasedetail:view")
     @GetMapping()
-    public String purchasedetail()
-    {
+    public String purchasedetail() {
+
         return prefix + "/purchasedetail";
     }
 
@@ -60,8 +60,7 @@ public class PurchasedetailController extends BaseController
     @RequiresPermissions("system:purchasedetail:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(Purchasedetail purchasedetail)
-    {
+    public TableDataInfo list(Purchasedetail purchasedetail) {
         startPage();
         List<Purchasedetail> list = purchasedetailService.selectPurchasedetailList(purchasedetail);
         return getDataTable(list);
@@ -74,8 +73,7 @@ public class PurchasedetailController extends BaseController
     @Log(title = "采购订单列表", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(Purchasedetail purchasedetail)
-    {
+    public AjaxResult export(Purchasedetail purchasedetail) {
         List<Purchasedetail> list = purchasedetailService.selectPurchasedetailList(purchasedetail);
         ExcelUtil<Purchasedetail> util = new ExcelUtil<Purchasedetail>(Purchasedetail.class);
         return util.exportExcel(list, "purchasedetail");
@@ -85,22 +83,20 @@ public class PurchasedetailController extends BaseController
      * 新增采购订单列表
      */
     @GetMapping("/add/{purchasecontractid}")
-    public ModelAndView add(ModelAndView model,@PathVariable("purchasecontractid") String purchasecontractid)
-    {
-        model.addObject("purchasecontractid",purchasecontractid);
+    public ModelAndView add(ModelAndView model, @PathVariable("purchasecontractid") String purchasecontractid) {
+        model.addObject("purchasecontractid", purchasecontractid);
         model.setViewName(prefix + "/add");
-         return model;
+        return model;
     }
-
 
 
     /**
      * 新增采购订单列表
      */
     @GetMapping("/addchild/{id}")
-    public String addchild(@PathVariable("id") Long id, ModelMap mmap){
-          mmap.put("id",id);
-          return prefix + "/addchild";
+    public String addchild(@PathVariable("id") Long id, ModelMap mmap) {
+        mmap.put("id", id);
+        return prefix + "/addchild";
     }
 
 
@@ -111,8 +107,7 @@ public class PurchasedetailController extends BaseController
     @Log(title = "采购订单列表", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Purchasedetail purchasedetail)
-    {
+    public AjaxResult addSave(Purchasedetail purchasedetail) {
         return toAjax(purchasedetailService.insertPurchasedetail(purchasedetail));
     }
 
@@ -120,8 +115,7 @@ public class PurchasedetailController extends BaseController
      * 修改采购订单列表
      */
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Long id, ModelMap mmap)
-    {
+    public String edit(@PathVariable("id") Long id, ModelMap mmap) {
         Purchasedetail purchasedetail = purchasedetailService.selectPurchasedetailById(id);
         mmap.put("purchasedetail", purchasedetail);
         return prefix + "/edit";
@@ -134,24 +128,23 @@ public class PurchasedetailController extends BaseController
     @Log(title = "采购订单列表", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(Purchasedetail purchasedetail)
-    {
+    public AjaxResult editSave(Purchasedetail purchasedetail) {
         return toAjax(purchasedetailService.updatePurchasedetail(purchasedetail));
     }
 
     /**
      * 采购
+     *
      * @param id
      * @param mmap
      * @return
      */
     @GetMapping("/purchase/{id}")
-    public String purchase(@PathVariable("id") Long id, ModelMap mmap)
-    {
+    public String purchase(@PathVariable("id") Long id, ModelMap mmap) {
         SellDetail sellDetail = sellDetailService.selectSellDetailById(id);
         List<Purchasecontract> purchasecontracts = purchasecontractService.selectPurchasecontractByContractId(sellDetail.getContractid());
         mmap.put("sellDetail", sellDetail);
-        if(purchasecontracts.size()>0) {
+        if (purchasecontracts.size() > 0) {
             for (int i = 0; i < purchasecontracts.size(); i++) {
                 if (purchasecontracts.get(i).getPurchasesamount() > 0) {
                     purchasecontracts.remove(i);
@@ -163,13 +156,13 @@ public class PurchasedetailController extends BaseController
         return prefix + "/purchase";
 
     }
+
     @Log(title = "采购", businessType = BusinessType.INSERT)
     @PostMapping("/purchase")
     @ResponseBody
-    public AjaxResult purchase(Purchasedetail purchasedetail)
-    {
+    public AjaxResult purchase(Purchasedetail purchasedetail) {
         purchasedetail.setSelldetailid(purchasedetail.getId());
-        purchasedetail.setPrice(purchasedetail.getMoney()/purchasedetail.getProductnum());
+        purchasedetail.setPrice(purchasedetail.getMoney() / purchasedetail.getProductnum());
         return toAjax(purchasedetailService.insertPurchasedetail(purchasedetail));
     }
 
@@ -178,18 +171,18 @@ public class PurchasedetailController extends BaseController
      */
     @RequiresPermissions("system:purchasedetail:remove")
     @Log(title = "采购订单列表", businessType = BusinessType.DELETE)
-    @PostMapping( "/remove")
+    @PostMapping("/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
-    {
-        if(purchasedetailChildService.selectPurchasedetailChildPurchasedetailid(Long.valueOf(ids)).size()>0){
+    public AjaxResult remove(String ids) {
+        if (purchasedetailChildService.selectPurchasedetailChildPurchasedetailid(Long.valueOf(ids)).size() > 0) {
             return AjaxResult.error("操作失败,采购订单下有子订单信息!");
         }
-        Purchaseinvoice purchaseinvoice=  new Purchaseinvoice();
+        Purchaseinvoice purchaseinvoice = new Purchaseinvoice();
         purchaseinvoice.setPurchasedetailid(Long.valueOf(ids));
         List<Purchaseinvoice> purchaseinvoices = purchaseinvoiceService.selectPurchaseinvoiceList(purchaseinvoice);
-        if(purchaseinvoices.size()>0){
+        if (purchaseinvoices.size() > 0) {
             return AjaxResult.error("操作失败,采购订单下有发票信息!");
-        }        return toAjax(purchasedetailService.deletePurchasedetailByIds(ids));
+        }
+        return toAjax(purchasedetailService.deletePurchasedetailByIds(ids));
     }
 }

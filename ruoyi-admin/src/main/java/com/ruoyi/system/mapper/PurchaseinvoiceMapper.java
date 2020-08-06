@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.Purchaseinvoice;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 采购发票Mapper接口
@@ -60,5 +61,7 @@ public interface PurchaseinvoiceMapper
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public int deletePurchaseinvoiceByIds(String[] ids);
+    public int deletePurchaseinvoiceByIds(@Param("purchaseinvoiceid") String purchaseinvoiceid,@Param("purchasecontractid") String purchasecontractid);
+
+
 }

@@ -279,12 +279,12 @@
                         success: function (data) {
                             row.firstparty=data.salescontracts[0].firstparty;
                             row.salesamount=data.salescontracts[0].salesamount;
-                            row.suppliers= data.suppliers.replace(",","<br/>,");
-                            row.invoices= data.invoices.replace(",","<br/>,");
-                            row.purchasecontractids= data.purchasecontractids.replace(",","<br/>,");
-                            row.purcharsemoneys= data.purcharsemoneys.replace(",","<br/>,");
+                            row.suppliers= data.suppliers.replace(/,/g,",<br/>");
+                            row.invoices= data.invoices.replace(/,/g,",<br/>");
+                            row.purchasecontractids= data.purchasecontractids.replace(/,/g,",<br/>");
+                            row.purcharsemoneys= data.purcharsemoneys.replace(/,/g,",<br/>");
                             row.purchasesamount=data.purchasesamount;
-                            row.purchaseinvoices=data.purchaseinvoices.replace(",","<br/>,");
+                            row.purchaseinvoices=data.purchaseinvoices.replace(/,/g,",<br/>");
                         }
                     });
                 }

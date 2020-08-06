@@ -27,6 +27,9 @@ public interface SettlementMapper
      */
     public List<Settlement> selectSettlementList(Settlement settlement);
 
+
+    public String selectSettlementMaxSerialNumber();
+
     /**
      * 新增结算
      * 
@@ -57,5 +60,5 @@ public interface SettlementMapper
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public int deleteSettlementByIds(String[] ids);
+    public int deleteSettlementBySerialNumber(String serialnumber);
 }

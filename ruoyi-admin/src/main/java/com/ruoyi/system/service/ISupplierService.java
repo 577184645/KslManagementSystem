@@ -3,12 +3,18 @@ package com.ruoyi.system.service;
 import java.util.List;
 import com.ruoyi.system.domain.Supplier;
 
+
+
+
 /**
  * 供应商列表Service接口
  * 
  * @author ruoyi
  * @date 2020-05-19
  */
+
+
+
 public interface ISupplierService 
 {
     /**
