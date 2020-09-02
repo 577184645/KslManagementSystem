@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SparepartMapper">
+    
+    <resultMap type="Sparepart" id="SparepartResult">
+        <result property="id"    column="id"    />
+        <result property="productname"    column="productname"    />
+        <result property="uuid"    column="uuid"    />
+
+        <result property="price"    column="price"    />
+        <result property="unit"    column="unit"    />
+        <result property="specifications"    column="specifications"    />
+        <result property="purchasecontractid"    column="purchasecontractid"    />
+        <result property="producttype"    column="producttype"    />
+        <result property="productnum"    column="productnum"    />
+        <result property="money"    column="money"    />
+        <result property="purchaseinvoicestatus"    column="purchaseinvoicestatus"    />
+        <result property="supplier"    column="supplier"    />
+        <result property="cTime"    column="c_time"    />
+        <result property="uTime"    column="u_time"    />
+    </resultMap>
+
+    <sql id="selectSparepartVo">
+        select uuid, id, productname, price, unit, specifications, purchasecontractid, producttype, productnum, money, purchaseinvoicestatus, supplier, c_time, u_time from sparepart
+    </sql>
+
+    <select id="selectSparepartList" parameterType="Sparepart" resultMap="SparepartResult">
+        <include refid="selectSparepartVo"/>
+        <where>  
+            <if test="productname != null  and productname != ''"> and productname like concat('%', #{productname}, '%')</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="specifications != null  and specifications != ''"> and specifications = #{specifications}</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''"> and purchasecontractid = #{purchasecontractid}</if>
+            <if test="producttype != null  and producttype != ''"> and producttype = #{producttype}</if>
+            <if test="productnum != null "> and productnum = #{productnum}</if>
+            <if test="money != null "> and money = #{money}</if>
+            <if test="purchaseinvoicestatus != null "> and purchaseinvoicestatus = #{purchaseinvoicestatus}</if>
+            <if test="supplier != null  and supplier != ''"> and supplier = #{supplier}</if>
+            <if test="cTime != null "> and c_time = #{cTime}</if>
+            <if test="uTime != null "> and u_time = #{uTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectSparepartById" parameterType="Long" resultMap="SparepartResult">
+        <include refid="selectSparepartVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSparepart" parameterType="Sparepart" useGeneratedKeys="true" keyProperty="id">
+        insert into sparepart
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">productname,</if>
+            <if test="price != null ">price,</if>
+            <if test="uuid != null ">uuid,</if>
+
+            <if test="unit != null  and unit != ''">unit,</if>
+            <if test="specifications != null  and specifications != ''">specifications,</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid,</if>
+            <if test="producttype != null  and producttype != ''">producttype,</if>
+            <if test="productnum != null ">productnum,</if>
+            <if test="money != null ">money,</if>
+            <if test="purchaseinvoicestatus != null ">purchaseinvoicestatus,</if>
+            <if test="supplier != null  and supplier != ''">supplier,</if>
+          c_time,
+            <if test="uTime != null ">u_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">#{productname},</if>
+            <if test="price != null ">#{price},</if>
+            <if test="uuid != null ">#{uuid},</if>
+
+            <if test="unit != null  and unit != ''">#{unit},</if>
+            <if test="specifications != null  and specifications != ''">#{specifications},</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''">#{purchasecontractid},</if>
+            <if test="producttype != null  and producttype != ''">#{producttype},</if>
+            <if test="productnum != null ">#{productnum},</if>
+            <if test="money != null ">#{money},</if>
+            <if test="purchaseinvoicestatus != null ">#{purchaseinvoicestatus},</if>
+            <if test="supplier != null  and supplier != ''">#{supplier},</if>
+           now(),
+            <if test="uTime != null ">#{uTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSparepart" parameterType="Sparepart">
+        update sparepart
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productname != null  and productname != ''">productname = #{productname},</if>
+            <if test="price != null ">price = #{price},</if>
+            <if test="unit != null  and unit != ''">unit = #{unit},</if>
+            <if test="specifications != null  and specifications != ''">specifications = #{specifications},</if>
+            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid = #{purchasecontractid},</if>
+            <if test="producttype != null  and producttype != ''">producttype = #{producttype},</if>
+            <if test="productnum != null ">productnum = #{productnum},</if>
+            <if test="money != null ">money = #{money},</if>
+            <if test="purchaseinvoicestatus != null ">purchaseinvoicestatus = #{purchaseinvoicestatus},</if>
+            <if test="supplier != null  and supplier != ''">supplier = #{supplier},</if>
+            <if test="cTime != null ">c_time = #{cTime},</if>
+           u_time = now(),
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSparepartById" parameterType="Long">
+        delete from sparepart where id = #{id}
+    </delete>
+
+    <delete id="deleteSparepartByIds" parameterType="String">
+        delete from sparepart where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

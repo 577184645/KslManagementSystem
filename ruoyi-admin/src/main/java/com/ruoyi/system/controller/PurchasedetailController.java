@@ -178,7 +178,7 @@ public class PurchasedetailController extends BaseController {
             return AjaxResult.error("操作失败,采购订单下有子订单信息!");
         }
         Purchaseinvoice purchaseinvoice = new Purchaseinvoice();
-        purchaseinvoice.setPurchasedetailid(Long.valueOf(ids));
+        purchaseinvoice.setPurchasedetailid(ids);
         List<Purchaseinvoice> purchaseinvoices = purchaseinvoiceService.selectPurchaseinvoiceList(purchaseinvoice);
         if (purchaseinvoices.size() > 0) {
             return AjaxResult.error("操作失败,采购订单下有发票信息!");

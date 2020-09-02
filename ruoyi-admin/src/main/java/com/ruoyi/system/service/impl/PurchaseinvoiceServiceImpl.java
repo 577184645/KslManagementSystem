@@ -62,7 +62,7 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
         if (purchaseinvoice.getPurchasedetailids() != null) {
             String[] split = purchaseinvoice.getPurchasedetailids().split(",");
             for (int i = 0; i < split.length; i++) {
-                purchaseinvoice.setPurchasedetailid(Long.valueOf(split[i]));
+                purchaseinvoice.setPurchasedetailid(split[i]);
                 purchaseinvoiceMapper.insertPurchaseinvoice(purchaseinvoice);
             }
             return 1;
@@ -92,10 +92,19 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
      * @return 结果
      */
     @Override
-    public int deletePurchaseinvoiceByIds(String purchaseinvoiceid,String purchasecontractid)
+    public int deletePurchaseinvoiceByIds(String ids)
     {
+        String[] split = ids.split(",");
+        if(split.length==1){
+            return purchaseinvoiceMapper.deletePurchaseinvoiceByIds(purchaseinvoiceMapper.selectPurchaseinvoiceById(Long.valueOf(ids)).getPurchaseinvoiceid());
 
-            return purchaseinvoiceMapper.deletePurchaseinvoiceByIds(purchaseinvoiceid,purchasecontractid);
+        }else{
+            for (int i = 0; i < split.length; i++) {
+                purchaseinvoiceMapper.deletePurchaseinvoiceByIds(purchaseinvoiceMapper.selectPurchaseinvoiceById(Long.valueOf(split[i])).getPurchaseinvoiceid());
+            }
+            return 1;
+        }
+
 
 
     }

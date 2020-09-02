@@ -14,6 +14,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="purchasecontractid"    column="purchasecontractid"    />
         <result property="supplier"    column="supplier"    />
+        <result property="ssupplier"    column="ssupplier"    />
+        <result property="spurchasecontractid"    column="spurchasecontractid"    />
 
 
     </resultMap>
@@ -31,12 +33,12 @@ where s.contractid=#{contractid}
 
     <select id="selectPurchaseinvoiceList" parameterType="Purchaseinvoice" resultMap="PurchaseinvoiceResult">
 
-        select p2.partyb as supplier, p.id, p.purchaseinvoiceid, p.money,p2.purchasecontractid, p.productnum, purchaseinvoicetime, purchasedetailid, p.create_time from purchaseinvoice p
-        LEFT JOIN purchasedetail p1  on  p.purchasedetailid=p1.id  LEFT JOIN purchasecontract p2 on p1.purchasecontractid= p2.purchasecontractid
-
+        select s.supplier as ssupplier,s.purchasecontractid spurchasecontractid,p2.partyb as supplier, p.id, p.purchaseinvoiceid, p.money,p2.purchasecontractid, p.productnum, purchaseinvoicetime, purchasedetailid, p.create_time from purchaseinvoice p
+        LEFT JOIN purchasedetail p1  on  p.purchasedetailid=p1.id  LEFT JOIN purchasecontract p2 on p1.purchasecontractid= p2.purchasecontractid LEFT JOIN sparepart s on p.purchasedetailid=s.uuid
         <where>  
             <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''"> and purchaseinvoiceid = #{purchaseinvoiceid}</if>
             <if test="purchasedetailid != null "> and p.purchasedetailid = #{purchasedetailid}</if>
+
         </where>
         group  by  p.purchaseinvoiceid,p.money
         order by   p2.purchasecontractid
@@ -95,7 +97,7 @@ where s.contractid=#{contractid}
     <delete id="deletePurchaseinvoiceByIds" parameterType="String">
 
         delete from purchaseinvoice where purchaseinvoiceid=#{purchaseinvoiceid}
-        and purchasecontractid=#{purchasecontractid}
+
 
     </delete>
     

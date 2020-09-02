@@ -44,15 +44,37 @@ public class Purchaseinvoice extends BaseEntity
     private Date purchaseinvoicetime;
 
 
+
+  private  String  purchasedetailids;
+
     /** 采购订单号 */
-    private Long purchasedetailid;
+    private String purchasedetailid;
 
-    private String purchasedetailids;
+    private String spurchasecontractid;
+    private String ssupplier;
 
-    public void setId(Long id) 
+    public String getSpurchasecontractid() {
+        return spurchasecontractid;
+    }
+
+    public String getPurchasedetailids() {
+        return purchasedetailids;
+    }
+
+    public void setPurchasedetailids(String purchasedetailids) {
+        this.purchasedetailids = purchasedetailids;
+    }
+
+    public void setSpurchasecontractid(String spurchasecontractid) {
+        this.spurchasecontractid = spurchasecontractid;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
+
+
 
     public String getPurchasecontractid() {
         return purchasecontractid;
@@ -109,20 +131,21 @@ public class Purchaseinvoice extends BaseEntity
         this.productnum = productnum;
     }
 
-    public Long getPurchasedetailid() {
+
+    public String getPurchasedetailid() {
         return purchasedetailid;
     }
 
-    public void setPurchasedetailid(Long purchasedetailid) {
+    public void setPurchasedetailid(String purchasedetailid) {
         this.purchasedetailid = purchasedetailid;
     }
 
-    public String getPurchasedetailids() {
-        return purchasedetailids;
+    public String getSsupplier() {
+        return ssupplier;
     }
 
-    public void setPurchasedetailids(String purchasedetailids) {
-        this.purchasedetailids = purchasedetailids;
+    public void setSsupplier(String ssupplier) {
+        this.ssupplier = ssupplier;
     }
 
     @Override
