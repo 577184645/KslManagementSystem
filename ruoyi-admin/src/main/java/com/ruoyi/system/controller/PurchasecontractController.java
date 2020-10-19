@@ -193,7 +193,7 @@ public class PurchasecontractController extends BaseController
         return prefix + "/purchaseinfo";
     }
 
-    @RequiresPermissions("system:purchasecontract:print")
+
     @GetMapping("/print/{id}")
     public String print(@PathVariable("id") Long id, ModelMap mmap)
     {

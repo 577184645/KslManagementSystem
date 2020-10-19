@@ -1,6 +1,7 @@
 package com.ruoyi.system.controller;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import com.ruoyi.system.domain.Purchaseinvoice;
@@ -99,9 +100,23 @@ public class SparepartController extends BaseController
     @ResponseBody
     public AjaxResult addSave(Sparepart sparepart)
     {
-        sparepart.setUuid(UUID.randomUUID().toString().substring(0,20));
+        boolean flag=true;
+        String uuid=String.valueOf((int) (Math.random() * 1000000000 + 1));
+        while (flag){
+            if (sparepartService.selectSparepartByUuid(uuid)!=null) {
+                uuid=String.valueOf((int) (Math.random() * 1000000000 + 1));
+            }else {
+                sparepart.setUuid(uuid);
+                flag=false;
+            }
+        }
+
+
         return toAjax(sparepartService.insertSparepart(sparepart));
     }
+
+
+
 
     /**
      * 修改备件

@@ -32,6 +32,11 @@ public class SparepartServiceImpl implements ISparepartService
         return sparepartMapper.selectSparepartById(id);
     }
 
+    @Override
+    public Sparepart selectSparepartByUuid(String uuid) {
+        return sparepartMapper.selectSparepartByUuid(uuid);
+    }
+
     /**
      * 查询备件列表
      * 

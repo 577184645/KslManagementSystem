@@ -19,6 +19,9 @@ public interface ISparepartService
      */
     public Sparepart selectSparepartById(Long id);
 
+
+    public Sparepart selectSparepartByUuid(String uuid);
+
     /**
      * 查询备件列表
      * 

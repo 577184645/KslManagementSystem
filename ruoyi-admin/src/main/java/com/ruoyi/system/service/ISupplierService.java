@@ -25,6 +25,10 @@ public interface ISupplierService
      */
     public Supplier selectSupplierById(Long id);
 
+
+
+
+
     /**
      * 查询供应商列表列表
      * 
