@@ -80,7 +80,7 @@
                                 <table>
 
                                     <tr   th:each="purchaseinvoice :${purchaseinvoices}" th:if="${purchasecontract.purchasecontractid}==${purchaseinvoice.purchasecontractid}"   style="margin-bottom: 3;">
-                                        <td  style="text-indent:1em;border-right:1px solid black;font-size: 10px;"  width="90" align="center" th:text="${purchaseinvoice.purchaseinvoiceid}">
+                                        <td th:if="${sellDetail.id==purchaseinvoice.sid}"  style="text-indent:1em;border-right:1px solid black;font-size: 10px;"  width="90" align="center" th:text="${purchaseinvoice.purchaseinvoiceid}">
                                     </tr>
                                 </table>
                             </td>

@@ -44,10 +44,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectSparepartById" parameterType="Long" resultMap="SparepartResult">
+      <select id="selectSparepartById" parameterType="Long" resultMap="SparepartResult">
         <include refid="selectSparepartVo"/>
         where id = #{id}
     </select>
+    <select id="selectSparepartByPurchasecontractid"  resultMap="SparepartResult">
+        <include refid="selectSparepartVo"/>
+        where purchasecontractid = #{purchasecontractid}
+    </select>
+
+
+
     <select id="selectSparepartByUuid"  resultMap="SparepartResult">
         <include refid="selectSparepartVo"/>
         where uuid = #{uuid}

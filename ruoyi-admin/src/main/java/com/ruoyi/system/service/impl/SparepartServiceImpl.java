@@ -1,6 +1,8 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.Settlementchild;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SparepartMapper;
@@ -31,6 +33,12 @@ public class SparepartServiceImpl implements ISparepartService
     {
         return sparepartMapper.selectSparepartById(id);
     }
+
+    @Override
+    public List<Sparepart> selectSparepartByPurchasecontractid(String Purchasecontractid) {
+        return sparepartMapper.selectSparepartByPurchasecontractid(Purchasecontractid);
+    }
+
 
     @Override
     public Sparepart selectSparepartByUuid(String uuid) {

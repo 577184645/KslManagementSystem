@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.Settlementchild;
 import com.ruoyi.system.domain.Sparepart;
 
 /**
@@ -19,6 +21,7 @@ public interface ISparepartService
      */
     public Sparepart selectSparepartById(Long id);
 
+    public List<Sparepart> selectSparepartByPurchasecontractid(String Purchasecontractid);
 
     public Sparepart selectSparepartByUuid(String uuid);
 

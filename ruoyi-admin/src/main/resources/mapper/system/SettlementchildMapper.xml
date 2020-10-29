@@ -54,6 +54,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectSettlementchildVo"/>
         where id = #{id}
     </select>
+
+
+
         
     <insert id="insertSettlementchild" parameterType="Settlementchild" useGeneratedKeys="true" keyProperty="id">
         insert into settlementchild

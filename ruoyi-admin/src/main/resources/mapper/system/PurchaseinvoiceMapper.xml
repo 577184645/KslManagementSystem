@@ -20,6 +20,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     </resultMap>
 
+
+    <resultMap type="com.ruoyi.system.vo.PurchaseinvoiceByScontractVo" id="PurchaseinvoiceByScontractResult">
+        <result property="sid"    column="sid"    />
+        <result property="purchaseinvoiceid"    column="purchaseinvoiceid"    />
+        <result property="purchasecontractid"    column="purchasecontractid"    />
+        <result property="pid"    column="pid"    />
+
+
+
+    </resultMap>
+
+
     <sql id="selectPurchaseinvoiceVo">
         select id, purchaseinvoiceid, money,purchasecontractid, productnum, purchaseinvoicetime, purchasedetailid, create_time from purchaseinvoice
     </sql>
@@ -33,17 +45,27 @@ where s.contractid=#{contractid}
 
     <select id="selectPurchaseinvoiceList" parameterType="Purchaseinvoice" resultMap="PurchaseinvoiceResult">
 
-        select s.supplier as ssupplier,s.purchasecontractid spurchasecontractid,p2.partyb as supplier, p.id, p.purchaseinvoiceid, p.money,p2.purchasecontractid, p.productnum, purchaseinvoicetime, purchasedetailid, p.create_time from purchaseinvoice p
-        LEFT JOIN purchasedetail p1  on  p.purchasedetailid=p1.id  LEFT JOIN purchasecontract p2 on p1.purchasecontractid= p2.purchasecontractid LEFT JOIN sparepart s on p.purchasedetailid=s.uuid
+        select p2.partyb as supplier, p.id, p.purchaseinvoiceid, p.money,p2.purchasecontractid, p.productnum, purchaseinvoicetime, purchasedetailid, p.create_time from purchaseinvoice p
+        LEFT JOIN purchasedetail p1  on  p.purchasedetailid=p1.id  LEFT JOIN purchasecontract p2 on p1.purchasecontractid= p2.purchasecontractid
         <where>  
             <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''"> and purchaseinvoiceid = #{purchaseinvoiceid}</if>
             <if test="purchasedetailid != null "> and p.purchasedetailid = #{purchasedetailid}</if>
 
         </where>
-        group  by  p.purchaseinvoiceid,p.money
+        group  by  p.purchaseinvoiceid,p.purchasecontractid
         order by   p2.purchasecontractid
     </select>
-    
+
+    <select id="selectPurchaseinvoiceByScontract"  resultMap="PurchaseinvoiceByScontractResult">
+         select s.id as sid,p2.purchaseinvoiceid as purchaseinvoiceid,p2.purchasecontractid as purchasecontractid,p.id pid from sell_detail s,purchasedetail p,purchaseinvoice p2
+    where s.id=selldetailid and p2.purchasedetailid=p.id  and p2.purchasecontractid  like CONCAT  ('%',#{purchasecontractid},'%')
+    group  by  p2.purchaseinvoiceid,p2.purchasecontractid,p2.purchasedetailid
+
+    </select>
+
+
+
+
     <select id="selectPurchaseinvoiceById" parameterType="Long" resultMap="PurchaseinvoiceResult">
         <include refid="selectPurchaseinvoiceVo"/>
         where id = #{id}
@@ -97,6 +119,7 @@ where s.contractid=#{contractid}
     <delete id="deletePurchaseinvoiceByIds" parameterType="String">
 
         delete from purchaseinvoice where purchaseinvoiceid=#{purchaseinvoiceid}
+        and purchasecontractid=#{purchasecontractid}
 
 
     </delete>

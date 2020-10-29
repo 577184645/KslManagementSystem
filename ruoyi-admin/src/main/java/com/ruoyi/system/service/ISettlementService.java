@@ -11,6 +11,10 @@ import com.ruoyi.system.domain.Settlement;
  */
 public interface ISettlementService 
 {
+
+
+
+
     /**
      * 查询结算
      * 

@@ -539,11 +539,11 @@
         });
 
     }
-    function removeinvoice(id) {
+    function removeinvoice(purchaseinvoiceid) {
         table.set();
         $.modal.confirm("确定删除该条采购发票信息吗？", function() {
-            var url =prefix2+"/remove";
-            var data = { "ids": id };
+            var url =prefix2+"/removes";
+            var data = {"purchaseinvoiceid": purchaseinvoiceid,"purchasecontractid":$("#purchasecontractid").val()};
             $.operate.submit(url, "post", "json", data);
         });
 
@@ -692,7 +692,7 @@
 
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + purchaseinvoiceeditFlag + '" href="javascript:void(0)" onclick="updateinvoice(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + purchaseinvoiceremoveFlag + '" href="javascript:void(0)" onclick="removeinvoice(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-danger btn-xs ' + purchaseinvoiceremoveFlag + '" href="javascript:void(0)" onclick="removeinvoice(\'' + row.purchaseinvoiceid + '\')"><i class="fa fa-remove"></i>删除</a>');
 
 
                         return actions.join('');

@@ -12,6 +12,10 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface PurchaseinvoiceMapper 
 {
+
+
+    public List<Purchaseinvoice>  selectPurchaseinvoiceByScontract(String Saleconract);
+
     /**
      * 查询采购发票
      * 
@@ -61,7 +65,7 @@ public interface PurchaseinvoiceMapper
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public int deletePurchaseinvoiceByIds(String purchaseinvoiceid);
+    public int deletePurchaseinvoiceByIds(@Param("purchaseinvoiceid") String purchaseinvoiceid,@Param("purchasecontractid") String purchasecontractid);
 
 
 }

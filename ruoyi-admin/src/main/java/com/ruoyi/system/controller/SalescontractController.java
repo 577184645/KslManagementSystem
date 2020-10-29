@@ -53,6 +53,9 @@ public class SalescontractController extends BaseController
     private IPurchaseinvoiceService purchaseinvoiceService;
     @Autowired
     private IPurchasedetailService purchasedetailService;
+    @Autowired
+    private ISparepartService  iSparepartService;
+
 
 
     @RequiresPermissions("system:salescontract:view")
@@ -113,12 +116,18 @@ public class SalescontractController extends BaseController
         }
 
 
+
+
+
+
         for (Purchasecontract purchasecontract:
                 purchasecontracts) {
             suppliers+=purchasecontract.getPartyb()+",";
             purchasecontractids+=purchasecontract.getPurchasecontractid()+",";
             purcharsemoneys+=purchasecontract.getPurchasesamount()+",";
         }
+
+
 
         if (suppliers.indexOf(",")!=-1){
             suppliers= suppliers.substring(0,suppliers.length()-1);
@@ -169,7 +178,11 @@ public class SalescontractController extends BaseController
         List<Invoice> invoices = invoiceService.findList();
         List<Purchasecontract> purchasecontracts = purchasecontractService.selectPurchasecontractByContractId(salescontract.getContractid());
         List<Purchasedetail> purchasedetails = purchasedetailService.selectPurchasedetailList(null);
-        List<Purchaseinvoice> purchaseinvoices = purchaseinvoiceService.selectPurchaseinvoiceList(null);
+
+        List<Purchaseinvoice> purchaseinvoices = purchaseinvoiceService.selectPurchaseinvoiceByScontract(salescontract.getContractid());
+
+
+
         if(sellDetails.size()>0) {
             for (SellDetail selldeatail : sellDetails) {
                 if(selldeatail.getSpecifications()!=null&&selldeatail.getSpecifications().length() > 20) {
@@ -177,6 +190,7 @@ public class SalescontractController extends BaseController
                 }
             }
         }
+
 
         mmap.put("purchasecontracts", purchasecontracts);
         Float purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;

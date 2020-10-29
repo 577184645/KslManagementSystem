@@ -1,6 +1,8 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.Settlementchild;
 import com.ruoyi.system.domain.Sparepart;
 
 /**
@@ -9,8 +11,12 @@ import com.ruoyi.system.domain.Sparepart;
  * @author ruoyi
  * @date 2020-09-01
  */
-public interface SparepartMapper 
+public interface SparepartMapper
 {
+
+
+
+    public List<Sparepart> selectSparepartByPurchasecontractid(String Purchasecontractid);
     /**
      * 查询备件
      * 

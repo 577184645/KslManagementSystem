@@ -41,6 +41,8 @@ public class PurchasecontractController extends BaseController
     private IPurchasedetailService purchasedetailService;
     @Autowired
     private IPurchasedetailChildService purchasedetailChildService;
+    @Autowired
+    private ISparepartService sparepartService;
 
 
     @PostMapping(value = "/PurchasesamountBymonth")
@@ -214,6 +216,9 @@ public class PurchasecontractController extends BaseController
                 }
             }
         }
+        List<Sparepart> spareparts = sparepartService.selectSparepartByPurchasecontractid(purchasecontractService.selectPurchasecontractById(id).getPurchasecontractid());
+
+        mmap.put("spareparts", spareparts);
         mmap.put("purchasecontract", purchasecontract);
         mmap.put("purchasedetails", purchasedetails);
         mmap.put("purchasedetailChildren", purchasedetailChildren);

@@ -154,12 +154,6 @@ public class SparepartController extends BaseController
        String id= sparepartService.selectSparepartById(Long.valueOf(ids)).getUuid();
         Purchaseinvoice purchaseinvoice=new Purchaseinvoice();
         purchaseinvoice.setPurchasedetailid(ids);
-      if(purchaseinvoiceService.selectPurchaseinvoiceList(purchaseinvoice).size()>0){
-
-              return AjaxResult.error("操作失败,备件下有发票信息!");
-
-
-      }
 
 
         return toAjax(sparepartService.deleteSparepartByIds(ids));

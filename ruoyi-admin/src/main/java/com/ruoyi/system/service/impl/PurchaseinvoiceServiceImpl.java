@@ -85,29 +85,11 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
         return purchaseinvoiceMapper.updatePurchaseinvoice(purchaseinvoice);
     }
 
-    /**
-     * 删除采购发票对象
-     * 
-     * @param purchaseinvoiceid 需要删除的数据ID
-     * @return 结果
-     */
     @Override
-    public int deletePurchaseinvoiceByIds(String ids)
-    {
-        String[] split = ids.split(",");
-        if(split.length==1){
-            return purchaseinvoiceMapper.deletePurchaseinvoiceByIds(purchaseinvoiceMapper.selectPurchaseinvoiceById(Long.valueOf(ids)).getPurchaseinvoiceid());
-
-        }else{
-            for (int i = 0; i < split.length; i++) {
-                purchaseinvoiceMapper.deletePurchaseinvoiceByIds(purchaseinvoiceMapper.selectPurchaseinvoiceById(Long.valueOf(split[i])).getPurchaseinvoiceid());
-            }
-            return 1;
-        }
-
-
-
+    public int deletePurchaseinvoiceByIds(String purchaseinvoiceid, String purchasecontractid) {
+        return purchaseinvoiceMapper.deletePurchaseinvoiceByIds(purchaseinvoiceid,purchasecontractid);
     }
+
 
     /**
      * 删除采购发票信息
@@ -119,5 +101,10 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
     public int deletePurchaseinvoiceById(Long id)
     {
         return purchaseinvoiceMapper.deletePurchaseinvoiceById(id);
+    }
+
+    @Override
+    public List<Purchaseinvoice> selectPurchaseinvoiceByScontract(String Saleconract) {
+        return purchaseinvoiceMapper.selectPurchaseinvoiceByScontract(Saleconract);
     }
 }

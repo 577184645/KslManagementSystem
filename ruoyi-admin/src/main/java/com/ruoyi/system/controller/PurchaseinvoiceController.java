@@ -11,11 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.system.domain.Purchaseinvoice;
@@ -182,8 +178,23 @@ public class PurchaseinvoiceController extends BaseController
     @Log(title = "采购发票", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
+    public AjaxResult remove(Long id)
     {
-        return toAjax(purchaseinvoiceService.deletePurchaseinvoiceByIds(ids));
+        return toAjax(purchaseinvoiceService.deletePurchaseinvoiceById(id));
+    }
+
+
+
+    /**
+     * 删除采购发票
+     */
+    @RequiresPermissions("system:purchaseinvoice:remove")
+    @Log(title = "采购发票", businessType = BusinessType.DELETE)
+    @PostMapping( "/removes")
+    @ResponseBody
+    public AjaxResult removes(@RequestParam("purchaseinvoiceid") String purchaseinvoiceid,@RequestParam(value = "purchasecontractid",required = false) String purchasecontractid)
+    {
+        System.out.println(purchaseinvoiceid+","+purchasecontractid);
+        return toAjax(purchaseinvoiceService.deletePurchaseinvoiceByIds(purchaseinvoiceid,purchasecontractid));
     }
 }

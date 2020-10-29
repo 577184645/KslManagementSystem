@@ -110,12 +110,12 @@
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
 
-
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
-
                         /*
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\''+ row.id + '\'+\'' +','+row.purchasecontractid+'\')"><i class="fa fa-remove"></i>删除</a>');
-*/
+                                                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                         */
+
+                                                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="remove(\''+ row.purchaseinvoiceid + '\',\'' +row.purchasecontractid+'\')"><i class="fa fa-remove"></i>删除</a>');
+
                         return actions.join('');
                     }
                 }]
@@ -124,13 +124,12 @@
         });
 
 
-        function remove(purchaseinvoiceid) {
-         var text=   purchaseinvoiceid.split(",");
+        function remove(purchaseinvoiceid,purchasecontractid) {
+            console.log(purchaseinvoiceid,purchasecontractid);
             table.set();
             $.modal.confirm("确定删除该条采购发票信息吗？", function() {
-                var url =prefix+"/remove";
-                var data = { "purchaseinvoiceid": text[0],
-                "purchasecontractid":text[1]};
+                var url =prefix+"/removes";
+                var data = {"purchaseinvoiceid": purchaseinvoiceid,"purchasecontractid":purchasecontractid};
                 $.operate.submit(url, "post", "json", data);
             });
 

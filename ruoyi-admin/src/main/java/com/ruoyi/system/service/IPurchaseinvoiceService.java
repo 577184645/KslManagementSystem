@@ -54,7 +54,7 @@ public interface IPurchaseinvoiceService
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public int deletePurchaseinvoiceByIds(String ids);
+    public int deletePurchaseinvoiceByIds(String purchaseinvoiceid,String purchasecontractid);
 
 
     /**
@@ -65,7 +65,7 @@ public interface IPurchaseinvoiceService
      */
     public int deletePurchaseinvoiceById(Long id);
 
-
+    public List<Purchaseinvoice>  selectPurchaseinvoiceByScontract(String Saleconract);
 
 
 }
