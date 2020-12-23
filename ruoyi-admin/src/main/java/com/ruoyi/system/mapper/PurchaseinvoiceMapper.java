@@ -24,6 +24,10 @@ public interface PurchaseinvoiceMapper
      */
     public Purchaseinvoice selectPurchaseinvoiceById(Long id);
 
+
+    public Purchaseinvoice selectPurchaseinvoiceByPurchaseinvoiceid(String purchaseinvoiceid);
+
+
     /**
      * 查询采购发票列表
      * 
@@ -51,9 +55,14 @@ public interface PurchaseinvoiceMapper
      */
     public int updatePurchaseinvoice(Purchaseinvoice purchaseinvoice);
 
+
+
+    public int updatePurchaseinvoiceByPurchaseinvoiceid(@Param("newmoney") Double money,@Param("id") Long id);
+
+
     /**
      * 删除采购发票
-     * 
+     *
      * @param id 采购发票ID
      * @return 结果
      */
@@ -61,11 +70,10 @@ public interface PurchaseinvoiceMapper
 
     /**
      * 批量删除采购发票
-     * 
+     *
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public int deletePurchaseinvoiceByIds(@Param("purchaseinvoiceid") String purchaseinvoiceid,@Param("purchasecontractid") String purchasecontractid);
-
+    public int deletePurchaseinvoiceByIds(String[] ids);
 
 }

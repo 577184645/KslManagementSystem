@@ -54,14 +54,38 @@ public class Purchasedetail extends BaseEntity
     /** 金额 */
     @Excel(name = "金额")
     private Float money;
-
-    /** 发票状态 */
-    private Long purchaseinvoicestatus;
+   //采购发票编号
+    private Long  purchaseinvoiceId;
 
     /** 所属销售订单号 */
     private Long selldetailid;
 
-    public void setId(Long id) 
+    /**
+     * 扩展字段
+     * @param id
+     */
+    //发票号码
+    private Long purchaseinvoiceNumber;
+    //供应商
+    private String supplier;
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    public Long getPurchaseinvoiceNumber() {
+        return purchaseinvoiceNumber;
+    }
+
+    public void setPurchaseinvoiceNumber(Long purchaseinvoiceNumber) {
+        this.purchaseinvoiceNumber = purchaseinvoiceNumber;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
@@ -71,6 +95,13 @@ public class Purchasedetail extends BaseEntity
         return id;
     }
 
+    public Long getPurchaseinvoiceId() {
+        return purchaseinvoiceId;
+    }
+
+    public void setPurchaseinvoiceId(Long purchaseinvoiceId) {
+        this.purchaseinvoiceId = purchaseinvoiceId;
+    }
 
     public void setProductname(String productname)
     {
@@ -143,15 +174,7 @@ public class Purchasedetail extends BaseEntity
         this.money = money;
     }
 
-    public void setPurchaseinvoicestatus(Long purchaseinvoicestatus)
-    {
-        this.purchaseinvoicestatus = purchaseinvoicestatus;
-    }
 
-    public Long getPurchaseinvoicestatus() 
-    {
-        return purchaseinvoicestatus;
-    }
     public void setSelldetailid(Long selldetailid) 
     {
         this.selldetailid = selldetailid;
@@ -174,7 +197,6 @@ public class Purchasedetail extends BaseEntity
             .append("producttype", getProducttype())
             .append("productnum", getProductnum())
             .append("money", getMoney())
-            .append("purchaseinvoicestatus", getPurchaseinvoicestatus())
             .append("selldetailid", getSelldetailid())
             .append("createTime", getCreateTime())
             .toString();

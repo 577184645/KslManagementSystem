@@ -40,7 +40,7 @@ private Integer settlementstatus;
 
     /** 合同金额 */
     @Excel(name = "合同金额")
-    private Float salesamount;
+    private Double salesamount;
 
     /** 甲方 */
     @Excel(name = "甲方")
@@ -109,11 +109,11 @@ private Integer settlementstatus;
         return payway;
     }
 
-    public Float getSalesamount() {
+    public Double getSalesamount() {
         return salesamount;
     }
 
-    public void setSalesamount(Float salesamount) {
+    public void setSalesamount(Double salesamount) {
         this.salesamount = salesamount;
     }
 

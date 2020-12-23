@@ -53,8 +53,22 @@ public interface PurchasedetailMapper
     public int updatePurchasedetail(Purchasedetail purchasedetail);
 
     /**
+     * 根据采id修改采购发票id
+     *
+     * @param purchasedetail 采购订单列表
+     * @return 结果
+     */
+    public int updatePurchaseinvoiceId(Purchasedetail purchasedetail);
+
+
+
+
+    public int updatePurchasedetailByPurchaseinvoiceId(Long purchaseinvoiceId);
+
+
+    /**
      * 删除采购订单列表
-     * 
+     *
      * @param id 采购订单列表ID
      * @return 结果
      */
@@ -62,7 +76,7 @@ public interface PurchasedetailMapper
 
     /**
      * 批量删除采购订单列表
-     * 
+     *
      * @param ids 需要删除的数据ID
      * @return 结果
      */

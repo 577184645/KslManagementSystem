@@ -68,6 +68,7 @@ public class SellDetailController extends BaseController
     @ResponseBody
     public AjaxResult importData(MultipartFile file, boolean updateSupport, HttpServletRequest request) throws Exception
     {
+
         ExcelUtil<SellDetail> util = new ExcelUtil<SellDetail>(SellDetail.class);
         sellDetailList = util.importExcel(file.getInputStream());
         String message = sellDetailService.importUser(sellDetailList);
@@ -182,6 +183,20 @@ public class SellDetailController extends BaseController
     }
 
     /**
+     * 跳转查看发票对应商品
+     * @param invoiceId
+     * @param mmap
+     * @return
+     */
+    @GetMapping("/invoiceinfoview/{invoiceId}")
+    public String invoiceinfoview(@PathVariable("invoiceId") Long invoiceId, ModelMap mmap)
+    {
+        mmap.put("invoiceId",invoiceId);
+        return prefix + "/invoiceinfo";
+    }
+
+
+    /**
      * 修改保存销售订单列表
      */
     @RequiresPermissions("system:detail:edit")
@@ -206,13 +221,9 @@ public class SellDetailController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        Invoice invoice=  new Invoice();
-        invoice.setSelldetailid(Long.valueOf(ids));
-        List<Invoice> invoices = invoiceService.selectInvoiceList(invoice);
-      if(invoices.size()>0){
-          return AjaxResult.error("操作失败,销售订单下有发票信息!");
-
-      }
         return toAjax(sellDetailService.deleteSellDetailByIds(ids));
     }
+
+
+
 }

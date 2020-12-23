@@ -22,6 +22,8 @@ public interface PurchasecontractMapper
      */
     public Purchasecontract selectPurchasecontractById(Long id);
 
+    public Purchasecontract selectPurchasecontractByPurchaseContractid(String purchasecontractid);
+
 
     /**
      * 查询采购合同列表
@@ -91,7 +93,7 @@ public interface PurchasecontractMapper
      * @param contractid
      * @return
      */
-    public Float selectPurchasesamountsumByContractId(String contractid);
+    public Double selectPurchasesamountsumByContractId(String contractid);
 
 
 

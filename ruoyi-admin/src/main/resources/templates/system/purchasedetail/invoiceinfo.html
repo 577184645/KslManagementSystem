@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('发票列表')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+         <input  id="purchaseinvoiceId"  type="hidden" th:value="${purchaseinvoiceId}"  />
+
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var purchasestatusDatas = [[${@dict.getType('purchase_status')}]];
+    var prefix = ctx + "system/purchasedetail";
+    $(function() {
+        var options = {
+            url: prefix + "/list",
+            toolbar:"toolbar",
+            showSearch: false,
+            showRefresh: false,
+            showToggle: false,
+            showColumns: false,
+            modalName: "采购订单",
+            queryParams: {
+                purchaseinvoiceId:$("#purchaseinvoiceId").val()
+             },
+            pagination:false,
+            columns: [{
+                checkbox: true
+            },
+
+                {
+                    field: 'id',
+                    title: 'id',
+                    visible: false
+                },
+                {
+                    field: 'no',
+                    title: '序号',
+                    align: "center",
+                    formatter: function (value, row, index) {
+                        //获取每页显示的数量
+                        var pageSize=$('#bootstrap-table').bootstrapTable('getOptions').pageSize;
+                        //获取当前是第几页
+                        var pageNumber=$('#bootstrap-table').bootstrapTable('getOptions').pageNumber;
+                        //返回序号，注意index是从0开始的，所以要加上1
+                        return pageSize * (pageNumber - 1) + index + 1;
+                    }
+                },
+                {
+                    field: 'productname',
+                    title: '商品名称'
+                },
+                {
+                    field: 'specifications',
+                    title: '型号'
+                },
+                {
+                    field: 'unit',
+                    title: '单位'
+                },
+                {
+                    field: 'producttype',
+                    title: '商品类型'
+                },
+
+                {
+                    field: 'price',
+                    title: '单价'
+                },
+                {
+                    field: 'productnum',
+                    title: '商品数量'
+                },
+                {
+                    field: 'money',
+                    title: '金额'
+                },
+                {
+                    field: 'purchasecontractid',
+                    title: '所属采购合同 '
+                },
+                {
+                    field: 'supplier',
+                    title: '供应商'
+                },
+
+
+
+            ]
+        };
+        $.table.init(options);
+
+
+
+
+
+    });
+
+
+
+</script>
+</body>
+</html>

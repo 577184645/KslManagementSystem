@@ -19,63 +19,63 @@ public interface InvoiceMapper
      * @param newDate
      * @return
      */
-  public  List<Invoice>  sumMoneyGYear(@Param("newDate") String newDate);
-    /**
-     * 查询发票
-     * 
-     * @param id 发票ID
-     * @return 发票
-     */
-    public Invoice selectInvoiceById(Long id);
+  public  Double  sumMoneyGYear(String newDate);
 
-    /**
-     * 查询发票列表
-     * 
-     * @param invoice 发票
-     * @return 发票集合
-     */
-    public List<Invoice> selectInvoiceList(Invoice invoice);
-
-    public List<Invoice> selectInvoiceListbycontractid(String contractid );
+  /**
+   * 查询发票
+   *
+   * @param id 发票ID
+   * @return 发票
+   */
+  public Invoice selectInvoiceById(Long id);
 
 
+  public Invoice selectInvoiceByInvoiceid(Long invoiceid);
 
-    public List<Invoice> findList();
+  /**
+   * 查询发票列表
+   *
+   * @param invoice 发票
+   * @return 发票集合
+   */
+  public List<Invoice> selectInvoiceList(Invoice invoice);
 
+  /**
+   * 新增发票
+   *
+   * @param invoice 发票
+   * @return 结果
+   */
+  public int insertInvoice(Invoice invoice);
 
-    /**
-     * 新增发票
-     * 
-     * @param invoice 发票
-     * @return 结果
-     */
-    public int insertInvoice(Invoice invoice);
-
-    /**
-     * 修改发票
-     * 
-     * @param invoice 发票
-     * @return 结果
-     */
-    public int updateInvoice(Invoice invoice);
+  /**
+   * 修改发票
+   *
+   * @param invoice 发票
+   * @return 结果
+   */
+  public int updateInvoice(Invoice invoice);
 
 
 
+  public int updateInvoiceByInvoiceid(@Param("newmoney") Double newmoney,@Param("id") Long id);
 
+  /**
+   * 删除发票
+   *
+   * @param id 发票ID
+   * @return 结果
+   */
+  public int deleteInvoiceById(Long id);
 
-    /**
-     * 删除发票
-     * 
-     * @param id 发票ID
-     * @return 结果
-     */
-    public int deleteInvoiceById(Long id);
+  /**
+   * 批量删除发票
+   *
+   * @param ids 需要删除的数据ID
+   * @return 结果
+   */
+  public int deleteInvoiceByIds(String[] ids);
 
-    /**
-     * 批量删除发票
-     * 
-     * @param invoiceid 需要删除的数据ID
-     * @return 结果
-     */
-    public int deleteInvoiceByIds(String invoiceid);
+  List<Invoice> selectInvoiceListbycontractid(String contractid);
+
 }

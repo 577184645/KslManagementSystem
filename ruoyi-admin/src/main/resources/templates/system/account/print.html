@@ -47,10 +47,9 @@
                 <td  style="border:1px solid black;font-size: 14px" width="60" align="center">单价</td>
                 <td style="border:1px solid black;font-size: 14px"  width="90" align="center">金额</td>
                 <td style="border:1px solid black;font-size: 14px"  width="70" align="center">销售发票</td>
-                <td  style="border:1px solid black;font-size: 14px" width="290" align="left">
-                    &nbsp;    采购合同号  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发票&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;金额
-
-                </td>
+                <td style="border:1px solid black;font-size: 14px"  width="90" align="center">采购合同号</td>
+                <td style="border:1px solid black;font-size: 14px"  width="70" align="center">采购发票</td>
+                <td style="border:1px solid black;font-size: 14px"  width="70" align="center">采购金额</td>
             </tr>
             <tr  style="border:1px solid black;" th:each="sellDetail : ${sellDetails}" >
                 <td style="border:1px solid black;font-size: 10px" align="center" th:text="${sellDetailStat.count}">
@@ -59,57 +58,12 @@
                 <td style="border:1px solid black;font-size: 10px" align="center" th:text="${sellDetail.productnum}"> </td>
                 <td style="border:1px solid black;font-size: 10px" align="center" th:text="${sellDetail.price}"> </td>
                 <td style="border:1px solid black;font-size: 10px" align="center" th:text="${sellDetail.money}"> </td>
-                <td style="border:1px solid black;font-size: 10px" align="center">
-            <table>
-
-                <tr  th:each="invoice :${invoices}" th:if="${invoice.selldetailid}==${sellDetail.id}"  style="margin-bottom: 3;">
-                    <td  style="font-size: 10px" width="90" align="center" th:text="${invoice.invoiceid}">
-                </tr>
-
-            </table>
-            </td>
-                <td align="center" style="border:1px solid black;">
-                    <table>
+                <td style="border:1px solid black;font-size: 10px" align="center" th:text="${sellDetail.invoiceNumber}"> </td>
+                <td  class="purchasecontractid"  align="center"  style=" border:1px solid black;color: blue;font-size: 10px;"  th:text="${sellDetail.purchasecontractid}"><a th:href="@{'../../purchasecontract/purchaseInfo/' +}" target="_blank"&ndash;&gt; &lt;!&ndash;</a></td>
+                <td style="border:1px solid black;font-size: 10px" align="center" th:text="${sellDetail.purchaseinvoiceId}"> </td>
+                <td style="border:1px solid black;font-size: 10px" align="center" th:text="${sellDetail.purchasemoney}"> </td>
 
 
-                        <tr   th:each="purchasecontract :${purchasecontracts}" th:if="${purchasecontract.purchasecontractid}==${sellDetail.purchasecontractid}"   >
-
-                            <td  class="purchasecontractid "  style=" border-right:1px solid black;color: blue;font-size: 10px;" width="70"  th:text="${purchasecontract.purchasecontractid}"><!--<a th:href="@{'../../purchasecontract/purchaseInfo/' +}" target="_blank"--> <!--</a></td>-->
-
-                            <td  width="70" align="right">
-                                <table>
-
-                                    <tr   th:each="purchaseinvoice :${purchaseinvoices}" th:if="${purchasecontract.purchasecontractid}==${purchaseinvoice.purchasecontractid}"   style="margin-bottom: 3;">
-                                        <td th:if="${sellDetail.id==purchaseinvoice.sid}"  style="text-indent:1em;border-right:1px solid black;font-size: 10px;"  width="90" align="center" th:text="${purchaseinvoice.purchaseinvoiceid}">
-                                    </tr>
-                                </table>
-                            </td>
-
-                            <td    th:text="${purchasecontract.purchasesamount}" style="text-indent:1em;font-size: 10px;">
-
-                          <!--  <td>
-                            <table>
-                                <tr>
-                                    <td style="border:2px solid black;" width="121" align="center">产品名称</td>
-                                    <td style="border:2px solid black;" width="182" align="center">规格型号</td>
-                                    <td style="border:2px solid black;" width="50" align="center">数量</td>
-                                    <td style="border:2px solid black;" width="50" align="center">单价</td>
-                                    <td style="border:2px solid black;" width="70" align="center">金额</td>
-                                </tr>
-                                <tr  th:each="purchasedetail :${purchasedetails}" th:if="${purchasedetail.purchasecontractid}==${purchasecontract.purchasecontractid}"  style="border:2px solid black;">
-                                    <td style="border:2px solid black;" align="left" th:text="${purchasedetail.productname}"></td>
-                                    <td style="border:2px solid black;" align="left" th:text="${purchasedetail.specifications}"></td>
-                                    <td style="border:2px solid black;" align="left" th:text="${purchasedetail.productnum}"> </td>
-                                    <td style="border:2px solid black;" align="left" th:text="${purchasedetail.price}"> </td>
-                                    <td style="border:2px solid black;" align="left" th:text="${purchasedetail.money}"> </td>
-                                </tr>
-
-                            </table>
-                            </td>-->
-
-                        </tr>
-                    </table>
-                </td>
 
             </tr>
 
@@ -160,16 +114,7 @@
         var purchasecontracts = [[${purchasecontracts}]];
 
    $(".purchasecontractid").click(function () {
-       var purchasecontractid="";
-       for (var i=0;i<purchasecontracts.length;i++){
-           if(purchasecontracts[i].purchasecontractid==$(this).text()){
-               purchasecontractid=purchasecontracts[i].id;
-                   break;
-           }
-       }
-       window.open("../../purchasecontract/print/"+purchasecontractid);
-
-
+       window.open("../../purchasecontract/print/"+$(this).text());
    })
 
 

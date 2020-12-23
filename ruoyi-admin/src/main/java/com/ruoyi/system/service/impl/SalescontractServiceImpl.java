@@ -60,12 +60,13 @@ public class SalescontractServiceImpl implements ISalescontractService {
         return salescontractMapper.selectSalescontractList(salescontract);
     }
 
-    @Override
-    @Transactional
-    public int insertSalescontractAndSelldetail(String salescontractList, Salescontract salescontract) {
-
+    /**
+     * 新增销售商品信息并返回总和
+     * @return
+     */
+    private Double  insertSelldetail(String salescontractList,String Contractid){
         JSONArray productArray = JSONArray.fromObject(salescontractList);
-       Float sum=0f;
+        Double sum=0.0;
         for (int i = 0; i < productArray.size(); i++) {
             JSONObject jsonObject = productArray.getJSONObject(i);
             SellDetail sellDetail = new SellDetail();
@@ -75,20 +76,27 @@ public class SalescontractServiceImpl implements ISalescontractService {
             sellDetail.setProducttype(jsonObject.getString("producttype"));
 
             if (!jsonObject.getString("price").equals("")) {
-                sellDetail.setPrice(Float.valueOf(jsonObject.getString("price")));
+                sellDetail.setPrice(Double.valueOf(jsonObject.getString("price")));
             }
 
             if (!jsonObject.getString("money").equals("")) {
-                sellDetail.setMoney(Float.valueOf(jsonObject.getString("money")));
+                sellDetail.setMoney(Double.valueOf(jsonObject.getString("money")));
             }
             if (!jsonObject.getString("productnum").equals("")) {
-                sellDetail.setProductnum(Float.valueOf(jsonObject.getString("productnum")));
+                sellDetail.setProductnum(Integer.valueOf(jsonObject.getString("productnum")));
             }
-            sum+=Float.valueOf(jsonObject.getString("money"));
-            sellDetail.setContractid(salescontract.getContractid());
+            sum+=Double.valueOf(jsonObject.getString("money"));
+            sellDetail.setContractid(Contractid);
             sellDetailMapper.insertSellDetail(sellDetail);
         }
-       salescontract.setSalesamount(sum);
+           return  sum;
+    }
+
+    @Override
+    @Transactional
+    public int insertSalescontractAndSelldetail(String salescontractList, Salescontract salescontract) {
+        Double sum= insertSelldetail(salescontractList,salescontract.getContractid());
+        salescontract.setSalesamount(sum);
         return salescontractMapper.insertSalescontract(salescontract);
     }
 

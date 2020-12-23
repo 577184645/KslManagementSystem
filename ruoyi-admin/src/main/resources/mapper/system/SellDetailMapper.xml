@@ -6,9 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="SellDetail" id="SellDetailResult">
         <result property="id"    column="id"    />
-        <result property="rownum"    column="rownum"    />
         <result property="purchasecontractid"    column="purchasecontractid"    />
-
         <result property="productname"    column="productname"    />
         <result property="price"    column="price"    />
         <result property="unit"    column="unit"    />
@@ -17,30 +15,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="productnum"    column="productnum"    />
         <result property="money"    column="money"    />
         <result property="contractid"    column="contractid"    />
-        <result property="invoicestatus"    column="invoicestatus"    />
         <result property="purchasestatus"    column="purchasestatus"    />
         <result property="createTime"    column="create_time"    />
-        <collection   property="invoiceList" javaType="ArrayList" ofType="Invoice">
-            <result property="invoiceid" column="invoiceid"/>
-        </collection  >
+        <result property="invoiceId" column="invoice_id"/>
+        <result property="invoiceNumber" column="invoiceid"/>
+        <result property="purchasemoney" column="purchasemoney"/>
+        <result property="purchaseinvoiceId" column="purchaseinvoiceId"/>
+        <result property="customer" column="customer"/>
+
     </resultMap>
 
     <sql id="selectSellDetailVo">
-        select @rowNum:=@rowNum + 1 as rownum, id, purchasecontractid,productname, price, unit, specifications, producttype, productnum, money, contractid, invoicestatus, purchasestatus, create_time from sell_detail ,(SELECT @rowNum:=0) b
+        select  invoice_id,id, purchasecontractid,productname, price, unit, specifications, producttype, productnum, money, contractid
+                , purchasestatus, create_time from sell_detail
     </sql>
 
     <select id="selectSellDetailListAndInvoice" resultMap="SellDetailResult">
-        select  productname,price,specifications,s.money,invoiceid,i.productnum,i.money,invoicetime from sell_detail s LEFT JOIN invoice i on i.selldetailid=s.id
+        select invoice_id , productname,price,specifications,s.money,invoiceid,i.productnum,i.money,invoicetime from sell_detail s LEFT JOIN invoice i on i.selldetailid=s.id
 where contractid=#{contractid}
     </select>
 
     <select id="selectSellDetailList"  resultMap="SellDetailResult">
-        <include refid="selectSellDetailVo"/>
+        select  (select firstparty from salescontract where contractid=s.contractid) customer ,(SELECT p1.purchaseinvoiceid from purchasedetail p INNER JOIN purchaseinvoice p1 on p.purchaseinvoice_id=p1.id where p.selldetailid=s.id) as purchaseinvoiceId ,purchasecontractid,purchasecontractid s,(select purchasesamount from purchasecontract where purchasecontractid=s) purchasemoney,invoiceid, invoice_id,s.id, purchasecontractid,productname, price, unit, specifications, producttype, productnum, s.money, contractid
+        , purchasestatus, s.create_time from sell_detail s left  join  invoice
+        on invoice.id=invoice_id
         <where>
-            <if test="contractid != null  and contractid != ''">contractid=#{contractid}</if>
+            <if test="contractid != null  and contractid != ''"> and contractid=#{contractid}</if>
             <if test="productname != null  and productname != ''"> and productname like concat('%', #{productname}, '%')</if>
-            <if test="invoicestatus != null  and invoicestatus != ''"> and invoicestatus = #{invoicestatus}</if>
             <if test="purchasestatus != null  and purchasestatus != ''"> and purchasestatus = #{purchasestatus}</if>
+            <if test="invoiceId != null  and invoiceId != ''"> and invoice_id = #{invoiceId}</if>
+
 
         </where>
     </select>
@@ -63,7 +67,9 @@ where contractid=#{contractid}
 
 
     <select id="selectSellDetailByContractId" resultMap="SellDetailResult">
-        <include refid="selectSellDetailVo"/>
+        select  (select firstparty from salescontract where contractid=s.contractid) customer ,(SELECT p1.purchaseinvoiceid from purchasedetail p INNER JOIN purchaseinvoice p1 on p.purchaseinvoice_id=p1.id where p.selldetailid=s.id) as purchaseinvoiceId ,purchasecontractid,purchasecontractid s,(select purchasesamount from purchasecontract where purchasecontractid=s) purchasemoney,invoiceid, invoice_id,s.id, purchasecontractid,productname, price, unit, specifications, producttype, productnum, s.money, contractid
+                , purchasestatus, s.create_time from sell_detail s left  join  invoice
+                                                             on invoice.id=invoice_id
         where contractid = #{contractid}
 
     </select>
@@ -80,7 +86,6 @@ where contractid=#{contractid}
             <if test="productnum != null ">productnum,</if>
             <if test="money != null ">money,</if>
             <if test="contractid != null  and contractid != ''">contractid,</if>
-            <if test="invoicestatus != null ">invoicestatus,</if>
             <if test="purchasestatus != null ">purchasestatus,</if>
 
             <if test="createTime != null ">create_time,</if>
@@ -95,7 +100,6 @@ where contractid=#{contractid}
             <if test="productnum != null ">#{productnum},</if>
             <if test="money != null ">#{money},</if>
             <if test="contractid != null  and contractid != ''">#{contractid},</if>
-            <if test="invoicestatus != null ">#{invoicestatus},</if>
             <if test="purchasestatus != null ">#{purchasestatus},</if>
             <if test="createTime != null ">#{createTime},</if>
 
@@ -105,6 +109,7 @@ where contractid=#{contractid}
     <update id="updateSellDetail" parameterType="SellDetail">
         update sell_detail
         <trim prefix="SET" suffixOverrides=",">
+            <if test="invoiceId != null  and invoiceId != ''">invoice_id = #{invoiceId},</if>
             <if test="productname != null  and productname != ''">productname = #{productname},</if>
             <if test="price != null ">price = #{price},</if>
             <if test="unit != null  and unit != ''">unit = #{unit},</if>
@@ -113,16 +118,31 @@ where contractid=#{contractid}
             <if test="productnum != null ">productnum = #{productnum},</if>
             <if test="money != null ">money = #{money},</if>
             <if test="contractid != null  and contractid != ''">contractid = #{contractid},</if>
-            <if test="invoicestatus != null ">invoicestatus = #{invoicestatus},</if>
             <if test="purchasestatus != null ">purchasestatus = #{purchasestatus},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
         </trim>
         where id = #{id}
     </update>
 
+
+    <update id="updateSellDetailByInvoiceId" >
+         update sell_detail set  invoice_id = null where invoice_id= #{invoiceId}
+    </update>
+
+
     <update id="updatePurchasestatusAndPurchasecontractid">
      update sell_detail set  purchasestatus=2 , purchasecontractid=#{purchasecontractid} where id=#{id}
  </update>
+
+    <update id="updateSellDetailByIds">
+        update sell_detail set  invoicestatus=2  where  id  in
+        <foreach collection="array" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+
+
+    </update>
+
 
 
     <delete id="deleteSellDetailById" parameterType="Long">

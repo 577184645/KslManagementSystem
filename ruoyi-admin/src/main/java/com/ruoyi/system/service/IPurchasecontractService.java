@@ -83,7 +83,7 @@ public interface IPurchasecontractService
      * @param contractid
      * @return
      */
-    public Float selectPurchasesamountsumByContractId(String contractid);
+    public Double selectPurchasesamountsumByContractId(String contractid);
 
 
     /**
@@ -104,4 +104,5 @@ public interface IPurchasecontractService
     public List<Map<String,Object>> selectPurchasesamountByday(String newyear,String newmonth);
 
 
+    Purchasecontract selectPurchasecontractByPurchaseContractid(String id);
 }

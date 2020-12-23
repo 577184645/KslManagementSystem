@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
+import com.ruoyi.system.util.numberUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,8 +42,7 @@ public class PurchasecontractController extends BaseController
     private IPurchasedetailService purchasedetailService;
     @Autowired
     private IPurchasedetailChildService purchasedetailChildService;
-    @Autowired
-    private ISparepartService sparepartService;
+
 
 
     @PostMapping(value = "/PurchasesamountBymonth")
@@ -197,9 +197,17 @@ public class PurchasecontractController extends BaseController
 
 
     @GetMapping("/print/{id}")
-    public String print(@PathVariable("id") Long id, ModelMap mmap)
+    public String print(@PathVariable("id") String id, ModelMap mmap)
     {
-        Purchasecontract purchasecontract = purchasecontractService.selectPurchasecontractById(id);
+        Purchasecontract purchasecontract =null;
+        if( numberUtil.isNumeric(id)) {
+            purchasecontract = purchasecontractService.selectPurchasecontractById(Long.valueOf(id));
+
+        }else{
+            purchasecontract = purchasecontractService.selectPurchasecontractByPurchaseContractid(id);
+
+        }
+
         List<Purchasedetail> purchasedetails = purchasedetailService.selectPurchasedetailListByPurchasecontractId(purchasecontract.getPurchasecontractid());
         List<PurchasedetailChild> purchasedetailChildren = purchasedetailChildService.selectPurchasedetailChildList(null);
         if(purchasedetails.size()>0){
@@ -216,9 +224,7 @@ public class PurchasecontractController extends BaseController
                 }
             }
         }
-        List<Sparepart> spareparts = sparepartService.selectSparepartByPurchasecontractid(purchasecontractService.selectPurchasecontractById(id).getPurchasecontractid());
 
-        mmap.put("spareparts", spareparts);
         mmap.put("purchasecontract", purchasecontract);
         mmap.put("purchasedetails", purchasedetails);
         mmap.put("purchasedetailChildren", purchasedetailChildren);

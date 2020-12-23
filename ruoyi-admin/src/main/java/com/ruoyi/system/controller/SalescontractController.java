@@ -53,8 +53,6 @@ public class SalescontractController extends BaseController
     private IPurchaseinvoiceService purchaseinvoiceService;
     @Autowired
     private IPurchasedetailService purchasedetailService;
-    @Autowired
-    private ISparepartService  iSparepartService;
 
 
 
@@ -99,18 +97,20 @@ public class SalescontractController extends BaseController
         List<Salescontract> salescontracts = salescontractService.selectSalescontractList(salescontract);
         List<Purchasecontract> purchasecontracts = purchasecontractService.selectPurchasecontractByContractId(contractid);
         List<Invoice> invoices = invoiceService.selectInvoiceListbycontractid(contractid);
+
         List<Purchaseinvoice> purchaseinvoice = purchaseinvoiceService.selectPurchaseinvoiceByContractid(contractid);
+
         String suppliers="";
         String purchasecontractids="";
          String invoicess="";
         String purcharsemoneys="";
         String purchaseinvoices="";
 
-        for (Purchaseinvoice purchaseinvoice1:
+       for (Purchaseinvoice purchaseinvoice1:
                 purchaseinvoice) {
             purchaseinvoices+=purchaseinvoice1.getPurchaseinvoiceid()+",";
         }
-        for (Invoice invoice:
+       for (Invoice invoice:
                 invoices) {
             invoicess+=invoice.getInvoiceid()+",";
         }
@@ -142,7 +142,7 @@ public class SalescontractController extends BaseController
         if (purchaseinvoices.indexOf(",")!=-1){
             purchaseinvoices= purchaseinvoices.substring(0,purchaseinvoices.length()-1);
         }
-        Float purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;
+        Double purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;
         map.put("purchasesamount", purchasesamount);
         map.put("purchaseinvoices", purchaseinvoices);
         map.put("purcharsemoneys",purcharsemoneys);
@@ -165,8 +165,8 @@ public class SalescontractController extends BaseController
     @GetMapping("/print/{id}")
     public String print(@PathVariable("id") Long id, ModelMap mmap)
     {
-
-        Salescontract salescontract = salescontractService.selectSalescontractById(id);
+   //头部信息
+     Salescontract salescontract = salescontractService.selectSalescontractById(id);
      if (salescontract.getContractid().substring(2,3).equals("G")){
          mmap.put("saletype", "公司垫本销售合同明细单");
      }else if(salescontract.getContractid().substring(2,3).equals("Z")){
@@ -174,15 +174,10 @@ public class SalescontractController extends BaseController
      }else{
          mmap.put("saletype", "线上销售合同明细单");
      }
+     //销售商品信息
         List<SellDetail> sellDetails = sellDetailService.selectSellDetailByContractId(salescontract.getContractid());
-        List<Invoice> invoices = invoiceService.findList();
-        List<Purchasecontract> purchasecontracts = purchasecontractService.selectPurchasecontractByContractId(salescontract.getContractid());
-        List<Purchasedetail> purchasedetails = purchasedetailService.selectPurchasedetailList(null);
 
-        List<Purchaseinvoice> purchaseinvoices = purchaseinvoiceService.selectPurchaseinvoiceByScontract(salescontract.getContractid());
-
-
-
+        //型号只显示前20位
         if(sellDetails.size()>0) {
             for (SellDetail selldeatail : sellDetails) {
                 if(selldeatail.getSpecifications()!=null&&selldeatail.getSpecifications().length() > 20) {
@@ -192,15 +187,13 @@ public class SalescontractController extends BaseController
         }
 
 
-        mmap.put("purchasecontracts", purchasecontracts);
-        Float purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;
-        mmap.put("salescontract", salescontract);
+       //计算销售下采购总金额
+        Double purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;
         mmap.put("purchasesamount", purchasesamount);
+        //销售合同基本信息
+        mmap.put("salescontract", salescontract);
+       //销售商品基本信息
         mmap.put("sellDetails", sellDetails);
-        mmap.put("purchasedetails", purchasedetails);
-        mmap.put("invoices", invoices);
-        mmap.put("purchaseinvoices", purchaseinvoices);
-
         return  "system/account/print";
     }
 
@@ -356,7 +349,7 @@ public class SalescontractController extends BaseController
     public String saleInfo(@PathVariable("id") Long id, ModelMap mmap)
     {
         Salescontract salescontract = salescontractService.selectSalescontractById(id);
-         Float purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;
+         Double purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;
         mmap.put("salescontract", salescontract);
         mmap.put("purchasesamount", purchasesamount);
         return prefix + "/saleinfo";

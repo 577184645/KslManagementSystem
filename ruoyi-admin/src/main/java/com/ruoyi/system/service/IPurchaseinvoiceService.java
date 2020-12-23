@@ -38,7 +38,7 @@ public interface IPurchaseinvoiceService
      * @param purchaseinvoice 采购发票
      * @return 结果
      */
-    public int insertPurchaseinvoice(Purchaseinvoice purchaseinvoice);
+    public int insertPurchaseinvoice(Purchaseinvoice purchaseinvoice,String purchasedetailids);
 
     /**
      * 修改采购发票
@@ -50,16 +50,15 @@ public interface IPurchaseinvoiceService
 
     /**
      * 批量删除采购发票
-     * 
+     *
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public int deletePurchaseinvoiceByIds(String purchaseinvoiceid,String purchasecontractid);
-
+    public int deletePurchaseinvoiceByIds(String ids);
 
     /**
      * 删除采购发票信息
-     * 
+     *
      * @param id 采购发票ID
      * @return 结果
      */

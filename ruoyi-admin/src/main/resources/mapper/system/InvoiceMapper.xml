@@ -1,101 +1,97 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.InvoiceMapper">
-    
+
     <resultMap type="Invoice" id="InvoiceResult">
         <result property="id"    column="id"    />
         <result property="invoiceid"    column="invoiceid"    />
-        <result property="productnum"    column="productnum"    />
         <result property="money"    column="money"    />
         <result property="invoicetime"    column="invoicetime"    />
-        <result property="selldetailid"    column="selldetailid"    />
-        <result property="contractid"    column="contractid"    />
-        <result property="customer"    column="customer"    />
         <result property="createTime"    column="create_time"    />
     </resultMap>
 
     <sql id="selectInvoiceVo">
-        select id, invoiceid, productnum, money, invoicetime, selldetailid, create_time from invoice
+        select id, invoiceid, money, invoicetime, create_time from invoice
     </sql>
 
     <select id="selectInvoiceList" parameterType="Invoice" resultMap="InvoiceResult">
-        select s1.firstparty as customer,s1.contractid as contractid,i.id, invoiceid, i.productnum, i.money, invoicetime, selldetailid, i.create_time from invoice i
-        LEFT JOIN sell_detail s  on  s.id=i.selldetailid  LEFT JOIN salescontract s1 on s.contractid=s1.contractid
-        <where>  
+        <include refid="selectInvoiceVo"/>
+        <where>
             <if test="invoiceid != null  and invoiceid != ''"> and invoiceid = #{invoiceid}</if>
-            <if test="selldetailid != null and selldetailid != ''  "> and     i.selldetailid=#{selldetailid}
-            </if>
-
         </where>
-        group  by  i.invoiceid
-        order by   s1.contractid
+    </select>
+
+    <select id="selectInvoiceById" parameterType="Long" resultMap="InvoiceResult">
+        <include refid="selectInvoiceVo"/>
+        where id = #{id}
+    </select>
+
+
+
+
+    <select id="selectInvoiceByInvoiceid" parameterType="Long" resultMap="InvoiceResult">
+        <include refid="selectInvoiceVo"/>
+        where invoiceid = #{invoiceid}
     </select>
     <select id="selectInvoiceListbycontractid"  resultMap="InvoiceResult">
-     select invoiceid from invoice i left JOIN sell_detail s on i.selldetailid=s.id
- left JOIN salescontract s1 on s.contractid=s1.contractid
- where s1.contractid=#{contractid}
-   group  by  i.invoiceid
+        select invoiceid from invoice inner join sell_detail on invoice.id=sell_detail.invoice_id
+        where sell_detail.contractid=#{contractid}
+        GROUP BY   invoiceid
     </select>
 
-    <select id="findList" resultMap="InvoiceResult">
-        <include refid="selectInvoiceVo"/>
-    </select>
-    <select id="selectInvoiceById" parameterType="Long" resultMap="InvoiceResult">
-    <include refid="selectInvoiceVo"/>
-    where id = #{id}
-</select>
 
-
-    <select id="sumMoneyGYear" resultMap="InvoiceResult">
-     select money  from invoice
-     where invoicetime like '%${newDate}%'
-     group by year(#{newDate}),invoiceid
-</select>
 
     <insert id="insertInvoice" parameterType="Invoice" useGeneratedKeys="true" keyProperty="id">
         insert into invoice
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="invoiceid != null  and invoiceid != ''">invoiceid,</if>
-            <if test="productnum != null ">productnum,</if>
             <if test="money != null ">money,</if>
             <if test="invoicetime != null ">invoicetime,</if>
-            <if test="selldetailid != null ">selldetailid,</if>
             <if test="createTime != null ">create_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="invoiceid != null  and invoiceid != ''">#{invoiceid},</if>
-            <if test="productnum != null ">#{productnum},</if>
             <if test="money != null ">#{money},</if>
             <if test="invoicetime != null ">#{invoicetime},</if>
-            <if test="selldetailid != null ">#{selldetailid},</if>
             <if test="createTime != null ">#{createTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateInvoice" parameterType="Invoice">
         update invoice
         <trim prefix="SET" suffixOverrides=",">
             <if test="invoiceid != null  and invoiceid != ''">invoiceid = #{invoiceid},</if>
-            <if test="productnum != null ">productnum = #{productnum},</if>
             <if test="money != null ">money = #{money},</if>
             <if test="invoicetime != null ">invoicetime = #{invoicetime},</if>
-            <if test="selldetailid != null ">selldetailid = #{selldetailid},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
         </trim>
         where id = #{id}
     </update>
 
 
+    <update id="updateInvoiceByInvoiceid">
+        update invoice set  money=money+#{newmoney} where id=#{id}
+    </update>
 
     <delete id="deleteInvoiceById" parameterType="Long">
         delete from invoice where id = #{id}
     </delete>
 
     <delete id="deleteInvoiceByIds" parameterType="String">
-        delete from invoice where invoiceid =#{invoiceid}
-
+        delete from invoice where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </delete>
+
+
+
+    <select id="sumMoneyGYear" resultType="Double">
+        select sum(money)  from invoice
+        where  year(invoicetime) = #{newDate}
+    </select>
+
 
 </mapper>

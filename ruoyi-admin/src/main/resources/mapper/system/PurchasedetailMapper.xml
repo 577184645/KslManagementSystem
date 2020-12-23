@@ -14,22 +14,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="producttype"    column="producttype"    />
         <result property="productnum"    column="productnum"    />
         <result property="money"    column="money"    />
-        <result property="purchaseinvoicestatus"    column="purchaseinvoicestatus"    />
         <result property="selldetailid"    column="selldetailid"    />
         <result property="createTime"    column="create_time"    />
+        <result property="purchaseinvoiceId"    column="purchaseinvoice_id"    />
+        <result property="purchaseinvoiceNumber" column="purchaseinvoiceNumber"/>
+        <result property="supplier" column="supplier"/>
+
     </resultMap>
 
     <sql id="selectPurchasedetailVo">
-        select id, productname,price, unit, specifications, purchasecontractid, producttype, productnum, money, purchaseinvoicestatus, selldetailid, create_time from purchasedetail
+        select (select partyb from purchasecontract where purchasecontractid=p.purchasecontractid) supplier,  (select purchaseinvoiceid from purchaseinvoice where id=purchaseinvoice_id) as purchaseinvoiceNumber,purchaseinvoice_id , id, productname,price, unit, specifications, purchasecontractid, producttype, productnum, money, selldetailid, create_time from purchasedetail p
     </sql>
 
     <select id="selectPurchasedetailList" parameterType="Purchasedetail" resultMap="PurchasedetailResult">
         <include refid="selectPurchasedetailVo"/>
-        <where>  
+        <where>
+            <if test="purchaseinvoiceId != null  and purchaseinvoiceId != ''"> and purchaseinvoice_id = #{purchaseinvoiceId}</if>
+
             <if test="productname != null  and productname != ''"> and productname like concat('%', #{productname}, '%')</if>
             <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
             <if test="purchasecontractid != null  and purchasecontractid != ''"> and purchasecontractid = #{purchasecontractid}</if>
-            <if test="purchaseinvoicestatus != null "> and purchaseinvoicestatus = #{purchaseinvoicestatus}</if>
         </where>
     </select>
     
@@ -54,7 +58,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="producttype != null  and producttype != ''">producttype,</if>
             <if test="productnum != null ">productnum,</if>
             <if test="money != null ">money,</if>
-            <if test="purchaseinvoicestatus != null ">purchaseinvoicestatus,</if>
             <if test="selldetailid != null ">selldetailid,</if>
 
             <if test="createTime != null ">create_time,</if>
@@ -68,7 +71,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="producttype != null  and producttype != ''">#{producttype},</if>
             <if test="productnum != null ">#{productnum},</if>
             <if test="money != null ">#{money},</if>
-            <if test="purchaseinvoicestatus != null ">#{purchaseinvoicestatus},</if>
             <if test="selldetailid != null ">#{selldetailid},</if>
 
             <if test="createTime != null ">#{createTime},</if>
@@ -86,7 +88,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="producttype != null  and producttype != ''">producttype = #{producttype},</if>
             <if test="productnum != null ">productnum = #{productnum},</if>
             <if test="money != null ">money = #{money},</if>
-            <if test="purchaseinvoicestatus != null ">purchaseinvoicestatus = #{purchaseinvoicestatus},</if>
             <if test="selldetailid != null ">selldetailid = #{selldetailid},</if>
 
             <if test="createTime != null ">create_time = #{createTime},</if>
@@ -94,12 +95,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+
+
+    <update id="updatePurchaseinvoiceId" parameterType="Purchasedetail">
+        update purchasedetail set
+         purchaseinvoice_id=#{purchaseinvoiceId}
+        where id = #{id}
+    </update>
+
+    <update id="updatePurchasedetailByPurchaseinvoiceId" parameterType="Long">
+        update purchasedetail set
+                                  purchaseinvoice_id=null
+        where purchaseinvoice_id = #{purchaseinvoiceId}
+    </update>
+
+
     <delete id="deletePurchasedetailById" parameterType="Long">
         delete from purchasedetail where id = #{id}
     </delete>
 
     <delete id="deletePurchasedetailByIds" parameterType="String">
-        delete from purchasedetail where id in 
+        delete from purchasedetail where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

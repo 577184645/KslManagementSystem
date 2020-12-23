@@ -181,7 +181,7 @@ public class PurchasecontractServiceImpl implements IPurchasecontractService
     }
 
     @Override
-    public Float selectPurchasesamountsumByContractId(String contractid) {
+    public Double selectPurchasesamountsumByContractId(String contractid) {
         return purchasecontractMapper.selectPurchasesamountsumByContractId(contractid);
     }
 
@@ -193,5 +193,10 @@ public class PurchasecontractServiceImpl implements IPurchasecontractService
     @Override
     public List<Map<String, Object>> selectPurchasesamountByday(String newyear, String newmonth) {
         return purchasecontractMapper.selectPurchasesamountByday(newyear,newmonth);
+    }
+
+    @Override
+    public Purchasecontract selectPurchasecontractByPurchaseContractid(String id) {
+        return purchasecontractMapper.selectPurchasecontractByPurchaseContractid(id);
     }
 }

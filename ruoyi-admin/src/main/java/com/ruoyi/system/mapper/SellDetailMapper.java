@@ -59,6 +59,21 @@ public interface SellDetailMapper
      */
     public int updateSellDetail(SellDetail sellDetail);
 
+    /**
+     * 根据发票id修改销售订单发票id
+     *
+     * @param invoiceId 销售订单列表
+     * @return 结果
+     */
+    public int updateSellDetailByInvoiceId(String invoiceId);
+
+
+
+
+
+    public int updateSellDetailByIds(String [] ids);
+
+
 
     public int updatePurchasestatusAndPurchasecontractid(SellDetail sellDetail);
 

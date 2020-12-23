@@ -26,11 +26,11 @@
 
             <div class="btn-group-sm" id="toolbar" role="group">
 
-              <!--  <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:purchaseinvoice:edit">
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:purchaseinvoice:edit">
                     <i class="fa fa-edit"></i> 修改
-                </a>-->
+                </a>
 
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:purchaseinvoice:remove">
+                <a class="btn btn-danger multiple " onclick="$.operate.removeAll()" shiro:hasPermission="system:purchaseinvoice:remove">
                     <i class="fa fa-remove"></i> 删除
                 </a>
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:purchaseinvoice:export">
@@ -47,6 +47,7 @@
         var editFlag = [[${@permission.hasPermi('system:purchaseinvoice:edit')}]];
         var removeFlag = [[${@permission.hasPermi('system:purchaseinvoice:remove')}]];
         var prefix = ctx + "system/purchaseinvoice";
+        var prefix1 = ctx + "system/purchasedetail";
 
         $(function() {
             var options = {
@@ -68,36 +69,12 @@
                     field: 'purchaseinvoiceid', 
                     title: '发票编号'
                 },
-                    {
-                        field: 'purchasecontractid',
-                        title: '采购合同号',
-                        formatter: function(value, row, index) {
-                            if(value==""||value==null) {
-                                return row.spurchasecontractid;
-                            }else{
-                                return value;
-                            }
-                        }
-                    },
-                    {
-                        field: 'supplier',
-                        title: '供应商' ,
-                        formatter: function(value, row, index) {
-                            if(value==""||value==null) {
-                                return row.ssupplier;
-                            }else{
-                                return value;
-                            }
-                        }
-                    },
+
                 {
                     field: 'money', 
                     title: '发票金额'
                 },
-                {
-                    field: 'productnum', 
-                    title: '商品数量'
-                },
+
                 {
                     field: 'purchaseinvoicetime', 
                     title: '开票时间'
@@ -108,14 +85,9 @@
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];
+                        actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="selectPurchaseDetail(\'' + row.purchaseinvoiceid + '\',\''+row.id+'\')"><i class="fa fa-edit"></i>查看所属采购商品</a> ');
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-
-                        /*
-                                                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
-                         */
-
-                                                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="remove(\''+ row.purchaseinvoiceid + '\',\'' +row.purchasecontractid+'\')"><i class="fa fa-remove"></i>删除</a>');
-
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
                         return actions.join('');
                     }
                 }]
@@ -123,17 +95,12 @@
             $.table.init(options);
         });
 
-
-        function remove(purchaseinvoiceid,purchasecontractid) {
-            console.log(purchaseinvoiceid,purchasecontractid);
+        function selectPurchaseDetail(purchaseinvoiceid,id) {
             table.set();
-            $.modal.confirm("确定删除该条采购发票信息吗？", function() {
-                var url =prefix+"/removes";
-                var data = {"purchaseinvoiceid": purchaseinvoiceid,"purchasecontractid":purchasecontractid};
-                $.operate.submit(url, "post", "json", data);
-            });
-
+            $.modal.openTab(purchaseinvoiceid+"所属采购商品列表",prefix1+"/invoiceinfoview/"+id);
         }
+
+
     </script>
 </body>
 </html>

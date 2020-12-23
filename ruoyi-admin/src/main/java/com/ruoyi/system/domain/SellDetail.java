@@ -17,15 +17,12 @@ import java.util.List;
 public class SellDetail extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
-
     /** id */
     private Long id;
 
     /** 商品名称 */
     @Excel(name = "商品名称")
     private String productname;
-
-
 
     /** 单位 */
     @Excel(name = "单位")
@@ -39,46 +36,98 @@ public class SellDetail extends BaseEntity
     @Excel(name = "商品类型")
     private String producttype;
 
-
-
     /** 数量 */
     @Excel(name = "数量")
-    private Float productnum;
+    private Integer productnum;
 
     /** 单价 */
     @Excel(name = "单价")
-    private Float price;
+    private Double price;
 
     /** 总价 */
     @Excel(name = "总价")
-    private Float money;
+    private Double money;
 
     /** 所属销售合同 */
     @Excel(name = "所属销售合同",type = Excel.Type.EXPORT)
     private String contractid;
 
     /** 发票状态 */
-    @Excel(name = "发票状态",type = Excel.Type.EXPORT)
-    private Integer invoicestatus;
+    @Excel(name = "发票号码",type = Excel.Type.EXPORT)
+    private Long invoiceId;
 
     /** 采购状态 */
     @Excel(name = "采购状态",type = Excel.Type.EXPORT)
     private Integer purchasestatus;
 
 
-    private List<Invoice> invoiceList;
 
-    private  Integer rownum;
+    /**
+     * 扩展字段
+     */
 
-
+    //销售合同号
+    private Long invoiceNumber;
+   //采购合同号
     private  String purchasecontractid;
+   //采购金额
+    private  Double   purchasemoney;
+   //采购发票号
+    private Long purchaseinvoiceId;
+    //客户
+    private String customer;
+    //采购单价
+    private  Double purchaseprice ;
+    //采购数量
+    private  Double   purchaseproductnum;
 
+    public Double getPurchaseprice() {
+        return purchaseprice;
+    }
 
-   private Float purchaseprice;
+    public void setPurchaseprice(Double purchaseprice) {
+        this.purchaseprice = purchaseprice;
+    }
 
-     private Integer  purchaseproductnum;
+    public Double getPurchaseproductnum() {
+        return purchaseproductnum;
+    }
 
-    private  Float   purchasemoney;
+    public void setPurchaseproductnum(Double purchaseproductnum) {
+        this.purchaseproductnum = purchaseproductnum;
+    }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    public Long getPurchaseinvoiceId() {
+        return purchaseinvoiceId;
+    }
+
+    public void setPurchaseinvoiceId(Long purchaseinvoiceId) {
+        this.purchaseinvoiceId = purchaseinvoiceId;
+    }
+
+    public Long getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(Long invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public Long getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(Long invoiceId) {
+        this.invoiceId = invoiceId;
+    }
 
     public String getPurchasecontractid() {
         return purchasecontractid;
@@ -88,21 +137,8 @@ public class SellDetail extends BaseEntity
         this.purchasecontractid = purchasecontractid;
     }
 
-    public List<Invoice> getInvoiceList() {
-        return invoiceList;
-    }
 
-    public void setInvoiceList(List<Invoice> invoiceList) {
-        this.invoiceList = invoiceList;
-    }
 
-    public Integer getRownum() {
-        return rownum;
-    }
-
-    public void setRownum(Integer rownum) {
-        this.rownum = rownum;
-    }
 
     public void setId(Long id)
     {
@@ -128,29 +164,16 @@ public class SellDetail extends BaseEntity
         this.unit = unit;
     }
 
-    public Float getPurchaseprice() {
-        return purchaseprice;
-    }
 
-    public void setPurchaseprice(Float purchaseprice) {
-        this.purchaseprice = purchaseprice;
-    }
-
-    public Integer getPurchaseproductnum() {
-        return purchaseproductnum;
-    }
-
-    public void setPurchaseproductnum(Integer purchaseproductnum) {
-        this.purchaseproductnum = purchaseproductnum;
-    }
-
-    public Float getPurchasemoney() {
+    public Double getPurchasemoney() {
         return purchasemoney;
     }
 
-    public void setPurchasemoney(Float purchasemoney) {
+    public void setPurchasemoney(Double purchasemoney) {
         this.purchasemoney = purchasemoney;
     }
+
+
 
     public String getUnit()
     {
@@ -175,27 +198,27 @@ public class SellDetail extends BaseEntity
         return producttype;
     }
 
-    public Float getProductnum() {
+    public Integer getProductnum() {
         return productnum;
     }
 
-    public void setProductnum(Float productnum) {
+    public void setProductnum(Integer productnum) {
         this.productnum = productnum;
     }
 
-    public Float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public Float getMoney() {
+    public Double getMoney() {
         return money;
     }
 
-    public void setMoney(Float money) {
+    public void setMoney(Double money) {
         this.money = money;
     }
 
@@ -207,14 +230,6 @@ public class SellDetail extends BaseEntity
     public String getContractid() 
     {
         return contractid;
-    }
-
-    public Integer getInvoicestatus() {
-        return invoicestatus;
-    }
-
-    public void setInvoicestatus(Integer invoicestatus) {
-        this.invoicestatus = invoicestatus;
     }
 
     public Integer getPurchasestatus() {
@@ -237,7 +252,6 @@ public class SellDetail extends BaseEntity
             .append("productnum", getProductnum())
             .append("money", getMoney())
             .append("contractid", getContractid())
-            .append("invoicestatus", getInvoicestatus())
             .append("purchasestatus", getPurchasestatus())
             .append("createTime", getCreateTime())
 

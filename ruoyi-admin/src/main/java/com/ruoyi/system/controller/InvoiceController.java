@@ -6,17 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.SellDetail;
 import com.ruoyi.system.service.ISellDetailService;
+import com.ruoyi.system.util.dateUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.system.domain.Invoice;
@@ -55,15 +53,8 @@ public class InvoiceController extends BaseController
     @ResponseBody
     public Map<String, Object> sumMoneyGYear() throws Exception{
         Map<String, Object> queryMap = new HashMap<String, Object>();
-        Date date=new Date();
-        SimpleDateFormat format=new SimpleDateFormat("yyyy");
-        String format1 = format.format(date);
-        Float summoney=0f;
-        List<Invoice> invoices = invoiceService.sumMoneyGYear(format1);
-        for (Invoice invoice:
-        invoices) {
-            summoney+=invoice.getMoney();
-        }
+        String yyyy = dateUtil.dataToString("yyyy", new Date());
+        Double summoney = invoiceService.sumMoneyGYear(yyyy);
         queryMap.put("summoney",summoney);
         return  queryMap;
     }
@@ -114,10 +105,11 @@ public class InvoiceController extends BaseController
             map.put("sellDetail",sellDetail);
             return prefix + "/add";
         }else{
-            Float sum=0f;
+            Double sum=0.0;
             for (int i=0;i<split.length;i++){
                 sum+=sellDetailService.selectSellDetailById(Long.valueOf(split[i])).getMoney();
             }
+
             map.put("sum",sum);
             map.put("ids",ids);
             return prefix + "/adds";
@@ -133,9 +125,10 @@ public class InvoiceController extends BaseController
     @Log(title = "发票", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Invoice invoice)
+    public AjaxResult addSave(@RequestParam("selldetailids") String selldetailids, Invoice invoice)
     {
-        return toAjax(invoiceService.insertInvoice(invoice));
+
+        return toAjax(invoiceService.insertInvoice(selldetailids,invoice));
     }
 
     /**
@@ -171,8 +164,11 @@ public class InvoiceController extends BaseController
     @Log(title = "发票", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String invoiceid)
+    public AjaxResult remove(String ids)
     {
-        return toAjax(invoiceService.deleteInvoiceByIds(invoiceid));
+        return toAjax(invoiceService.deleteInvoiceByIds(ids));
     }
+
+
+
 }

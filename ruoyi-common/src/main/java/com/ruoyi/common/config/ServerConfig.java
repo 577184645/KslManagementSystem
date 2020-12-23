@@ -1,6 +1,10 @@
 package com.ruoyi.common.config;
 
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import com.ruoyi.common.utils.ServletUtils;
 
@@ -13,6 +17,15 @@ import com.ruoyi.common.utils.ServletUtils;
 @Component
 public class ServerConfig
 {
+
+
+
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+MultipartConfigFactory factory = new MultipartConfigFactory();
+factory.setLocation("/tmp/tomcat");
+return factory.createMultipartConfig();
+    }
     /**
      * 获取完整的请求路径，包括：域名，端口，上下文访问路径
      * 

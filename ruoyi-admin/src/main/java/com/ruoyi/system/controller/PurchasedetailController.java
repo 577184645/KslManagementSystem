@@ -166,6 +166,28 @@ public class PurchasedetailController extends BaseController {
         return toAjax(purchasedetailService.insertPurchasedetail(purchasedetail));
     }
 
+
+
+
+
+    /**
+     * 跳转查看发票对应商品
+     * @param invoiceId
+     * @param mmap
+     * @return
+     */
+    @GetMapping("/invoiceinfoview/{purchaseinvoiceId}")
+    public String invoiceinfoview(@PathVariable("purchaseinvoiceId") Long purchaseinvoiceId, ModelMap mmap)
+    {
+        mmap.put("purchaseinvoiceId",purchaseinvoiceId);
+        return prefix + "/invoiceinfo";
+    }
+
+
+
+
+
+
     /**
      * 删除采购订单列表
      */
@@ -176,12 +198,6 @@ public class PurchasedetailController extends BaseController {
     public AjaxResult remove(String ids) {
         if (purchasedetailChildService.selectPurchasedetailChildPurchasedetailid(Long.valueOf(ids)).size() > 0) {
             return AjaxResult.error("操作失败,采购订单下有子订单信息!");
-        }
-        Purchaseinvoice purchaseinvoice = new Purchaseinvoice();
-        purchaseinvoice.setPurchasedetailid(ids);
-        List<Purchaseinvoice> purchaseinvoices = purchaseinvoiceService.selectPurchaseinvoiceList(purchaseinvoice);
-        if (purchaseinvoices.size() > 0) {
-            return AjaxResult.error("操作失败,采购订单下有发票信息!");
         }
         return toAjax(purchasedetailService.deletePurchasedetailByIds(ids));
     }

@@ -36,6 +36,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPurchasecontractVo"/>
         where id = #{id}
     </select>
+    <select id="selectPurchasecontractByPurchaseContractid"  resultMap="PurchasecontractResult">
+        <include refid="selectPurchasecontractVo"/>
+        where purchasecontractid = #{purchasecontractid}
+    </select>
+
+
         
     <insert id="insertPurchasecontract" parameterType="Purchasecontract" useGeneratedKeys="true" keyProperty="id">
         insert into purchasecontract
@@ -116,7 +122,7 @@ month(signingtime)
    select day(signingtime) as days ,sum(purchasesamount) as datas from purchasecontract WHERE year(signingtime)=#{newyear} and month(signingtime)=#{newmonth}  group by day(signingtime)
    </select>
 
-    <select id="selectPurchasesamountsumByContractId" resultType="Float">
+    <select id="selectPurchasesamountsumByContractId" resultType="Double">
 
         SELECT sum(purchasesamount) from purchasecontract WHERE contractid=#{contractid}
 

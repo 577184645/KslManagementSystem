@@ -3,13 +3,10 @@ package com.ruoyi.system.controller;
 import java.util.List;
 
 import com.ruoyi.system.domain.Purchasedetail;
-import com.ruoyi.system.domain.Sparepart;
 import com.ruoyi.system.service.IPurchasedetailService;
-import com.ruoyi.system.service.ISparepartService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
@@ -37,8 +34,7 @@ public class PurchaseinvoiceController extends BaseController
     private IPurchaseinvoiceService purchaseinvoiceService;
     @Autowired
     private IPurchasedetailService purchasedetailService;
-    @Autowired
-    private ISparepartService sparepartService;
+
 
     @RequiresPermissions("system:purchaseinvoice:view")
     @GetMapping()
@@ -103,38 +99,7 @@ public class PurchaseinvoiceController extends BaseController
     }
 
 
-    /**
-     * 新增备件采购发票
-     */
-    @GetMapping("/addsparepart/{id}")
-    public String addsparepart(ModelMap map, @PathVariable("id") String ids)
-    {
-        String[] split = ids.split(",");
 
-        if (split.length==1) {
-            Sparepart sparepart = sparepartService.selectSparepartById(Long.valueOf(split[0]));
-
-            map.put("sparepart", sparepart);
-            return prefix + "/addsparepart";
-        }else {
-            Sparepart sparepart = sparepartService.selectSparepartById(Long.valueOf(split[0]));
-
-            Double sum=0.0;
-            for (int i=0;i<split.length;i++){
-                sum+= sparepartService.selectSparepartById(Long.valueOf(split[i])).getMoney();
-            }
-            ids="";
-            for (int i=0;i<split.length;i++){
-                ids+= sparepartService.selectSparepartById(Long.valueOf(split[i])).getUuid()+",";
-            }
-
-            map.put("purchasecontractid", sparepart.getPurchasecontractid());
-            map.put("sum",sum);
-            map.put("ids",ids.substring(0,ids.lastIndexOf(",")));
-            return prefix + "/addspareparts";
-        }
-
-    }
 
     /**
      * 新增保存采购发票
@@ -143,9 +108,9 @@ public class PurchaseinvoiceController extends BaseController
     @Log(title = "采购发票", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Purchaseinvoice purchaseinvoice)
+    public AjaxResult addSave(@RequestParam("purchasedetailids") String purchasedetailids,Purchaseinvoice purchaseinvoice)
     {
-        return toAjax(purchaseinvoiceService.insertPurchaseinvoice(purchaseinvoice));
+        return toAjax(purchaseinvoiceService.insertPurchaseinvoice(purchaseinvoice,purchasedetailids));
     }
 
     /**
@@ -171,6 +136,9 @@ public class PurchaseinvoiceController extends BaseController
         return toAjax(purchaseinvoiceService.updatePurchaseinvoice(purchaseinvoice));
     }
 
+
+
+
     /**
      * 删除采购发票
      */
@@ -178,23 +146,8 @@ public class PurchaseinvoiceController extends BaseController
     @Log(title = "采购发票", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(Long id)
+    public AjaxResult remove(String ids)
     {
-        return toAjax(purchaseinvoiceService.deletePurchaseinvoiceById(id));
-    }
-
-
-
-    /**
-     * 删除采购发票
-     */
-    @RequiresPermissions("system:purchaseinvoice:remove")
-    @Log(title = "采购发票", businessType = BusinessType.DELETE)
-    @PostMapping( "/removes")
-    @ResponseBody
-    public AjaxResult removes(@RequestParam("purchaseinvoiceid") String purchaseinvoiceid,@RequestParam(value = "purchasecontractid",required = false) String purchasecontractid)
-    {
-        System.out.println(purchaseinvoiceid+","+purchasecontractid);
-        return toAjax(purchaseinvoiceService.deletePurchaseinvoiceByIds(purchaseinvoiceid,purchasecontractid));
+        return toAjax(purchaseinvoiceService.deletePurchaseinvoiceByIds(ids));
     }
 }
