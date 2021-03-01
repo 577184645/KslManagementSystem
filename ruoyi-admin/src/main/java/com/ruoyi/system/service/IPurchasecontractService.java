@@ -3,6 +3,7 @@ package com.ruoyi.system.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.Purchasecontract;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,7 +17,7 @@ public interface IPurchasecontractService
 {
     /**
      * 查询采购合同
-     * 
+     *
      * @param id 采购合同ID
      * @return 采购合同
      */
@@ -60,49 +61,31 @@ public interface IPurchasecontractService
      * @param id 采购合同ID
      * @return 结果
      */
-    public int deletePurchasecontractById(Long id);
-
+    public AjaxResult deletePurchasecontractById(Long id);
 
 
     /**
-     * 查询采购合同
-     * @param contractid
+     * 打印
+     * @param PurchasecontractId
      * @return
      */
-    public List<Purchasecontract> selectPurchasecontractByContractId(String contractid);
+    public Map<String,Object>  print(String  PurchasecontractId);
+
+
 
     /**
      * 生成采购合同
      * @param contractid
      * @return
      */
-    String findcontractid(String contractid);
-
-    /**
-     * 根据销售合同查询所有的采购金额
-     * @param contractid
-     * @return
-     */
-    public Double selectPurchasesamountsumByContractId(String contractid);
-
-
-    /**
-     * 根据某一年查询每个月的总金额
-     * @param newdate
-     * @return
-     */
-    public List<Map<String,Object>> selectPurchasesamountByMonth( String newdate);
+    String findcontractid(Long contractid,String type);
 
 
 
-    /**
-     * 根据某一个月查询每天的总金额
-     * @param newyear
-     *    @param newmonth
-     * @return
-     */
-    public List<Map<String,Object>> selectPurchasesamountByday(String newyear,String newmonth);
 
 
-    Purchasecontract selectPurchasecontractByPurchaseContractid(String id);
+
+
+
+
 }

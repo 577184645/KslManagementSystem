@@ -1,15 +1,13 @@
 package com.ruoyi.system.controller;
 
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.system.domain.SellDetail;
 import com.ruoyi.system.service.ISellDetailService;
-import com.ruoyi.system.util.dateUtil;
+import com.ruoyi.system.utils.dateUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,15 +47,7 @@ public class InvoiceController extends BaseController
 
 
 
-    @GetMapping(value = "sumMoneyGYear")
-    @ResponseBody
-    public Map<String, Object> sumMoneyGYear() throws Exception{
-        Map<String, Object> queryMap = new HashMap<String, Object>();
-        String yyyy = dateUtil.dataToString("yyyy", new Date());
-        Double summoney = invoiceService.sumMoneyGYear(yyyy);
-        queryMap.put("summoney",summoney);
-        return  queryMap;
-    }
+
 
 
     /**
@@ -95,27 +85,18 @@ public class InvoiceController extends BaseController
      * 新增发票
      */
 
-    @GetMapping("/add/{id}")
-    public String add(ModelMap map, @PathVariable("id") String ids)
+    @GetMapping("/add/{id}/{salescontractId}")
+    public String add(ModelMap map, @PathVariable("id") String ids,@PathVariable("salescontractId") String salescontractId)
     {
-
+        BigDecimal sum=new BigDecimal("0");
         String[] split = ids.split(",");
-        if (split.length==1) {
-            SellDetail sellDetail = sellDetailService.selectSellDetailById(Long.valueOf(split[0]));
-            map.put("sellDetail",sellDetail);
-            return prefix + "/add";
-        }else{
-            Double sum=0.0;
-            for (int i=0;i<split.length;i++){
-                sum+=sellDetailService.selectSellDetailById(Long.valueOf(split[i])).getMoney();
-            }
-
-            map.put("sum",sum);
-            map.put("ids",ids);
-            return prefix + "/adds";
-
+        for (int i=0;i<split.length;i++){
+             sum=sum.add(new BigDecimal(String.valueOf(sellDetailService.selectSellDetailById(Long.valueOf(split[i])).getMoney())));
         }
-
+        map.put("sum",sum);
+        map.put("ids",ids);
+        map.put("salescontractId",salescontractId);
+        return prefix + "/add";
     }
 
     /**
@@ -125,10 +106,10 @@ public class InvoiceController extends BaseController
     @Log(title = "发票", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(@RequestParam("selldetailids") String selldetailids, Invoice invoice)
+    public AjaxResult addSave(@RequestParam("salescontractId") Long salescontractId,@RequestParam("selldetailids") String selldetailids, Invoice invoice)
     {
 
-        return toAjax(invoiceService.insertInvoice(selldetailids,invoice));
+        return toAjax(invoiceService.insertInvoice(salescontractId,selldetailids,invoice));
     }
 
     /**

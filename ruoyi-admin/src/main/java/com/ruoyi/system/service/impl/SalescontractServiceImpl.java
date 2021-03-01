@@ -1,42 +1,40 @@
 package com.ruoyi.system.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.system.domain.SellDetail;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.mapper.PurchasecontractMapper;
 import com.ruoyi.system.mapper.SellDetailMapper;
-import com.ruoyi.system.util.dateUtil;
-import com.ruoyi.system.util.numberUtil;
+import com.ruoyi.system.utils.jsonlistUtil;
+import com.ruoyi.system.utils.numberUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SalescontractMapper;
-import com.ruoyi.system.domain.Salescontract;
 import com.ruoyi.system.service.ISalescontractService;
 import com.ruoyi.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 销售合同列表Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2020-05-20
  */
 @Service
+@Transactional
 public class SalescontractServiceImpl implements ISalescontractService {
     @Autowired
     private SalescontractMapper salescontractMapper;
     @Autowired
     private SellDetailMapper sellDetailMapper;
+    @Autowired
+    private PurchasecontractMapper purchasecontractMapper;
 
-    @Override
-    public Double sumMoneyGYear(String newDate) {
-        return salescontractMapper.sumMoneyGYear(newDate);
-    }
 
     /**
      * 查询销售合同列表
@@ -60,120 +58,99 @@ public class SalescontractServiceImpl implements ISalescontractService {
         return salescontractMapper.selectSalescontractList(salescontract);
     }
 
-    /**
-     * 新增销售商品信息并返回总和
-     * @return
-     */
-    private Double  insertSelldetail(String salescontractList,String Contractid){
-        JSONArray productArray = JSONArray.fromObject(salescontractList);
-        Double sum=0.0;
-        for (int i = 0; i < productArray.size(); i++) {
-            JSONObject jsonObject = productArray.getJSONObject(i);
-            SellDetail sellDetail = new SellDetail();
-            sellDetail.setProductname(jsonObject.getString("productname"));
-            sellDetail.setUnit(jsonObject.getString("unit"));
-            sellDetail.setSpecifications(jsonObject.getString("specifications"));
-            sellDetail.setProducttype(jsonObject.getString("producttype"));
-
-            if (!jsonObject.getString("price").equals("")) {
-                sellDetail.setPrice(Double.valueOf(jsonObject.getString("price")));
-            }
-
-            if (!jsonObject.getString("money").equals("")) {
-                sellDetail.setMoney(Double.valueOf(jsonObject.getString("money")));
-            }
-            if (!jsonObject.getString("productnum").equals("")) {
-                sellDetail.setProductnum(Integer.valueOf(jsonObject.getString("productnum")));
-            }
-            sum+=Double.valueOf(jsonObject.getString("money"));
-            sellDetail.setContractid(Contractid);
-            sellDetailMapper.insertSellDetail(sellDetail);
-        }
-           return  sum;
-    }
-
-    @Override
-    @Transactional
-    public int insertSalescontractAndSelldetail(String salescontractList, Salescontract salescontract) {
-        Double sum= insertSelldetail(salescontractList,salescontract.getContractid());
-        salescontract.setSalesamount(sum);
-        return salescontractMapper.insertSalescontract(salescontract);
-    }
-
 
     /**
      * 新增销售合同列表
-     * 
-     * @param salescontract 销售合同列表
-     * @return 结果
+     *
+     * @param salescontractList
+     * @param salescontract     salescontractList 销售合同列表
+     * @return
      */
+    @Override
+    public int insertSalescontractAndSelldetail(String salescontractList, Salescontract salescontract) {
+        List<String[]> jsonList = jsonlistUtil.getJsonList(salescontractList, new String[]{"productname", "unit", "specifications", "producttype", "price", "productnum", "money"});
+        Double sum = 0.0;
+        int result = salescontractMapper.insertSalescontract(salescontract);
+        for (int i = 0; i < jsonList.size(); i++) {
+            String[] strings = jsonList.get(i);
+            SellDetail sellDetail = new SellDetail();
+            sellDetail.setProductname(strings[0]);
+            sellDetail.setUnit(strings[1]);
+            sellDetail.setSpecifications(strings[2]);
+            sellDetail.setProducttype(strings[3]);
+            sellDetail.setPrice(Double.valueOf(strings[4]));
+            sellDetail.setProductnum(Integer.valueOf(strings[5]));
+            sellDetail.setMoney(Double.valueOf(strings[4]) * Integer.valueOf(strings[5]));
+            sellDetail.setContractId(salescontract.getId());
+            sum += sellDetail.getMoney();
+            sellDetailMapper.insertSellDetail(sellDetail);
+        }
+        Salescontract updatesalescontract = new Salescontract();
+        updatesalescontract.setId(salescontract.getId());
+        updatesalescontract.setSalesamount(sum);
+        salescontractMapper.updateSalescontract(updatesalescontract);
+        return result;
+    }
+
 
     /**
      * 修改销售合同列表
-     * 
+     *
      * @param salescontract 销售合同列表
      * @return 结果
      */
     @Override
-    public int updateSalescontract(Salescontract salescontract)
-    {
+    public int updateSalescontract(Salescontract salescontract) {
         return salescontractMapper.updateSalescontract(salescontract);
     }
 
     /**
      * 删除销售合同列表对象
-     * 
-     * @param ids 需要删除的数据ID
+     *
+     * @param id 需要删除的数据ID
      * @return 结果
      */
     @Override
-    public int deleteSalescontractByIds(String ids)
-    {
-        return salescontractMapper.deleteSalescontractByIds(Convert.toStrArray(ids));
+    public AjaxResult deleteSalescontractById(Long id) {
+        List<SellDetail> sellDetails = sellDetailMapper.selectSellDetailByContractId(id);
+        if (sellDetails != null && sellDetails.size() > 0) {
+            return AjaxResult.error("操作失败,销售合同下有订单信息!");
+        }
+        List<Purchasecontract> purchasecontracts = purchasecontractMapper.selectPurchasecontractByContractId(id);
+        if (purchasecontracts != null && purchasecontracts.size() > 0) {
+            return AjaxResult.error("操作失败,销售合同下有采购合同!");
+        }
+        salescontractMapper.deleteSalescontractById(id);
+        return AjaxResult.success("操作成功!");
     }
 
-    /**
-     * 删除销售合同列表信息
-     * 
-     * @param id 销售合同列表ID
-     * @return 结果
-     */
-    @Override
-    public int deleteSalescontractById(Long id)
-    {
-        return salescontractMapper.deleteSalescontractById(id);
-    }
 
     @Override
-    public String getContractid(String type) {
-
-       String date= dateUtil.dataToString("yyyy",new Date());
-        String datetwo = date.substring(2, date.length());
-        String maxContractid = salescontractMapper.maxContractid(type,datetwo);
-        String contractid="";
-
-        if(maxContractid==null||maxContractid.equals("null")){
-           if (type.equals("G")){
-               contractid = datetwo + "G" + "0001";
-           }else if (type.equals("Z")){
-               contractid = datetwo + "Z" + "0001";
-           }else if(type.equals("X")){
-               contractid = datetwo + "X" + "0001";
-           }
-        }else{
+    public String getContractid(String type, String year) {
+        String contractid = "";
+        String maxContractid = salescontractMapper.maxContractid(type, year);
+        if (null == maxContractid) {
+            if (type.equals("G")) {
+                contractid = year + "G" + "0001";
+            } else if (type.equals("Z")) {
+                contractid = year + "Z" + "0001";
+            } else if (type.equals("X")) {
+                contractid = year + "X" + "0001";
+            }
+        } else {
 
             String size = numberUtil.numberToStringAddOne(Integer.valueOf(maxContractid.substring(3)));
             if (type.equals("G")) {
 
-             contractid = datetwo + "G" + size;
-         }
+                contractid = year + "G" + size;
+            }
             if (type.equals("Z")) {
 
-                contractid = datetwo + "Z" + size;
+                contractid = year + "Z" + size;
             }
             if (type.equals("X")) {
 
-                contractid = datetwo + "X" + size;
+                contractid = year + "X" + size;
             }
 
         }
@@ -182,12 +159,9 @@ public class SalescontractServiceImpl implements ISalescontractService {
     }
 
     @Override
-    public List<Map<String,Object>> selectSalesamountBmonth(String newdate) {
-        return salescontractMapper.selectSalesamountBmonth(newdate);
+    public Map<String, Object> findSalescontractInfo(Long id) {
+        return salescontractMapper.findSalescontractInfo(id);
     }
 
-    @Override
-    public List<Map<String, Object>> selectSalesamountByday(String newyear, String newmonth) {
-        return salescontractMapper.selectSalesamountByday(newyear,newmonth);
-    }
+
 }

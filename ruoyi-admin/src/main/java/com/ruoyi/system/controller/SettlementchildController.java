@@ -66,7 +66,7 @@ public class SettlementchildController extends BaseController
                 for (String s : split) {
                     sum+=Float.valueOf(s);
                 }
-                settlementchild1.setPurchasesamount(sum);
+                //settlementchild1.setPurchasesamount(sum);
                 settlementchild1.setPurchasemoney(settlementchild1.getPurchasemoney().replace(",", "<br>,"));
             }
             }

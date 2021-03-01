@@ -7,6 +7,7 @@ import com.ruoyi.system.mapper.SettlementchildMapper;
 import com.ruoyi.system.domain.Settlementchild;
 import com.ruoyi.system.service.ISettlementchildService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 【请填写功能名称】Service业务层处理
@@ -15,6 +16,7 @@ import com.ruoyi.common.core.text.Convert;
  * @date 2020-07-17
  */
 @Service
+@Transactional
 public class SettlementchildServiceImpl implements ISettlementchildService 
 {
     @Autowired

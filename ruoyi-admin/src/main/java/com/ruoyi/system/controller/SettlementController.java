@@ -5,6 +5,7 @@ import java.util.List;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.Settlementchild;
 import com.ruoyi.system.domain.SysUser;
+import com.ruoyi.system.service.IKslcusromeruserService;
 import com.ruoyi.system.service.ISettlementchildService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class SettlementController extends BaseController
     private ISettlementService settlementService;
     @Autowired
     private ISettlementchildService settlementchildService;
+    @Autowired
+    private IKslcusromeruserService kslcusromeruserService;
 
     @RequiresPermissions("system:settlement:view")
     @GetMapping()
@@ -63,15 +66,12 @@ public class SettlementController extends BaseController
     @GetMapping("/print/{id}")
     public String print(@PathVariable("id") Long id, ModelMap mmap)
     {
-
         SysUser user = ShiroUtils.getSysUser();
-
         Settlement settlement = settlementService.selectSettlementById(id);
         Settlementchild settlementchild=new Settlementchild();
-        settlementchild.setSerialnumber(settlement.getSerialnumber());
+        settlementchild.setSettlementId(settlement.getId());
         List<Settlementchild> settlementchildren = settlementchildService.selectSettlementchildList(settlementchild);
         mmap.put("settlementchildren",settlementchildren);
-
         mmap.put("settlement",settlement);
         mmap.put("username", user.getUserName());
         return prefix + "/print";
@@ -94,8 +94,9 @@ public class SettlementController extends BaseController
      * 新增结算
      */
     @GetMapping("/add")
-    public String add()
+    public String add(ModelMap mmap)
     {
+        mmap.put("kslcusromeruserList",kslcusromeruserService.selectKslcusromeruserList(null));
         return prefix + "/add";
     }
 
@@ -122,18 +123,7 @@ public class SettlementController extends BaseController
         return prefix + "/edit";
     }
 
-    /**
-     * 修改保存结算
-     */
-    @RequiresPermissions("system:settlement:edit")
-    @Log(title = "结算", businessType = BusinessType.UPDATE)
-    @PostMapping("/edit")
-    @ResponseBody
-    public AjaxResult editSave(Settlement settlement,String settlementList)
-    {
 
-        return toAjax(settlementService.editSettlement(settlement,settlementList));
-    }
 
     /**
      * 删除结算
@@ -142,9 +132,8 @@ public class SettlementController extends BaseController
     @Log(title = "结算", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String serialnumber)
+    public AjaxResult remove(String ids)
     {
-        return toAjax(
-                settlementService.deleteSettlementBySerialNumber(serialnumber));
+        return toAjax(settlementService.deleteSettlementById(Long.valueOf(ids)));
     }
 }

@@ -75,7 +75,7 @@ public interface PurchasecontractMapper
      * @param contractid
      * @return
      */
-    public List<Purchasecontract> selectPurchasecontractByContractId(String contractid);
+    public List<Purchasecontract> selectPurchasecontractByContractId(Long contractid);
 
 
     /**
@@ -83,17 +83,11 @@ public interface PurchasecontractMapper
      * @param contractid
      * @return
      */
-    public String selectMaxPurchasecontractByContractId(String contractid);
+    public String selectMaxPurchasecontractByContractId(Long contractid);
 
 
 
 
-    /**
-     * 根据销售合同查询所有的采购金额
-     * @param contractid
-     * @return
-     */
-    public Double selectPurchasesamountsumByContractId(String contractid);
 
 
 
@@ -115,4 +109,5 @@ public interface PurchasecontractMapper
     public List<Map<String,Object>> selectPurchasesamountByday(@Param("newyear") String newyear,@Param("newmonth") String newmonth);
 
 
+    Map selectPurchasecontractByInvoiceStatus(Long purchasecontractid);
 }

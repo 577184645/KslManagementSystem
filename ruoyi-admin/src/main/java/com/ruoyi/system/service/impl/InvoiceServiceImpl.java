@@ -1,8 +1,13 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+import java.util.Map;
+
+import com.ruoyi.common.constant.AdminConstants;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.domain.Salescontract;
 import com.ruoyi.system.domain.SellDetail;
+import com.ruoyi.system.mapper.SalescontractMapper;
 import com.ruoyi.system.mapper.SellDetailMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +24,15 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2020-07-09
  */
 @Service
+@Transactional
 public class InvoiceServiceImpl implements IInvoiceService 
 {
     @Autowired
     private InvoiceMapper invoiceMapper;
     @Autowired
     private SellDetailMapper sellDetailMapper;
+    @Autowired
+    private SalescontractMapper salescontractMapper;
 
 
     /**
@@ -58,33 +66,45 @@ public class InvoiceServiceImpl implements IInvoiceService
      * @return 结果
      */
     @Override
-    @Transactional
-    public int insertInvoice(String selldetailids,Invoice invoice)
+    public boolean insertInvoice(Long salescontractId,String selldetailids,Invoice invoice)
     {
         String[] ids = selldetailids.split(",");
-      if(invoiceMapper.selectInvoiceByInvoiceid(invoice.getInvoiceid())!=null ){
+        //判断这张发票是否存在
+        Invoice oldinvoice = invoiceMapper.selectInvoiceByInvoiceid(invoice.getInvoiceid());
+        if(oldinvoice!=null ){
           invoiceMapper.updateInvoiceByInvoiceid(invoice.getMoney(),invoiceMapper.selectInvoiceByInvoiceid(invoice.getInvoiceid()).getId());
-          for (String id : ids) {
-              SellDetail sellDetail = new SellDetail();
-              sellDetail.setId(Long.valueOf(id));
-              sellDetail.setInvoiceId(invoiceMapper.selectInvoiceByInvoiceid(invoice.getInvoiceid()).getId());
-              sellDetailMapper.updateSellDetail(sellDetail);
-          }
-
-      }else{
-          if(invoiceMapper.insertInvoice(invoice)>0){
-              for (String id : ids) {
-                  SellDetail sellDetail = new SellDetail();
-                  sellDetail.setId(Long.valueOf(id));
-                  sellDetail.setInvoiceId(invoice.getId());
-                  sellDetailMapper.updateSellDetail(sellDetail);
-              }
-          }
+         invoice.setId(oldinvoice.getId());
+        }else{
+         invoiceMapper.insertInvoice(invoice);
       }
-
-
-          return  1;
+        for (String id : ids) {
+            SellDetail sellDetail = new SellDetail();
+            sellDetail.setId(Long.valueOf(id));
+            sellDetail.setInvoiceId(invoice.getId());
+            sellDetailMapper.updateSellDetail(sellDetail);
+        }
+        updateSalescontract(salescontractId);
+        return  true;
     }
+
+
+    /**
+     * 修改发票状态
+     * @param salescontractId
+     */
+    private void updateSalescontract(Long salescontractId){
+        Map map = salescontractMapper.selectSalescontractByInvoiceStatus(salescontractId);
+        Salescontract salescontract=new Salescontract();
+        salescontract.setId(salescontractId);
+        if((long)map.get("icount")==0){
+            salescontract.setInvoiceStatus(AdminConstants.Salescontract.INVOICESTATUS_NOOPEN);
+        }else if((long)map.get("icount")!=(long)map.get("scount")){
+            salescontract.setInvoiceStatus(AdminConstants.Salescontract.INVOICESTATUS_INCOMPLATE);
+        }else{
+            salescontract.setInvoiceStatus(AdminConstants.Salescontract.INVOICESTATUS_OPEN);
+        }
+        salescontractMapper.updateSalescontract(salescontract);
+    };
 
     /**
      * 修改发票
@@ -107,39 +127,24 @@ public class InvoiceServiceImpl implements IInvoiceService
      * @return 结果
      */
     @Override
-    @Transactional
     public int deleteInvoiceByIds(String ids)
     {
         for (String s : ids.split(",")) {
-            sellDetailMapper.updateSellDetailByInvoiceId(s);
+            //找到这张发票下所有的关联的合同
+            List<Long> contractids = invoiceMapper.selectInvoiceListByIdGetContractid(Long.valueOf(s));
+            sellDetailMapper.updateInvoiceIdNullByInvoiceId(s);
+            for (Long contractid : contractids) {
+                updateSalescontract(contractid);
+            }
          }
 
         return invoiceMapper.deleteInvoiceByIds(Convert.toStrArray(ids));
     }
 
 
-    /**
-     * 删除发票信息
-     * 
-     * @param id 发票ID
-     * @return 结果
-     */
-    @Override
-    public int deleteInvoiceById(Long id)
-    {
 
-        return invoiceMapper.deleteInvoiceById(id);
-    }
 
-    @Override
-    public Double sumMoneyGYear(String newDate) {
-        return invoiceMapper.sumMoneyGYear(newDate);
-    }
 
-    @Override
-    public List<Invoice> selectInvoiceListbycontractid(String contractid) {
-        return invoiceMapper.selectInvoiceListbycontractid(contractid);
-    }
 
 
 }

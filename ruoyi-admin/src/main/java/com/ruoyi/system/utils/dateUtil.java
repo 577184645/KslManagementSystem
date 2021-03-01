@@ -1,4 +1,4 @@
-package com.ruoyi.system.util;
+package com.ruoyi.system.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,5 +9,7 @@ public  class dateUtil {
         SimpleDateFormat format = new SimpleDateFormat(formatdate);
         return  format.format(date);
     }
+
+
 
 }

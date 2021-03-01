@@ -125,11 +125,10 @@ public class SellDetailController extends BaseController
     @RequiresPermissions("system:detail:list")
     @PostMapping("/listInContractid")
     @ResponseBody
-    public TableDataInfo listInContractid(@Param("contractid") String contractid)
+    public TableDataInfo listInContractid(SellDetail sellDetail)
     {
-        String [] arr=contractid.split(",");
         startPage();
-        List<SellDetail> list = sellDetailService.selectSellDetailByInContractId(arr);
+        List<SellDetail> list = sellDetailService.selectSellDetailList(sellDetail);
         return getDataTable(list);
     }
 
@@ -150,10 +149,11 @@ public class SellDetailController extends BaseController
     /**
      * 新增销售订单列表
      */
-    @GetMapping("/add/{contractid}")
-    public ModelAndView add(ModelAndView model,@PathVariable("contractid") String contractid)
+    @GetMapping("/add/{sid}/{contractid}")
+    public ModelAndView add(ModelAndView model,@PathVariable("sid") Long sid,@PathVariable("contractid") String contractid)
     {
         model.addObject("contractid",contractid);
+        model.addObject("sid",sid);
         model.setViewName(prefix + "/add");
          return model;
     }
@@ -178,7 +178,7 @@ public class SellDetailController extends BaseController
     {
         SellDetail sellDetail = sellDetailService.selectSellDetailById(id);
         mmap.put("sellDetail", sellDetail);
-        mmap.put( "supplierList",supplierService.findList());
+        mmap.put("supplierList",supplierService.findList());
         return prefix + "/edit";
     }
 

@@ -1,48 +1,87 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SalescontractMapper">
-    
+
     <resultMap type="Salescontract" id="SalescontractResult">
 
-        <result property="settlementstatus"    column="settlementstatus"    />
-        <result property="id"    column="id"    />
-        <result property="contractid"    column="contractid"    />
-        <result property="operator"    column="operator"    />
-        <result property="payway"    column="payway"    />
-        <result property="salesamount"    column="salesamount"    />
-        <result property="firstparty"    column="firstparty"    />
-        <result property="signingtime"    column="signingtime"    />
-        <result property="remarks"    column="remarks"    />
-        <result property="createTime"    column="create_time"    />
+        <result property="settlementstatus" column="settlementstatus"/>
+        <result property="id" column="id"/>
+        <result property="contractid" column="contractid"/>
+        <result property="operator" column="operator"/>
+        <result property="payway" column="payway"/>
+        <result property="salesamount" column="salesamount"/>
+        <result property="firstparty" column="firstparty"/>
+        <result property="signingtime" column="signingtime"/>
+        <result property="remarks" column="remarks"/>
+        <result property="createTime" column="create_time"/>
+        <result property="invoiceStatus" column="invoice_status"/>
+        <result property="purchasesamount" column="purchasesamount"/>
+
+
     </resultMap>
 
     <sql id="selectSalescontractVo">
-        select id, settlementstatus,contractid, operator, payway, salesamount, firstparty, signingtime, remarks, create_time from salescontract
+        select id,
+               invoice_status,
+               settlementstatus,
+               contractid,
+               operator,
+               payway,
+               salesamount,
+               firstparty,
+               signingtime,
+               remarks,
+               create_time
+        from sale_contract
     </sql>
 
     <select id="selectSalescontractList" parameterType="Salescontract" resultMap="SalescontractResult">
         <include refid="selectSalescontractVo"/>
-        <where>  
-            <if test="contractid != null  and contractid != ''"> and contractid = #{contractid}</if>
-            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
-            <if test="firstparty != null  and firstparty != ''"> and firstparty = #{firstparty}</if>
-            <if test="islookstatus != null  and islookstatus != ''"> and settlementstatus = 0</if>
-
-
+        <where>
+            <if test="contractid != null  and contractid != ''">and contractid like concat('%', #{contractid}, '%')</if>
+            <if test="operator != null  and operator != ''">and operator = #{operator}</if>
+            <if test="firstparty != null  and firstparty != ''">and firstparty = #{firstparty}</if>
+            <if test="islookstatus != null  and islookstatus != ''">and settlementstatus = 0</if>
+            <if test="invoiceStatus != null  and invoiceStatus != ''">and invoice_status = #{invoiceStatus}</if>
         </where>
         order by contractid
     </select>
-    
+
     <select id="selectSalescontractById" parameterType="Long" resultMap="SalescontractResult">
-        <include refid="selectSalescontractVo"/>
+        select id,
+               invoice_status,
+               settlementstatus,
+               contractid,
+               operator,
+               payway,
+               salesamount,
+               firstparty,
+               signingtime,
+               remarks,
+               create_time,
+               (select SUM(purchasesamount) from pur_contract where contract_id = sale_contract.id) purchasesamount
+        from sale_contract
         where id = #{id}
     </select>
-        
+
+    <select id="selectSalescontractByInvoiceStatus" resultType="Map">
+        select s.id,
+               s.contractid,
+               (select count(*) from sale_detail where contract_id = s.id)     scount,
+               (select count(*) from sale_detail where contract_id = s.id
+                                                   and invoice_id is not null) icount
+        from sale_contract s
+        where s.id = #{id}
+    </select>
+
     <insert id="insertSalescontract" parameterType="Salescontract" useGeneratedKeys="true" keyProperty="id">
-        insert into salescontract
+        insert into sale_contract
         <trim prefix="(" suffix=")" suffixOverrides=",">
+
+            <if test="invoiceStatus != null  and invoiceStatus != ''">invoice_status,</if>
+
             <if test="contractid != null  and contractid != ''">contractid,</if>
             <if test="operator != null  and operator != ''">operator,</if>
             <if test="payway != null  and payway != ''">payway,</if>
@@ -51,8 +90,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signingtime != null ">signingtime,</if>
             <if test="remarks != null  and remarks != ''">remarks,</if>
             <if test="createTime != null ">create_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            <if test="invoiceStatus != null  and invoiceStatus != ''">#{invoiceStatus},</if>
+
             <if test="contractid != null  and contractid != ''">#{contractid},</if>
             <if test="operator != null  and operator != ''">#{operator},</if>
             <if test="payway != null  and payway != ''">#{payway},</if>
@@ -61,12 +103,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signingtime != null ">#{signingtime},</if>
             <if test="remarks != null  and remarks != ''">#{remarks},</if>
             <if test="createTime != null ">#{createTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateSalescontract" parameterType="Salescontract">
-        update salescontract
+        update sale_contract
         <trim prefix="SET" suffixOverrides=",">
+
+            <if test="invoiceStatus != null  and invoiceStatus != ''">invoice_status = #{invoiceStatus},</if>
             <if test="contractid != null  and contractid != ''">contractid = #{contractid},</if>
             <if test="operator != null  and operator != ''">operator = #{operator},</if>
             <if test="payway != null  and payway != ''">payway = #{payway},</if>
@@ -80,29 +124,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <update id="updateSettlementstatus">
-         update salescontract set settlementstatus=1 where contractid=#{contractid}
+        update sale_contract
+        set settlementstatus = #{value}
+        where id = #{contractId}
     </update>
 
-    <update id="updateSettlementbackstatus">
-         update salescontract set settlementstatus=0 where contractid=#{contractid}
-    </update>
+
 
 
     <delete id="deleteSalescontractById" parameterType="Long">
-        delete from salescontract where id = #{id}
+        delete
+        from sale_contract
+        where id = #{id}
     </delete>
 
     <delete id="deleteSalescontractByIds" parameterType="String">
-        delete from salescontract where id in 
+        delete from sale_contract where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
 
     <select id="maxContractid" resultType="String" parameterType="String">
-	 select max(contractid) from salescontract where contractid like '%${type}%'
-	 and SUBSTR(create_time,3,2)=#{newdate}
-	</select>
+        select max(contractid)
+        from sale_contract
+        where contractid like '%${type}%'
+          and SUBSTR(create_time, 3, 2) = #{newdate}
+    </select>
 
     <select id="selectSalescontractByContractId" resultMap="SalescontractResult">
         <include refid="selectSalescontractVo"/>
@@ -110,26 +158,53 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="sumMoneyGYear" resultType="Double">
-     select sum(salesamount) from salescontract
-     where signingtime like '%${newDate}%'
-     group by year(#{newDate})
-</select>
+        select sum(salesamount)
+        from sale_contract
+        where year(signingtime) = #{newDate}
+        group by year(signingtime)
+    </select>
 
-<select id="selectSalesamountBmonth" resultType="Map">
-    select month(signingtime) as months  ,sum(salesamount) as  datas
-from salescontract
-WHERE year(signingtime)=#{newdate}
-group by
-month(signingtime)
+    <select id="selectSalesamountBmonth" resultType="Map">
+        select month(signingtime) as months, sum(salesamount) as datas
+        from sale_contract
+        WHERE year(signingtime) = #{newdate}
+        group by month(signingtime)
 
-</select>
+    </select>
 
 
     <select id="selectSalesamountByday" resultType="Map">
- select day(signingtime) as days ,sum(salesamount) as datas from salescontract WHERE year(signingtime)=#{newyear} and month(signingtime)=#{newmonth}  group by day(signingtime)
-
-</select>
-
+        select day(signingtime) as days, sum(salesamount) as datas
+        from sale_contract
+        WHERE year(signingtime) = #{newyear}
+          and month(signingtime) = #{newmonth}
+        group by day(signingtime)
+    </select>
+    <select id="findSalescontractInfo" resultType="java.util.Map">
+        select s.id,
+               contractid,
+               firstparty,
+               salesamount,
+               group_concat(DISTINCT t.invoiceid)                                       invoices,
+               group_concat(DISTINCT p.partyb)                                          suppliers,
+               group_concat(DISTINCT p.purchasesamount)                                 purcharsemoneys,
+               group_concat(DISTINCT p.purchasecontractid)                              purchasecontractids,
+               group_concat(DISTINCT pi.purchaseinvoiceid)                              purchaseinvoices,
+               (select SUM(purchasesamount) from pur_contract where contract_id = s.id) purchasesamount
+               from sale_contract s
+                 left JOIN (select invoiceid, contract_id from sale_invoice
+                 inner join sale_detail
+              on invoice_id = sale_invoice.id) t
+                     on t.contract_id = s.id
+                 left JOIN (select partyb, contract_id, purchasesamount, purchasecontractid from pur_contract) p
+                     on p.contract_id = s.id
+              left JOIN (select purchaseinvoiceid, contract_id
+           from pur_invoice
+           inner join pur_detail on purchaseinvoice_id = pur_invoice.id
+           INNER JOIN pur_contract on pur_contract.id = purchasecontract_id) pi
+                     on pi.contract_id = s.id
+        where s.id = #{id}
+    </select>
 
 
 </mapper>

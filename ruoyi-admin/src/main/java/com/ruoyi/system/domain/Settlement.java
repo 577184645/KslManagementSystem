@@ -1,6 +1,8 @@
 package com.ruoyi.system.domain;
 
 import java.util.Date;
+
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -12,6 +14,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2020-07-17
  */
+@Data
 public class Settlement extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -35,60 +38,5 @@ public class Settlement extends BaseEntity
     @Excel(name = "序号")
     private String serialnumber;
 
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
 
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setOperator(String operator) 
-    {
-        this.operator = operator;
-    }
-
-    public String getOperator() 
-    {
-        return operator;
-    }
-
-    public Float getPersonalincome() {
-        return personalincome;
-    }
-
-    public void setPersonalincome(Float personalincome) {
-        this.personalincome = personalincome;
-    }
-
-    public void setSettlementtime(Date settlementtime)
-    {
-        this.settlementtime = settlementtime;
-    }
-
-    public Date getSettlementtime() 
-    {
-        return settlementtime;
-    }
-    public void setSerialnumber(String serialnumber) 
-    {
-        this.serialnumber = serialnumber;
-    }
-
-    public String getSerialnumber() 
-    {
-        return serialnumber;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("operator", getOperator())
-            .append("personalincome", getPersonalincome())
-            .append("settlementtime", getSettlementtime())
-            .append("serialnumber", getSerialnumber())
-            .toString();
-    }
 }

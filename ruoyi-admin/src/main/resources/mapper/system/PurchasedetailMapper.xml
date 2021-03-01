@@ -6,91 +6,69 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="Purchasedetail" id="PurchasedetailResult">
         <result property="id"    column="id"    />
-        <result property="productname"    column="productname"    />
         <result property="price"    column="price"    />
-        <result property="unit"    column="unit"    />
-        <result property="specifications"    column="specifications"    />
-        <result property="purchasecontractid"    column="purchasecontractid"    />
-        <result property="producttype"    column="producttype"    />
+        <result property="purchasecontractId"    column="purchasecontract_id"    />
         <result property="productnum"    column="productnum"    />
         <result property="money"    column="money"    />
-        <result property="selldetailid"    column="selldetailid"    />
+        <result property="selldetailId"    column="selldetail_id"    />
         <result property="createTime"    column="create_time"    />
         <result property="purchaseinvoiceId"    column="purchaseinvoice_id"    />
         <result property="purchaseinvoiceNumber" column="purchaseinvoiceNumber"/>
+        <result property="purchasecontractNumber" column="purchasecontractNumber"/>
         <result property="supplier" column="supplier"/>
+        <collection property="purchasedetailChildList" column="id" ofType="PurchasedetailChild" select="com.ruoyi.system.mapper.PurchasedetailChildMapper.selectPurchasedetailChildByPid">
 
+        </collection>
     </resultMap>
 
     <sql id="selectPurchasedetailVo">
-        select (select partyb from purchasecontract where purchasecontractid=p.purchasecontractid) supplier,  (select purchaseinvoiceid from purchaseinvoice where id=purchaseinvoice_id) as purchaseinvoiceNumber,purchaseinvoice_id , id, productname,price, unit, specifications, purchasecontractid, producttype, productnum, money, selldetailid, create_time from purchasedetail p
-    </sql>
-
+        select id,price,purchasecontract_id,productnum,money,purchaseinvoice_id,selldetail_id,create_time from pur_detail    </sql>
     <select id="selectPurchasedetailList" parameterType="Purchasedetail" resultMap="PurchasedetailResult">
-        <include refid="selectPurchasedetailVo"/>
+        select (select partyb from pur_contract where id=p.purchasecontract_id) supplier,  (select purchaseinvoiceid from pur_invoice where id=purchaseinvoice_id) as purchaseinvoiceNumber,(select purchasecontractid from pur_contract where id=p.purchasecontract_id) purchasecontractNumber,purchaseinvoice_id  , p.id, productname,p.price, unit, specifications, purchasecontract_id, producttype, p.productnum, p.money, selldetail_id from pur_detail p
+        inner join  sale_detail s on s.id=p.selldetail_id
         <where>
             <if test="purchaseinvoiceId != null  and purchaseinvoiceId != ''"> and purchaseinvoice_id = #{purchaseinvoiceId}</if>
-
-            <if test="productname != null  and productname != ''"> and productname like concat('%', #{productname}, '%')</if>
-            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
-            <if test="purchasecontractid != null  and purchasecontractid != ''"> and purchasecontractid = #{purchasecontractid}</if>
+            <if test="purchasecontractId != null  and purchasecontractId != ''"> and purchasecontract_id = #{purchasecontractId}</if>
         </where>
     </select>
     
     <select id="selectPurchasedetailById" parameterType="Long" resultMap="PurchasedetailResult">
-        <include refid="selectPurchasedetailVo"/>
+        select id,price,purchasecontract_id,productnum,money,purchaseinvoice_id,selldetail_id,create_time,(select purchasecontractid from pur_contract where id=pur_detail.purchasecontract_id) purchasecontractNumber from pur_detail
         where id = #{id}
     </select>
 
-    <select id="selectPurchasedetailListByPurchasecontractId" parameterType="String" resultMap="PurchasedetailResult">
-        <include refid="selectPurchasedetailVo"/>
-        where purchasecontractid = #{purchasecontractid}
+    <select id="selectPurchasedetailListByPurchasecontractId"   resultMap="PurchasedetailResult">
+        select  purchaseinvoice_id  , p.id, productname,p.price, unit, LEFT(specifications,20)  specifications, purchasecontract_id, producttype, p.productnum, p.money, selldetail_id from pur_detail p
+       inner join  sale_detail s on s.id=p.selldetail_id
+        where purchasecontract_id = #{purchasecontractId}
     </select>
         
     <insert id="insertPurchasedetail" parameterType="Purchasedetail" useGeneratedKeys="true" keyProperty="id">
-        insert into purchasedetail
+        insert into pur_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="productname != null  and productname != ''">productname,</if>
             <if test="price != null ">price,</if>
-            <if test="unit != null  and unit != ''">unit,</if>
-            <if test="specifications != null  and specifications != ''">specifications,</if>
-            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid,</if>
-            <if test="producttype != null  and producttype != ''">producttype,</if>
+            <if test="purchasecontractId != null  and purchasecontractId != ''">purchasecontract_id,</if>
             <if test="productnum != null ">productnum,</if>
             <if test="money != null ">money,</if>
-            <if test="selldetailid != null ">selldetailid,</if>
-
-            <if test="createTime != null ">create_time,</if>
+            <if test="selldetailId != null ">selldetail_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="productname != null  and productname != ''">#{productname},</if>
             <if test="price != null ">#{price},</if>
-            <if test="unit != null  and unit != ''">#{unit},</if>
-            <if test="specifications != null  and specifications != ''">#{specifications},</if>
-            <if test="purchasecontractid != null  and purchasecontractid != ''">#{purchasecontractid},</if>
-            <if test="producttype != null  and producttype != ''">#{producttype},</if>
+            <if test="purchasecontractId != null">#{purchasecontractId},</if>
             <if test="productnum != null ">#{productnum},</if>
             <if test="money != null ">#{money},</if>
-            <if test="selldetailid != null ">#{selldetailid},</if>
-
-            <if test="createTime != null ">#{createTime},</if>
+            <if test="selldetailId != null ">#{selldetailId},</if>
          </trim>
     </insert>
 
     <update id="updatePurchasedetail" parameterType="Purchasedetail">
-        update purchasedetail
+        update pur_detail
         <trim prefix="SET" suffixOverrides=",">
-            <if test="productname != null  and productname != ''">productname = #{productname},</if>
             <if test="price != null ">price = #{price},</if>
-            <if test="unit != null  and unit != ''">unit = #{unit},</if>
-            <if test="specifications != null  and specifications != ''">specifications = #{specifications},</if>
-            <if test="purchasecontractid != null  and purchasecontractid != ''">purchasecontractid = #{purchasecontractid},</if>
-            <if test="producttype != null  and producttype != ''">producttype = #{producttype},</if>
+            <if test="purchasecontractId != null  ">purchasecontract_id = #{purchasecontractId},</if>
             <if test="productnum != null ">productnum = #{productnum},</if>
             <if test="money != null ">money = #{money},</if>
-            <if test="selldetailid != null ">selldetailid = #{selldetailid},</if>
-
-            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="selldetailId != null ">selldetail_id = #{selldetailId},</if>
         </trim>
         where id = #{id}
     </update>
@@ -98,24 +76,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <update id="updatePurchaseinvoiceId" parameterType="Purchasedetail">
-        update purchasedetail set
+        update pur_detail set
          purchaseinvoice_id=#{purchaseinvoiceId}
         where id = #{id}
     </update>
 
     <update id="updatePurchasedetailByPurchaseinvoiceId" parameterType="Long">
-        update purchasedetail set
+        update pur_detail set
                                   purchaseinvoice_id=null
         where purchaseinvoice_id = #{purchaseinvoiceId}
     </update>
 
 
     <delete id="deletePurchasedetailById" parameterType="Long">
-        delete from purchasedetail where id = #{id}
+        delete from pur_detail where id = #{id}
     </delete>
 
     <delete id="deletePurchasedetailByIds" parameterType="String">
-        delete from purchasedetail where id in
+        delete from pur_detail where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

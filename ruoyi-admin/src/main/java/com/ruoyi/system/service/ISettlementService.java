@@ -37,26 +37,13 @@ public interface ISettlementService
      * @param settlement 结算
      * @return 结果
      */
-    public int add(String settlementList,Settlement settlement);
-
-    /**
-     * 修改结算
-     * 
-     * @param settlement 结算
-     * @return 结果
-     */
-    public int updateSettlement(Settlement settlement);
+    public boolean add(String settlementList,Settlement settlement);
 
 
-    public int editSettlement(Settlement settlement,String settlementList);
 
-    /**
-     * 批量删除结算
-     * 
-     * @param serialnumber 需要删除的数据ID
-     * @return 结果
-     */
-    public int deleteSettlementBySerialNumber(String serialnumber);
+
+
+
 
     /**
      * 删除结算信息
@@ -65,4 +52,6 @@ public interface ISettlementService
      * @return 结果
      */
     public int deleteSettlementById(Long id);
+
+
 }

@@ -29,10 +29,10 @@
 
 
     <div class="table-d" id="context" >
-        <h1 style="text-align: center;" th:text="${saletype}" ></h1>
+        <h1 style="text-align: center;" th:text="${data.saletype}" ></h1>
        <div class="div" style="position: relative;margin-bottom: 1%;" >
-            <span style="font-size: 14px">合同号:</span> <span style="font-size: 14px;"  th:text="${salescontract.contractid}"></span> <span style="position:absolute;left: 220px;font-size: 14px" >客户: </span> <span style="position:absolute;left: 255px;font-size: 14px"  th:text="${salescontract.firstparty}"></span> <span style="font-size: 14px; position:absolute;left: 550px;" >经办人: </span> <span style="position:absolute;left:610px;font-size: 14px;"  th:text="${salescontract.operator}"></span>
-           <span style="position:absolute;left: 850px;font-size: 14px;" >签订时间: </span> <span style="font-size:14px;position:absolute;left:925px;"  th:text="${#dates.format(salescontract.signingtime,'yyyy-MM-dd')}"></span>
+            <span style="font-size: 14px">合同号:</span> <span style="font-size: 14px;"  th:text="${data.salescontract.contractid}"></span> <span style="position:absolute;left: 220px;font-size: 14px" >客户: </span> <span style="position:absolute;left: 255px;font-size: 14px"  th:text="${data.salescontract.firstparty}"></span> <span style="font-size: 14px; position:absolute;left: 550px;" >经办人: </span> <span style="position:absolute;left:610px;font-size: 14px;"  th:text="${data.salescontract.operator}"></span>
+           <span style="position:absolute;left: 850px;font-size: 14px;" >签订时间: </span> <span style="font-size:14px;position:absolute;left:925px;"  th:text="${#dates.format(data.salescontract.signingtime,'yyyy-MM-dd')}"></span>
         </div>
         <div class="div" style="position: relative;">
              <span style="font-size: 14px;">单项明细:</span>
@@ -51,7 +51,7 @@
                 <td style="border:1px solid black;font-size: 14px"  width="70" align="center">采购发票</td>
                 <td style="border:1px solid black;font-size: 14px"  width="70" align="center">采购金额</td>
             </tr>
-            <tr  style="border:1px solid black;" th:each="sellDetail : ${sellDetails}" >
+            <tr  style="border:1px solid black;" th:each="sellDetail : ${data.sellDetails}" >
                 <td style="border:1px solid black;font-size: 10px" align="center" th:text="${sellDetailStat.count}">
                 <td  style="border:1px solid black;font-size: 10px" align="center" th:text="${sellDetail.productname}"></td>
                 <td style="border:1px solid black;font-size: 10px"  align="center" th:text="${sellDetail.specifications}"></td>
@@ -71,9 +71,11 @@
         </table>
 
         <div class="div" style="position: relative;margin-top: 1%;" >
-            <span style="font-size: 14px;" >付款方式:</span> <span style="font-size: 14px;"  th:text="${salescontract.payway}"></span>
-            <span style="position:absolute;left: 550px;font-size: 14px;" >销售总金额: </span> <span style="position:absolute;left:625px;font-size: 14px;"  th:text="${salescontract.salesamount}"></span>
-            <span style="position:absolute;left: 810px;font-size: 14px" >采购总金额: </span> <span style="position:absolute;left:885px;font-size: 14px"  th:text="${purchasesamount}"></span>
+            <span style="font-size: 14px;" >付款方式:</span> <span style="font-size: 14px;"  th:text="${data.salescontract.payway}"></span>
+            <span style="position:absolute;left: 550px;font-size: 14px;" >销售总金额: </span> <span style="position:absolute;left:625px;font-size: 14px;"  th:text="${data.salescontract.salesamount}"></span>
+
+            <span style="position:absolute;left: 810px;font-size: 14px" >采购总金额: </span> <span style="position:absolute;left:885px;font-size: 14px"  th:text="${data.salescontract.purchasesamount}"></span>
+
         </div>
     </div>
 

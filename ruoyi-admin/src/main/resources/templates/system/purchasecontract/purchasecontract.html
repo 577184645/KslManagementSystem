@@ -24,6 +24,14 @@
                                 <input type="text" name="contractid"/>
                             </li>
                             <li>
+                                <label>发票状态：</label>
+                                <select name="invoiceStatus" th:with="type=${@dict.getType('sale_invoice_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+
+                            <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
                             </li>
@@ -41,9 +49,6 @@
                 </a>
                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:purchasecontract:edit">
                     <i class="fa fa-edit"></i> 修改
-                </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:purchasecontract:remove">
-                    <i class="fa fa-remove"></i> 删除
                 </a>
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:purchasecontract:export">
                     <i class="fa fa-download"></i> 导出
@@ -63,6 +68,7 @@
         var editFlag = [[${@permission.hasPermi('system:purchasecontract:edit')}]];
         var removeFlag = [[${@permission.hasPermi('system:purchasecontract:remove')}]];
         var prefix = ctx + "system/purchasecontract";
+        var saleInvoiceStatus = [[${@dict.getType('sale_invoice_status')}]];
 
         $(function() {
             var options = {
@@ -105,14 +111,14 @@
                     field: 'remarks', 
                     title: '备注'
                 },
-                {
-                    field: 'contractid', 
-                    title: '所属销售合同号'
-                },
-                {
-                    field: 'createTime', 
-                    title: '创建时间'
-                },
+                    {
+                        field: 'invoiceStatus',
+                        title: '发票状态',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(saleInvoiceStatus, value);
+                        }
+                    },
+
                 {
                     title: '操作',
                     align: 'center',
@@ -131,86 +137,24 @@
             $.modal.openTab("添加采购合同", $.operate.addUrl());
         }
 
-        function purchaseInfo(id) {
+        function purchaseInfo() {
+            var id=$("#bootstrap-table").bootstrapTable('getSelections')[0].id;
             table.set();
-            if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
-                var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
-                if ($.common.isEmpty(row)) {
-                    $.modal.alertWarning("请至少选择一条记录");
-                    return;
-                }
-                var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
-
-                $.modal.openTab("修改" + table.options.modalName, url);
-            } else {
-
-
-                $.modal.openTab("采购合同信息",editUrl(id));
-
-
-            }
+            $.modal.openTab("采购合同信息",prefix+"/purchaseInfo/"+(id));
         }
 
 
-        function editUrl(id) {
-            var url = "/404.html";
-            if ($.common.isNotEmpty(id)) {
 
-                url = table.options.updateUrl.replace("{id}", id);
-
-            } else {
-                var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
-
-                if (id.length == 0) {
-                    $.modal.alertWarning("请至少选择一条记录");
-                    return;
-                }
-                url = prefix+"/purchaseInfo/"+(id);
-
-            }
-            return url;
-        }
 
 
         function print(id) {
+            var id=$("#bootstrap-table").bootstrapTable('getSelections')[0].id;
             table.set();
-            if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
-                var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
-                if ($.common.isEmpty(row)) {
-                    $.modal.alertWarning("请至少选择一条记录");
-                    return;
-                }
-                var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
-
-                $.modal.openTab("修改" + table.options.modalName, url);
-            } else {
-
-
-                $.modal.openTab("打印采购合同信息",editUrl1(id));
-
-
-            }
+            $.modal.openTab("打印采购合同信息", prefix+"/print/"+(id));
         }
 
 
-        function editUrl1(id) {
-            var url = "/404.html";
-            if ($.common.isNotEmpty(id)) {
 
-                url = table.options.updateUrl.replace("{id}", id);
-
-            } else {
-                var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
-
-                if (id.length == 0) {
-                    $.modal.alertWarning("请至少选择一条记录");
-                    return;
-                }
-                url = prefix+"/print/"+(id);
-
-            }
-            return url;
-        }
     </script>
 
 </body>

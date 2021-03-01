@@ -14,20 +14,14 @@
                                 <label>经办人：</label>
                                 <input type="text" name="operator"/>
                             </li>
-                            <li>
-                                <label>个人所得：</label>
-                                <input type="text" name="personalincome"/>
-                            </li>
+
                             <li class="select-time">
                                 <label>结算时间：</label>
                                 <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginSettlementtime]"/>
                                 <span>-</span>
                                 <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endSettlementtime]"/>
                             </li>
-                            <li>
-                                <label>序号：</label>
-                                <input type="text" name="serialnumber"/>
-                            </li>
+
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
@@ -39,7 +33,7 @@
 
             <div class="btn-group-sm" id="toolbar" role="group">
 
-                <a class="btn btn-primary single disabled" onclick="saleInfo()" shiro:hasPermission="system:settlement:print">
+                <a class="btn btn-primary single disabled" onclick="print()" shiro:hasPermission="system:settlement:print">
                     <i class="fa fa-print"></i> 打印
                 </a>
 
@@ -94,8 +88,7 @@
                         align: 'center',
                         formatter: function(value, row, index) {
                             var actions = [];
-                            actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editTab(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                            actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="remove(\'' + row.serialnumber + '\')"><i class="fa fa-remove"></i>删除</a>');
+                            actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
                             return actions.join('');
                         }
                     }
@@ -107,58 +100,17 @@
 
 
 
-        function saleInfo(id) {
+        function print() {
             table.set();
-            if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
-                var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
-                if ($.common.isEmpty(row)) {
-                    $.modal.alertWarning("请至少选择一条记录");
-                    return;
-                }
-                var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
-
-                $.modal.openTab("修改" + table.options.modalName, url);
-            } else {
-
-
-                $.modal.openTab("销售汇总信息",editUrl(id));
-
-
-            }
-        }
-
-
-        function editUrl(id) {
-            var url = "/404.html";
-            if ($.common.isNotEmpty(id)) {
-
-                url = table.options.updateUrl.replace("{id}", id);
-
-            } else {
-                var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
-
-                if (id.length == 0) {
-                    $.modal.alertWarning("请至少选择一条记录");
-                    return;
-                }
-                url = prefix+"/print/"+(id);
-
-            }
-            return url;
+            var id= $("#bootstrap-table").bootstrapTable('getSelections')[0].id;
+            $.modal.openTab("销售汇总信息",prefix+"/print/"+(id));
         }
 
 
 
-        function remove(serialnumber) {
 
-            table.set();
-            $.modal.confirm("确定删除该条结算信息吗？", function() {
-                var url =prefix+"/remove";
-                var data = { "serialnumber": serialnumber };
-                $.operate.submit(url, "post", "json", data);
-            });
 
-        }
+
     </script>
 
 

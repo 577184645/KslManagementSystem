@@ -19,7 +19,7 @@ public interface InvoiceMapper
      * @param newDate
      * @return
      */
-  public  Double  sumMoneyGYear(String newDate);
+  public  Double  sumMoneyByYear(String newDate);
 
   /**
    * 查询发票
@@ -77,5 +77,8 @@ public interface InvoiceMapper
   public int deleteInvoiceByIds(String[] ids);
 
   List<Invoice> selectInvoiceListbycontractid(String contractid);
+
+
+  List<Long>  selectInvoiceListByIdGetContractid (Long id);
 
 }

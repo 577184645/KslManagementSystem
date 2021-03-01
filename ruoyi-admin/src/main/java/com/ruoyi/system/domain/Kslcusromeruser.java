@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,6 +12,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2020-05-19
  */
+@Data
 public class Kslcusromeruser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -34,61 +36,4 @@ public class Kslcusromeruser extends BaseEntity
     @Excel(name = "邮箱")
     private String email;
 
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
-
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setUsername(String username) 
-    {
-        this.username = username;
-    }
-
-    public String getUsername() 
-    {
-        return username;
-    }
-    public void setSex(Long sex) 
-    {
-        this.sex = sex;
-    }
-
-    public Long getSex() 
-    {
-        return sex;
-    }
-    public void setPhone(String phone) 
-    {
-        this.phone = phone;
-    }
-
-    public String getPhone() 
-    {
-        return phone;
-    }
-    public void setEmail(String email) 
-    {
-        this.email = email;
-    }
-
-    public String getEmail() 
-    {
-        return email;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("username", getUsername())
-            .append("sex", getSex())
-            .append("phone", getPhone())
-            .append("email", getEmail())
-            .append("createTime", getCreateTime())
-            .toString();
-    }
 }

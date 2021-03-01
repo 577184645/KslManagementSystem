@@ -14,7 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectKslcusromeruserVo">
-        select id, username, sex, phone, email, create_time from kslcusromeruser
+        select id, username, sex, phone, email, create_time from base_kslcusromeruser
     </sql>
 
     <select id="selectKslcusromeruserList" parameterType="Kslcusromeruser" resultMap="KslcusromeruserResult">
@@ -30,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertKslcusromeruser" parameterType="Kslcusromeruser" useGeneratedKeys="true" keyProperty="id">
-        insert into kslcusromeruser
+        insert into base_kslcusromeruser
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="username != null  and username != ''">username,</if>
             <if test="sex != null ">sex,</if>
@@ -48,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateKslcusromeruser" parameterType="Kslcusromeruser">
-        update kslcusromeruser
+        update base_kslcusromeruser
         <trim prefix="SET" suffixOverrides=",">
             <if test="username != null  and username != ''">username = #{username},</if>
             <if test="sex != null ">sex = #{sex},</if>
@@ -60,11 +60,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteKslcusromeruserById" parameterType="Long">
-        delete from kslcusromeruser where id = #{id}
+        delete from base_kslcusromeruser where id = #{id}
     </delete>
 
     <delete id="deleteKslcusromeruserByIds" parameterType="String">
-        delete from kslcusromeruser where id in 
+        delete from base_kslcusromeruser where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

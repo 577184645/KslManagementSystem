@@ -1,6 +1,8 @@
 package com.ruoyi.system.domain;
 
 import java.util.Date;
+
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -12,6 +14,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2020-05-20
  */
+@Data
 public class Salescontract extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -23,12 +26,7 @@ public class Salescontract extends BaseEntity
     @Excel(name = "销售合同号")
     private String contractid;
 
-
-
-private Integer settlementstatus;
-
-
-
+   private Integer settlementstatus;
 
     /** 经办人 */
     @Excel(name = "经办人")
@@ -54,109 +52,18 @@ private Integer settlementstatus;
     @Excel(name = "备注")
     private String remarks;
 
+    private Integer invoiceStatus;
+
     private Boolean islookstatus;
 
-    public Boolean getIslookstatus() {
-        return islookstatus;
-    }
+    /**
+     * 扩展字段
+     */
+    //采购金额
+   private Double purchasesamount;
 
-    public void setIslookstatus(Boolean islookstatus) {
-        this.islookstatus = islookstatus;
-    }
 
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
 
-    public Integer getSettlementstatus() {
-        return settlementstatus;
-    }
 
-    public void setSettlementstatus(Integer settlementstatus) {
-        this.settlementstatus = settlementstatus;
-    }
 
-    public Long getId()
-    {
-        return id;
-    }
-    public void setContractid(String contractid) 
-    {
-        this.contractid = contractid;
-    }
-
-    public String getContractid() 
-    {
-        return contractid;
-    }
-    public void setOperator(String operator) 
-    {
-        this.operator = operator;
-    }
-
-    public String getOperator() 
-    {
-        return operator;
-    }
-    public void setPayway(String payway) 
-    {
-        this.payway = payway;
-    }
-
-    public String getPayway() 
-    {
-        return payway;
-    }
-
-    public Double getSalesamount() {
-        return salesamount;
-    }
-
-    public void setSalesamount(Double salesamount) {
-        this.salesamount = salesamount;
-    }
-
-    public void setFirstparty(String firstparty)
-    {
-        this.firstparty = firstparty;
-    }
-
-    public String getFirstparty() 
-    {
-        return firstparty;
-    }
-    public void setSigningtime(Date signingtime) 
-    {
-        this.signingtime = signingtime;
-    }
-
-    public Date getSigningtime() 
-    {
-        return signingtime;
-    }
-    public void setRemarks(String remarks) 
-    {
-        this.remarks = remarks;
-    }
-
-    public String getRemarks() 
-    {
-        return remarks;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("contractid", getContractid())
-            .append("operator", getOperator())
-            .append("payway", getPayway())
-            .append("salesamount", getSalesamount())
-            .append("firstparty", getFirstparty())
-            .append("signingtime", getSigningtime())
-            .append("remarks", getRemarks())
-            .append("createTime", getCreateTime())
-            .toString();
-    }
 }

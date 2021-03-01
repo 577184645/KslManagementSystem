@@ -22,9 +22,9 @@ public class ServerConfig
 
     @Bean
     public MultipartConfigElement multipartConfigElement() {
-MultipartConfigFactory factory = new MultipartConfigFactory();
-factory.setLocation("/tmp/tomcat");
-return factory.createMultipartConfig();
+      MultipartConfigFactory factory = new MultipartConfigFactory();
+      factory.setLocation("/tmp/tomcat");
+      return factory.createMultipartConfig();
     }
     /**
      * 获取完整的请求路径，包括：域名，端口，上下文访问路径

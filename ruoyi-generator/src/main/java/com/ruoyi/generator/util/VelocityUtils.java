@@ -223,7 +223,7 @@ public class VelocityUtils
         {
             if (!column.isSuperColumn() && GenConstants.TYPE_DATE.equals(column.getJavaType()))
             {
-                importList.add("java.util.Date");
+                importList.add("java.utils.Date");
             }
             else if (!column.isSuperColumn() && GenConstants.TYPE_BIGDECIMAL.equals(column.getJavaType()))
             {

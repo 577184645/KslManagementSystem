@@ -195,6 +195,7 @@
     <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
 		<th:block th:include="include :: echarts-js" />
     <script type="text/javascript">
+
         $(function () {
             var now = new Date();
             var year = now.getFullYear();
@@ -204,45 +205,38 @@
             $("#echarstitlebar").html("销售采购统计"+"("+year+")");
 
 
+
+            /*客户数量*/
             $.ajax({
-                url:'customer/list',
+                url:'home/customersize',
                 dataType:'json',
                 type:'post',
                 success:function(result){
-                 $("#customercount").html(result.total);
+                 $("#customercount").html(result);
                 }
             });
 
 
 
+
+            /*供应商数量*/
             $.ajax({
-                url:'invoice/sumMoneyGYear',
-                dataType:'json',
-                success:function(result){
-
-                    $("#invoicesum").html("￥"+result.summoney);
-
-                }
-            });
-
-
-            $.ajax({
-                url:'supplier/list',
+                url:'home/suppliersize',
                 dataType:'json',
                 type:'post',
                 success:function(result){
-                    $("#suppliercount").html(result.total);
+                    $("#suppliercount").html(result);
                 }
             });
 
 
-
+            /*发票金额*/
             $.ajax({
-                url:'invoice/sumMoneyGYear',
+                url:'home/invoicemoneybyyear',
                 dataType:'json',
                 success:function(result){
 
-                    $("#invoicesum").html("￥"+result.summoney);
+                    $("#invoicesum").html("￥"+result);
 
                 }
             });
@@ -250,16 +244,15 @@
 
 
 
+            /*销售金额*/
+				$.ajax({
+					url:'home/saleMoneyByYear',
+					dataType:'json',
+					success:function(result){
+						$("#salescontractsum").html("￥"+result);
+					}
+				});
 
-            $.ajax({
-                url:'salescontract/sumMoneyGYear',
-                dataType:'json',
-                success:function(result){
-
-                    $("#salescontractsum").html("￥"+result.summoney);
-
-                }
-            });
 
 
 
@@ -272,17 +265,7 @@
 
         });
 
-        function salesamountBymonth(i) {
-            $.ajax({
-                url:'salescontract/salesamountBymonth',
-                dataType:'json',
-                type:'post',
-				data:{"newdate":i},
-                success:function(result){
-                    $("#suppliercount").html(result.total);
-                }
-            });
-        }
+
 
         function getmonth(){
             for(var i=1;i<=12;i++){
@@ -316,7 +299,7 @@
             }
             var results="";
             $.ajax({
-                url:'salescontract/salesamountBymonth',
+                url:'home/salesamountBymonth',
                 async:false,
                 dataType:'json',
                 type:'post',
@@ -330,8 +313,8 @@
 
             var arr=new Array();
 
-            for (var i=0;i<results.result.length;i++){
-                arr[i]=results.result[i];
+            for (var i=0;i<results.length;i++){
+                arr[i]=results[i];
             }
 
 
@@ -356,7 +339,7 @@
 
             var resultspurchase="";
             $.ajax({
-                url:'purchasecontract/PurchasesamountBymonth',
+                url:'home/PurchasesamountBymonth',
                 async:false,
                 dataType:'json',
                 type:'post',
@@ -370,8 +353,8 @@
 
             var arrpurchase=new Array();
 
-            for (var i=0;i<resultspurchase.result.length;i++){
-                arrpurchase[i]=resultspurchase.result[i];
+            for (var i=0;i<resultspurchase.length;i++){
+                arrpurchase[i]=resultspurchase[i];
             }
 
 
@@ -542,7 +525,6 @@
 
 
 
-
              var year= $("#echarstitleline").html().substr(firstindex,4);
 
             $("#echarstitleline").html("销售采购统计("+year+"-"+month+")");
@@ -558,7 +540,7 @@
             }
             var results="";
             $.ajax({
-                url:'salescontract/salesamountByday',
+                url:'home/salesamountByday',
                 async:false,
                 dataType:'json',
                 type:'post',
@@ -572,8 +554,8 @@
 
             var arr=new Array();
 
-            for (var i=0;i<results.result.length;i++){
-                arr[i]=results.result[i];
+            for (var i=0;i<results.length;i++){
+                arr[i]=results[i];
             }
 
 
@@ -600,7 +582,7 @@
 
             var resultspurchase="";
             $.ajax({
-                url:'purchasecontract/PurchasesamountByday',
+                url:'home/PurchasesamountByday',
                 async:false,
                 dataType:'json',
                 type:'post',
@@ -616,8 +598,8 @@
 
             var arrpurchase=new Array();
 
-            for (var i=0;i<resultspurchase.result.length;i++){
-                arrpurchase[i]=resultspurchase.result[i];
+            for (var i=0;i<resultspurchase.length;i++){
+                arrpurchase[i]=resultspurchase[i];
             }
 
 
@@ -806,22 +788,21 @@
             }
             var results="";
             $.ajax({
-                url:'salescontract/salesamountBymonth',
+                url:'home/salesamountBymonth',
                 async:false,
                 dataType:'json',
                 type:'post',
                 data:{"newdate":year},
                 success:function(result){
                     results=result;
-
                 }
             });
 
 
             var arr=new Array();
 
-            for (var i=0;i<results.result.length;i++){
-                arr[i]=results.result[i];
+            for (var i=0;i<results.length;i++){
+                arr[i]=results[i];
             }
 
 
@@ -846,7 +827,7 @@
 
             var resultspurchase="";
             $.ajax({
-                url:'purchasecontract/PurchasesamountBymonth',
+                url:'home/PurchasesamountBymonth',
                 async:false,
                 dataType:'json',
                 type:'post',
@@ -860,8 +841,8 @@
 
             var arrpurchase=new Array();
 
-            for (var i=0;i<resultspurchase.result.length;i++){
-                arrpurchase[i]=resultspurchase.result[i];
+            for (var i=0;i<resultspurchase.length;i++){
+                arrpurchase[i]=resultspurchase[i];
             }
 
 

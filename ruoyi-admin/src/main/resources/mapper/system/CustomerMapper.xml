@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCustomerVo">
-        select id, name, tel, address, legalrepresentativename, agentname, fax, email, openingbank, accountnumber, create_time from customer
+        select id, name, tel, address, legalrepresentativename, agentname, fax, email, openingbank, accountnumber, create_time from base_customer
     </sql>
     <select id="findList"  resultMap="CustomerResult">
         <include refid="selectCustomerVo"/>
@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
-        insert into customer
+        insert into base_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null  and name != ''">name,</if>
             <if test="tel != null  and tel != ''">tel,</if>
@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateCustomer" parameterType="Customer">
-        update customer
+        update base_customer
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null  and name != ''">name = #{name},</if>
             <if test="tel != null  and tel != ''">tel = #{tel},</if>
@@ -85,11 +85,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteCustomerById" parameterType="Long">
-        delete from customer where id = #{id}
+        delete from base_customer where id = #{id}
     </delete>
 
     <delete id="deleteCustomerByIds" parameterType="String">
-        delete from customer where id in 
+        delete from base_customer where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

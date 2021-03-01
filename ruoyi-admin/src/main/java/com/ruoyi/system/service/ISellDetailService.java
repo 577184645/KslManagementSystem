@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.SellDetail;
 import com.ruoyi.system.domain.SysUser;
 import org.apache.ibatis.annotations.Param;
@@ -29,11 +31,7 @@ public interface ISellDetailService
      */
     public List<SellDetail> selectSellDetailList(SellDetail sellDetail);
 
-    public List<SellDetail>  selectSellDetailByInContractId(String [] contracts);
 
-
-
-    public List<SellDetail> selectSellDetailListAndInvoice( String contractid);
 
     /**
      * 新增销售订单列表
@@ -58,7 +56,7 @@ public interface ISellDetailService
      * @param contractId 销售订单列表ID
      * @return 销售订单列表
      */
-    public List<SellDetail>  selectSellDetailByContractId(String contractId);
+    public Map<String,Object>  print(Long contractId);
 
 
 
@@ -70,13 +68,7 @@ public interface ISellDetailService
      */
     public int deleteSellDetailByIds(String ids);
 
-    /**
-     * 删除销售订单列表信息
-     * 
-     * @param id 销售订单列表ID
-     * @return 结果
-     */
-    public int deleteSellDetailById(Long id);
+
 
 
 

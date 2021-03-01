@@ -32,8 +32,6 @@ public class PurchasedetailChildController extends BaseController
 
     @Autowired
     private IPurchasedetailChildService purchasedetailChildService;
-    @Autowired
-    private ISupplierService supplierService;
 
     @RequiresPermissions("system:child:view")
     @GetMapping()
@@ -76,9 +74,9 @@ public class PurchasedetailChildController extends BaseController
     /**
      * 新增采购订单子
      */
-    @GetMapping("/add")
-    public String add()
-    {
+    @GetMapping("/add/{id}")
+    public String add(@PathVariable("id") Long id, ModelMap mmap) {
+        mmap.put("id", id);
         return prefix + "/add";
     }
 

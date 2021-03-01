@@ -15,13 +15,6 @@ public interface IPurchasedetailChildService
 
 
 
-    /**
-     * 查询采购订单子列表
-     *
-     * @param purchasedetailid 采购订单子
-     * @return 采购订单子集合
-     */
-    public List<PurchasedetailChild> selectPurchasedetailChildPurchasedetailid(Long purchasedetailid);
 
 
     /**

@@ -32,9 +32,11 @@
                 <div class="col-sm-8">
                     <select name="firstparty" class="form-control m-b">
                         <option value="">所有</option>
-                        <option th:selected="${salescontract.firstparty}" th:each="cust:${customerList}"
+                        <option th:each="cust:${customerList}"
                                 th:value="${cust.name}"
                                 th:text="${cust.name}"
+                                th:selected="${salescontract.firstparty==cust.name}"
+
                         ></option>
                     </select>
 

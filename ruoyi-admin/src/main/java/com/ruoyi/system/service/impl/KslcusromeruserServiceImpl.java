@@ -8,6 +8,7 @@ import com.ruoyi.system.mapper.KslcusromeruserMapper;
 import com.ruoyi.system.domain.Kslcusromeruser;
 import com.ruoyi.system.service.IKslcusromeruserService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 经办人列表Service业务层处理
@@ -16,6 +17,7 @@ import com.ruoyi.common.core.text.Convert;
  * @date 2020-05-19
  */
 @Service
+@Transactional
 public class KslcusromeruserServiceImpl implements IKslcusromeruserService 
 {
     @Autowired

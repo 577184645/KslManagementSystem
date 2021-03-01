@@ -22,7 +22,6 @@ public interface IPurchaseinvoiceService
 
 
 
-    public List<Purchaseinvoice> selectPurchaseinvoiceByContractid(String contractid);
 
     /**
      * 查询采购发票列表
@@ -38,7 +37,7 @@ public interface IPurchaseinvoiceService
      * @param purchaseinvoice 采购发票
      * @return 结果
      */
-    public int insertPurchaseinvoice(Purchaseinvoice purchaseinvoice,String purchasedetailids);
+    public boolean insertPurchaseinvoice(Long purchasecontractid ,Purchaseinvoice purchaseinvoice,String purchasedetailids);
 
     /**
      * 修改采购发票
@@ -64,7 +63,6 @@ public interface IPurchaseinvoiceService
      */
     public int deletePurchaseinvoiceById(Long id);
 
-    public List<Purchaseinvoice>  selectPurchaseinvoiceByScontract(String Saleconract);
 
 
 }

@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSupplierVo">
-        select id, name, tel, address, legalrepresentativename, agentname, fax, email, openingbank, accountnumber, create_time, update_time from supplier
+        select id, name, tel, address, legalrepresentativename, agentname, fax, email, openingbank, accountnumber, create_time, update_time from base_supplier
     </sql>
 
     <select id="selectSupplierList" parameterType="Supplier" resultMap="SupplierResult">
@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertSupplier" parameterType="Supplier" useGeneratedKeys="true" keyProperty="id">
-        insert into supplier
+        insert into base_supplier
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null  and name != ''">name,</if>
             <if test="tel != null  and tel != ''">tel,</if>
@@ -66,7 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateSupplier" parameterType="Supplier">
-        update supplier
+        update base_supplier
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null  and name != ''">name = #{name},</if>
             <if test="tel != null  and tel != ''">tel = #{tel},</if>
@@ -88,7 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteSupplierByIds" parameterType="String">
-        delete from supplier where id in 
+        delete from base_supplier where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

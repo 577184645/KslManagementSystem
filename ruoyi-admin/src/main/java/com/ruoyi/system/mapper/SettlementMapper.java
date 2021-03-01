@@ -54,11 +54,5 @@ public interface SettlementMapper
      */
     public int deleteSettlementById(Long id);
 
-    /**
-     * 批量删除结算
-     * 
-     * @param ids 需要删除的数据ID
-     * @return 结果
-     */
-    public int deleteSettlementBySerialNumber(String serialnumber);
+
 }

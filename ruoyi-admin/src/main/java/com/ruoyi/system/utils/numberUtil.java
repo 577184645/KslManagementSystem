@@ -1,4 +1,4 @@
-package com.ruoyi.system.util;
+package com.ruoyi.system.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

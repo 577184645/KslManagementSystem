@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.Purchasedetail;
 
 /**
@@ -19,13 +21,6 @@ public interface IPurchasedetailService
      */
     public Purchasedetail selectPurchasedetailById(Long id);
 
-    /**
-     * 查询采购订单列表列表
-     *
-     * @param purchasedetail 采购订单列表
-     * @return 采购订单列表集合
-     */
-    public List<Purchasedetail> selectPurchasedetailListByPurchasecontractId(String purchasecontractid);
 
 
     /**
@@ -66,5 +61,5 @@ public interface IPurchasedetailService
      * @param id 采购订单列表ID
      * @return 结果
      */
-    public int deletePurchasedetailById(Long id);
+    public AjaxResult deletePurchasedetailById(Long id);
 }

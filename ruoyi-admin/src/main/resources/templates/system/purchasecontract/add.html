@@ -6,6 +6,7 @@
     <th:block th:include="include :: layout-latest-css" />
     <th:block th:include="include :: ztree-css" />
     <th:block th:include="include :: bootstrap-editable-css" />
+    <link th:href="@{/css/jquery.editable-select.css}" rel="stylesheet" type="text/css" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
@@ -18,18 +19,20 @@
             <div class="row">
 
                 <div class="col-sm-6">
-                    <label class="col-sm-3 control-label">所属销售合同：</label>
-                    <div class="col-sm-8">
-                        <select multiple  name="contractid" class="selectpicker" data-live-search="true">
-                            <option value="">全部</option>
-                            <option    th:each="salescontracts:${salescontractsList}"
-                                       th:value="${salescontracts.contractid}"
-                                       th:text="${salescontracts.contractid}"
-                            ></option>
-                        </select>
-                        <a class="btn btn-primary single " onclick="getPurchaseContractid()" >
-                            <i class="fa fa-edit"></i> 生成合同号
-                        </a>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">所属销售合同：</label>
+                        <div class="col-sm-8">
+                            <select  name="contractId" id="contractid" class="form-control">
+                                <option    th:each="salescontracts:${salescontractsList}"
+                                           th:value="${salescontracts.id}"
+                                           th:text="${salescontracts.contractid}"
+                                ></option>
+                            </select>
+
+                            <a class="btn btn-primary single " onclick="getPurchaseContractid()" >
+                                <i class="fa fa-edit"></i> 生成合同号
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -102,7 +105,9 @@
     <th:block th:include="include :: layout-latest-js" />
     <th:block th:include="include :: ztree-js" />
     <th:block th:include="include :: bootstrap-table-editable-js" />
-                <script type="text/javascript" th:src="@{/js/bootstrap-select.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-select.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.editable-select.js}"></script>
+
     <script th:inline="javascript">
         var invoicestatusDatas = [[${@dict.getType('invoice_status')}]];
         var purchasestatusDatas = [[${@dict.getType('purchase_status')}]];
@@ -121,24 +126,19 @@
             if ($.validate.form()) {
                var data= $("#bootstrap-table").bootstrapTable('getSelections');
                 if(data==""||data.length==0){
-                    alert("请选择要采购的商品!");
+                    $.modal.alertWarning("请选择要采购的商品!");
+
                     return;
                 }
 
                 for (var i=0;i<data.length;i++){
                     if (data[i].purchaseprice==null||data[i].purchasemoney==null||data[i].purchaseproductnum==null){
-                        alert("请填写完整信息!");
+                        $.modal.alertWarning("请填写完整信息!");
                         return;
                     }
                 }
 
 
-                var contractids = "";
-                var contractid = $(".selectpicker").val();
-                for (var i = 0; i < contractid.length; i++) {
-                    contractids += contractid[i]+",";
-                }
-                contractids=contractids.substring(0, contractids.lastIndexOf(","));
 
 
 
@@ -152,7 +152,7 @@
                     },
                     data: {
                         "purchasecontractList": JSON.stringify(data),
-                        "contractid":contractids,
+                        "contractId":$("#contractid").val(),
                         "purchasecontractid": $("#purchasecontractid").val(),
                         "partyb":$("#partyb").val(),
                         "payway": $("#payway").val(),
@@ -177,37 +177,30 @@
             autoclose: true
         });
 
-        function getPurchaseContractid() {
 
-            var contractids = "";
-            var contractid = $(".selectpicker").val();
-            for (var i = 0; i < contractid.length; i++) {
-                contractids += contractid[i]+",";
-            }
-            contractids=contractids.substring(0, contractids.lastIndexOf(","));
+     function  getPurchaseContractid(){
+         $.ajax({
+             url: 'getPurchaseContractid',
+             dataType: 'json',
+             type: 'post',
+             data: {contractid:  $("#contractid").val()},
+             success: function (data) {
+                 $("#purchasecontractid").val(data.purchasecontractid);
+             }
+         });
 
-            $.ajax({
-                url: 'getPurchaseContractid',
-                dataType: 'json',
-                type: 'post',
-                data: {contractid: contractids},
-                success: function (data) {
-                    $("#purchasecontractid").val(data.purchasecontractid);
-                }
-            });
+         $('#bootstrap-table').bootstrapTable('destroy');
+         inittable($("#contractid").val());
+     }
 
-            $('#bootstrap-table').bootstrapTable('destroy');
-            inittable(contractids);
-
-
-        }
 
 
         function inittable(contractids) {
 
             var options = {
                 queryParams : {
-                    contractid: contractids
+                    contractId: contractids,
+                    purchasestatus: 1
                 },
                 url: prefix1 + "/listInContractid",
                 pagination:false,
@@ -307,7 +300,9 @@
             $.table.init(options);
         }
 
-
+        $('#contractid').editableSelect({
+            effects: 'slide' //可选参数default、fade
+        });
 
     </script>
 </body>

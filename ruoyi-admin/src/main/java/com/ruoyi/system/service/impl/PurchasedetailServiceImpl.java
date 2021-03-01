@@ -1,13 +1,18 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.domain.PurchasedetailChild;
+import com.ruoyi.system.mapper.PurchasedetailChildMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.PurchasedetailMapper;
 import com.ruoyi.system.domain.Purchasedetail;
 import com.ruoyi.system.service.IPurchasedetailService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 采购订单列表Service业务层处理
@@ -16,10 +21,13 @@ import com.ruoyi.common.core.text.Convert;
  * @date 2020-05-25
  */
 @Service
+@Transactional
 public class PurchasedetailServiceImpl implements IPurchasedetailService 
 {
     @Autowired
     private PurchasedetailMapper purchasedetailMapper;
+    @Autowired
+    private PurchasedetailChildMapper purchasedetailChildMapper;
 
     /**
      * 查询采购订单列表
@@ -33,10 +41,7 @@ public class PurchasedetailServiceImpl implements IPurchasedetailService
         return purchasedetailMapper.selectPurchasedetailById(id);
     }
 
-    @Override
-    public List<Purchasedetail> selectPurchasedetailListByPurchasecontractId(String purchasecontractid) {
-        return purchasedetailMapper.selectPurchasedetailListByPurchasecontractId(purchasecontractid);
-    }
+
 
     /**
      * 查询采购订单列表列表
@@ -94,8 +99,13 @@ public class PurchasedetailServiceImpl implements IPurchasedetailService
      * @return 结果
      */
     @Override
-    public int deletePurchasedetailById(Long id)
+    public AjaxResult deletePurchasedetailById(Long id)
     {
-        return purchasedetailMapper.deletePurchasedetailById(id);
+    List<PurchasedetailChild> purchasedetailChildren=   purchasedetailChildMapper.selectPurchasedetailChildPurchasedetailid(id);
+        if (purchasedetailChildren!=null&&purchasedetailChildren.size()>0) {
+            return AjaxResult.error("操作失败,采购订单下有子订单信息!");
+        }
+        purchasedetailMapper.deletePurchasedetailById(id);
+        return AjaxResult.success("操作成功!");
     }
 }

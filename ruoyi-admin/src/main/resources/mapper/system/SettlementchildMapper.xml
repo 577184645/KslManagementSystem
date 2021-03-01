@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="Settlementchild" id="SettlementchildResult">
         <result property="id"    column="id"    />
-        <result property="serialnumber"    column="serialnumber"    />
+        <result property="settlementId"    column="settlement_id"    />
         <result property="purchasecontractids"    column="purchasecontractids"    />
         <result property="contractid"    column="contractid"    />
         <result property="customers"    column="customers"    />
@@ -27,13 +27,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSettlementchildVo">
-        select id, purchasecontractids,serialnumber, contractid, customers, invoiceid, salemoney, suppliers, purchasemoney, purchaseinvoiceid, taxrate, costprice, saletaxrate, revenue, discount, personalincome from settlementchild
+        select id,(select contractid from sale_contract where st_datachild.contractid=id) as contractnumber, purchasecontractids,settlement_id, contractid, customers, invoiceid, salemoney, suppliers, purchasemoney, purchaseinvoiceid, taxrate, costprice, saletaxrate, revenue, discount, personalincome from st_datachild
     </sql>
 
     <select id="selectSettlementchildList" parameterType="Settlementchild" resultMap="SettlementchildResult">
         <include refid="selectSettlementchildVo"/>
         <where>  
-            <if test="serialnumber != null  and serialnumber != ''"> and serialnumber = #{serialnumber}</if>
+            <if test="settlementId != null  and settlementId != ''"> and settlement_id = #{settlementId}</if>
             <if test="contractid != null  and contractid != ''"> and contractid = #{contractid}</if>
             <if test="customers != null  and customers != ''"> and customers = #{customers}</if>
             <if test="invoiceid != null  and invoiceid != ''"> and invoiceid = #{invoiceid}</if>
@@ -59,13 +59,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         
     <insert id="insertSettlementchild" parameterType="Settlementchild" useGeneratedKeys="true" keyProperty="id">
-        insert into settlementchild
+        insert into st_datachild
         <trim prefix="(" suffix=")" suffixOverrides=",">
 
 
             <if test="purchasecontractids != null  and purchasecontractids != ''">purchasecontractids,</if>
 
-            <if test="serialnumber != null  and serialnumber != ''">serialnumber,</if>
+            <if test="settlementId != null  and settlementId != ''">settlement_id,</if>
             <if test="contractid != null  and contractid != ''">contractid,</if>
             <if test="customers != null  and customers != ''">customers,</if>
             <if test="invoiceid != null  and invoiceid != ''">invoiceid,</if>
@@ -83,7 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 
             <if test="purchasecontractids != null  and purchasecontractids != ''">#{purchasecontractids},</if>
-            <if test="serialnumber != null  and serialnumber != ''">#{serialnumber},</if>
+            <if test="settlementId != null  and settlementId != ''">#{settlementId},</if>
             <if test="contractid != null  and contractid != ''">#{contractid},</if>
             <if test="customers != null  and customers != ''">#{customers},</if>
             <if test="invoiceid != null  and invoiceid != ''">#{invoiceid},</if>
@@ -101,9 +101,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateSettlementchild" parameterType="Settlementchild">
-        update settlementchild
+        update st_datachild
         <trim prefix="SET" suffixOverrides=",">
-            <if test="serialnumber != null  and serialnumber != ''">serialnumber = #{serialnumber},</if>
+            <if test="settlementId != null  and settlementId != ''">settlement_id = #{settlementId},</if>
             <if test="contractid != null  and contractid != ''">contractid = #{contractid},</if>
             <if test="customers != null  and customers != ''">customers = #{customers},</if>
             <if test="invoiceid != null  and invoiceid != ''">invoiceid = #{invoiceid},</if>
@@ -122,11 +122,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteSettlementchildById" parameterType="Long">
-        delete from settlementchild where id = #{id}
+        delete from st_datachild where id = #{id}
     </delete>
 
     <delete id="deleteSettlementchildByIds" parameterType="String">
-        delete from settlementchild where id in 
+        delete from st_datachild where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

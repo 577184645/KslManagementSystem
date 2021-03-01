@@ -41,6 +41,9 @@ public interface SalescontractMapper
     public Salescontract selectSalescontractById(Long id);
 
 
+    Map selectSalescontractByInvoiceStatus(Long id);
+
+
     /**
      * 查询销售合同列表
      * @param contractid
@@ -71,11 +74,10 @@ public interface SalescontractMapper
      */
     public int updateSalescontract(Salescontract salescontract);
 
-    public int updateSettlementstatus(String contract);
+    public int updateSettlementstatus(@Param("contractId") Long contract,@Param("value") Integer value);
 
 
 
-    public int  updateSettlementbackstatus(String contract);
 
     /**
      * 删除销售合同列表
@@ -117,5 +119,5 @@ public interface SalescontractMapper
     public List<Map<String,Object>> selectSalesamountByday(@Param("newyear") String newyear,@Param("newmonth") String newmonth);
 
 
-
+    public Map<String,Object>  findSalescontractInfo(Long id);
 }

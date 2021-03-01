@@ -34,7 +34,7 @@ public interface PurchasedetailMapper
      * @param purchasecontractid 采购订单列表
      * @return 采购订单列表集合
      */
-    public List<Purchasedetail> selectPurchasedetailListByPurchasecontractId(String purchasecontractid);
+    public List<Purchasedetail> selectPurchasedetailListByPurchasecontractId(Long purchasecontractid);
 
     /**
      * 新增采购订单列表

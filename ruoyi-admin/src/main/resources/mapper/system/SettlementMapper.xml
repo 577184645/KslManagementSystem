@@ -13,7 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSettlementVo">
-        select id, operator, personalincome, settlementtime, serialnumber from settlement
+        select id, operator, personalincome, settlementtime, serialnumber from st_data
     </sql>
 
     <select id="selectSettlementList" parameterType="Settlement" resultMap="SettlementResult">
@@ -32,28 +32,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertSettlement" parameterType="Settlement" useGeneratedKeys="true" keyProperty="id">
-        insert into settlement
+        insert into st_data
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="operator != null  and operator != ''">operator,</if>
             <if test="personalincome != null ">personalincome,</if>
-            <if test="settlementtime != null ">settlementtime,</if>
+            settlementtime,
             <if test="serialnumber != null  and serialnumber != ''">serialnumber,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="operator != null  and operator != ''">#{operator},</if>
             <if test="personalincome != null ">#{personalincome},</if>
-            <if test="settlementtime != null ">#{settlementtime},</if>
+           now(),
             <if test="serialnumber != null  and serialnumber != ''">#{serialnumber},</if>
          </trim>
     </insert>
 
 
     <select id="selectSettlementMaxSerialNumber" resultType="String">
-           select max(serialnumber) from settlement
+           select max(serialnumber) from st_data
     </select>
 
     <update id="updateSettlement" parameterType="Settlement">
-        update settlement
+        update st_data
         <trim prefix="SET" suffixOverrides=",">
             <if test="operator != null  and operator != ''">operator = #{operator},</if>
             <if test="personalincome != null ">personalincome = #{personalincome},</if>
@@ -64,11 +64,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteSettlementById" parameterType="Long">
-        delete from settlement where id = #{id}
+        delete from st_data where id = #{id}
     </delete>
 
     <delete id="deleteSettlementBySerialNumber" parameterType="String">
-        delete from settlement where serialnumber = #{serialnumber}
+        delete from st_data where serialnumber = #{serialnumber}
 
     </delete>
 

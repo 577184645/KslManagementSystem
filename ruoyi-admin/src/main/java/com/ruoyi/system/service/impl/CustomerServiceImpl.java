@@ -8,6 +8,7 @@ import com.ruoyi.system.mapper.CustomerMapper;
 import com.ruoyi.system.domain.Customer;
 import com.ruoyi.system.service.ICustomerService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 客户列表Service业务层处理
@@ -16,6 +17,7 @@ import com.ruoyi.common.core.text.Convert;
  * @date 2020-05-19
  */
 @Service
+@Transactional
 public class CustomerServiceImpl implements ICustomerService 
 {
     @Autowired

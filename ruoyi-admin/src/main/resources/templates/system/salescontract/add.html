@@ -99,13 +99,30 @@
             </div>
 
 
+            <div class="row">
 
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">备注：</label>
-                <div class="col-sm-8">
-                    <input name="remarks" id="remarks" class="form-control" type="text">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">备注：</label>
+                        <div class="col-sm-8">
+                            <input name="remarks" id="remarks" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">年份：</label>
+                        <div class="col-sm-8">
+                            <input name="year" id="year" class="form-control" type="number">
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
+
+
         </form>
     </div>
 
@@ -145,6 +162,22 @@
             focusCleanup: true
         });
 
+        /** 将text中的html字符转义， 仅转义  ', ", <, > 四个字符
+         * @param  { String } str 需要转义的字符串
+         * @returns { String }     转义后的字符串
+         */
+        function  unhtml(str) {
+            return str ? str.replace(/[<">']/g, (a) => {
+                return {
+                    '<': '&lt;',
+                    '"': '&quot;',
+                    '>': '&gt;',
+                    "'": '&#39;'
+                }[a]
+            }) : '';
+        }
+
+
         function submitHandler() {
             if($("#deptId").val()==""){
                 alert("请选择子仓库");
@@ -155,8 +188,18 @@
 
                 var data = $("#bootstrap-table" ).bootstrapTable('getData');
                 if(data==null||data.length==0){
-                    alert("请填写销售产品!");
+                    $.modal.alertWarning("请填写销售产品信息!");
                     return;
+                }
+                for (var i=0;i<data.length;i++){
+
+                    if(data[i].productname==""||data[i].price==""||data[i].unit==""||data[i].specifications==""||data[i].producttype==""||data[i].productnum==""||data[i].money==""){
+                        $.modal.alertWarning("请填写完整的销售产品信息!");
+                        return;
+                    }
+
+                    data[i].specifications=unhtml(data[i].specifications);
+
                 }
 
 
@@ -195,11 +238,12 @@
         });
 
         $("#satype").change(function(){
+
             $.ajax({
                 url : 'getContractid',
                 dataType : 'json',
                 type : 'post',
-                data :{type:$("#satype").val()},
+                data :{type:$("#satype").val(),year:$("#year").val()},
                 success : function(data) {
                     $("#contractid").val(data.contractid);
                 }
@@ -209,6 +253,8 @@
 
         $(function() {
 
+             var d = new Date();
+            $("#year").val(d.getFullYear());
             $.ajax({
                 url : prefix1+'/clearsellDetailList',
                 dataType : 'json',
@@ -278,7 +324,7 @@
                             for (var i in value) {
                                 sumBalance += parseFloat(value[i].money);
                             }
-                            return "总金额：" + sumBalance;
+                            return "总金额：" + sumBalance.toFixed(2);
                         }
                     },
                     {

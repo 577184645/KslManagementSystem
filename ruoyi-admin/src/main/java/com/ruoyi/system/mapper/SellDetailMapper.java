@@ -27,7 +27,7 @@ public interface SellDetailMapper
      * @param contractId 销售订单列表ID
      * @return 销售订单列表
      */
-    public List<SellDetail>  selectSellDetailByContractId(String contractId);
+    public List<SellDetail>  selectSellDetailByContractId(Long contractId);
 
 
     public List<SellDetail>  selectSellDetailByInContractId( String [] contracts);
@@ -40,7 +40,6 @@ public interface SellDetailMapper
      */
     public List<SellDetail> selectSellDetailList(SellDetail sellDetail);
 
-    public List<SellDetail> selectSellDetailListAndInvoice(@Param("contractid") String contractid);
 
 
     /**
@@ -60,32 +59,30 @@ public interface SellDetailMapper
     public int updateSellDetail(SellDetail sellDetail);
 
     /**
-     * 根据发票id修改销售订单发票id
+     * 根据发票号码把发票号改为空
      *
      * @param invoiceId 销售订单列表
      * @return 结果
      */
-    public int updateSellDetailByInvoiceId(String invoiceId);
+    public int updateInvoiceIdNullByInvoiceId(String invoiceId);
 
 
 
 
 
-    public int updateSellDetailByIds(String [] ids);
-
-
-
-    public int updatePurchasestatusAndPurchasecontractid(SellDetail sellDetail);
 
 
 
     /**
-     * 删除销售订单列表
-     * 
-     * @param id 销售订单列表ID
-     * @return 结果
+     * 根据id修改当前商品的发票状态为已采购
+     * @param id
+     * @return
      */
-    public int deleteSellDetailById(Long id);
+    public int updatePurchaseStatusById(Long id);
+
+
+
+
 
     /**
      * 批量删除销售订单列表

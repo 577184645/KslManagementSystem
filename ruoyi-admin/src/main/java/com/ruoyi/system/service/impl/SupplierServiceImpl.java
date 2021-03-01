@@ -8,6 +8,7 @@ import com.ruoyi.system.mapper.SupplierMapper;
 import com.ruoyi.system.domain.Supplier;
 import com.ruoyi.system.service.ISupplierService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 供应商列表Service业务层处理
@@ -16,6 +17,7 @@ import com.ruoyi.common.core.text.Convert;
  * @date 2020-05-19
  */
 @Service
+@Transactional
 public class SupplierServiceImpl implements ISupplierService 
 {
     @Autowired

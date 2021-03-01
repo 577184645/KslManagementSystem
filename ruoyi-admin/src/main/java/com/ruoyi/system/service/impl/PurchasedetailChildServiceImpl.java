@@ -8,6 +8,7 @@ import com.ruoyi.system.mapper.PurchasedetailChildMapper;
 import com.ruoyi.system.domain.PurchasedetailChild;
 import com.ruoyi.system.service.IPurchasedetailChildService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 采购订单子Service业务层处理
@@ -16,16 +17,13 @@ import com.ruoyi.common.core.text.Convert;
  * @date 2020-05-26
  */
 @Service
+@Transactional
 public class PurchasedetailChildServiceImpl implements IPurchasedetailChildService 
 {
     @Autowired
     private PurchasedetailChildMapper purchasedetailChildMapper;
 
 
-    @Override
-    public List<PurchasedetailChild> selectPurchasedetailChildPurchasedetailid(Long purchasedetailid) {
-        return purchasedetailChildMapper.selectPurchasedetailChildPurchasedetailid(purchasedetailid);
-    }
 
     /**
      * 查询采购订单子
@@ -60,7 +58,6 @@ public class PurchasedetailChildServiceImpl implements IPurchasedetailChildServi
     @Override
     public int insertPurchasedetailChild(PurchasedetailChild purchasedetailChild)
     {
-        purchasedetailChild.setCreateTime(DateUtils.getNowDate());
         return purchasedetailChildMapper.insertPurchasedetailChild(purchasedetailChild);
     }
 

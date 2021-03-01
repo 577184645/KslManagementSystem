@@ -1,5 +1,6 @@
 package com.ruoyi.system.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.ruoyi.system.domain.Purchasedetail;
@@ -51,7 +52,6 @@ public class PurchaseinvoiceController extends BaseController
     @ResponseBody
     public TableDataInfo list(Purchaseinvoice purchaseinvoice)
     {
-        startPage();
         List<Purchaseinvoice> list = purchaseinvoiceService.selectPurchaseinvoiceList(purchaseinvoice);
         return getDataTable(list);
     }
@@ -74,29 +74,22 @@ public class PurchaseinvoiceController extends BaseController
     /**
      * 新增采购发票
      */
-    @GetMapping("/add/{id}")
-    public String add(ModelMap map, @PathVariable("id") String ids)
+    @GetMapping("/add/{id}/{purchasecontractid}")
+    public String add(ModelMap map, @PathVariable("id") String ids,@PathVariable("purchasecontractid") Long purchasecontractid)
     {
         String[] split = ids.split(",");
-        if (split.length==1) {
-            Purchasedetail purchasedetail = purchasedetailService.selectPurchasedetailById(Long.valueOf(split[0]));
-            map.put("purchasedetail", purchasedetail);
-            return prefix + "/add";
-        }else {
-            Purchasedetail purchasedetail = purchasedetailService.selectPurchasedetailById(Long.valueOf(split[0]));
-
-            Double sum=0.0;
-            for (int i=0;i<split.length;i++){
-
-                sum+=purchasedetailService.selectPurchasedetailById(Long.valueOf(split[i])).getMoney();
-            }
-            map.put("purchasecontractid", purchasedetail.getPurchasecontractid());
+        BigDecimal sum=new BigDecimal("0");
+        for (int i=0;i<split.length;i++){
+            sum=sum.add(new BigDecimal(String.valueOf(purchasedetailService.selectPurchasedetailById(Long.valueOf(split[i])).getMoney())));
+        }
             map.put("sum",sum);
             map.put("ids",ids);
-            return prefix + "/adds";
-        }
+            map.put("purchasecontractid",purchasecontractid);
+            return prefix + "/add";
 
     }
+
+
 
 
 
@@ -108,9 +101,9 @@ public class PurchaseinvoiceController extends BaseController
     @Log(title = "采购发票", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(@RequestParam("purchasedetailids") String purchasedetailids,Purchaseinvoice purchaseinvoice)
+    public AjaxResult addSave(@RequestParam("purchasecontractid") Long purchasecontractid,@RequestParam("purchasedetailids") String purchasedetailids,Purchaseinvoice purchaseinvoice)
     {
-        return toAjax(purchaseinvoiceService.insertPurchaseinvoice(purchaseinvoice,purchasedetailids));
+        return toAjax(purchaseinvoiceService.insertPurchaseinvoice(purchasecontractid,purchaseinvoice,purchasedetailids));
     }
 
     /**

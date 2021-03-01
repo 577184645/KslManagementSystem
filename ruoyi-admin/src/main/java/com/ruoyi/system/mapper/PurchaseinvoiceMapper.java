@@ -25,7 +25,7 @@ public interface PurchaseinvoiceMapper
     public Purchaseinvoice selectPurchaseinvoiceById(Long id);
 
 
-    public Purchaseinvoice selectPurchaseinvoiceByPurchaseinvoiceid(String purchaseinvoiceid);
+    public Purchaseinvoice selectPurchaseinvoiceByPurchaseinvoiceid(Long purchaseinvoiceid);
 
 
     /**
@@ -76,4 +76,5 @@ public interface PurchaseinvoiceMapper
      */
     public int deletePurchaseinvoiceByIds(String[] ids);
 
+    List<Long> selectInvoiceListByIdGetPurchaseContractid(Long id);
 }

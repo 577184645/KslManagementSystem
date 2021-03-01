@@ -3,6 +3,7 @@ package com.ruoyi.system.controller;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.mapper.InvoiceMapper;
 import com.ruoyi.system.service.*;
@@ -42,41 +43,20 @@ public class SalescontractController extends BaseController
     private IKslcusromeruserService kslcusromeruserService;
 
     @Autowired
-    private IPurchasecontractService purchasecontractService;
-
-    @Autowired
-    private IInvoiceService invoiceService;
-
-    @Autowired
     private ISellDetailService sellDetailService;
-    @Autowired
-    private IPurchaseinvoiceService purchaseinvoiceService;
-    @Autowired
-    private IPurchasedetailService purchasedetailService;
 
 
 
     @RequiresPermissions("system:salescontract:view")
     @GetMapping()
-    public ModelAndView salescontract(ModelAndView model)
+    public String salescontract(ModelMap mmap)
     {
-        model.addObject("salescontractList",salescontractService.selectSalescontractList(null));
-        model.addObject("customerList",customerService.findList());
-        model.addObject("kslcusromeruserList",kslcusromeruserService.selectKslcusromeruserList(null));
-        model.setViewName(prefix + "/salescontract");
-        return model;
+        mmap.put("kslcusromeruserList", kslcusromeruserService.selectKslcusromeruserList(null));
+        mmap.put("customerList", customerService.selectCustomerList(null));
+        return prefix + "/salescontract";
     }
 
-    @GetMapping("account")
-    public ModelAndView account(ModelAndView model)
-    {
 
-        model.addObject("salescontractList",salescontractService.selectSalescontractList(null));
-        model.addObject("customerList",customerService.findList());
-        model.addObject("kslcusromeruserList",kslcusromeruserService.selectKslcusromeruserList(null));
-        model.setViewName("system/account/salescontract");
-        return model;
-    }
 
 
     @RequestMapping("/findSalescontract/{operator}")
@@ -88,158 +68,41 @@ public class SalescontractController extends BaseController
         return     salescontractService.selectSalescontractList(salescontract);
     }
 
-    @RequestMapping("/findSalescontractInfo/{contractid}")
+    @RequestMapping("/findSalescontractInfo/{id}")
     @ResponseBody
-    public Map<String,Object> findsupplierInfo(@PathVariable("contractid") String contractid){
-        Map<String,Object> map=new HashMap<>();
-        Salescontract salescontract=new Salescontract();
-        salescontract.setContractid(contractid);
-        List<Salescontract> salescontracts = salescontractService.selectSalescontractList(salescontract);
-        List<Purchasecontract> purchasecontracts = purchasecontractService.selectPurchasecontractByContractId(contractid);
-        List<Invoice> invoices = invoiceService.selectInvoiceListbycontractid(contractid);
-
-        List<Purchaseinvoice> purchaseinvoice = purchaseinvoiceService.selectPurchaseinvoiceByContractid(contractid);
-
-        String suppliers="";
-        String purchasecontractids="";
-         String invoicess="";
-        String purcharsemoneys="";
-        String purchaseinvoices="";
-
-       for (Purchaseinvoice purchaseinvoice1:
-                purchaseinvoice) {
-            purchaseinvoices+=purchaseinvoice1.getPurchaseinvoiceid()+",";
-        }
-       for (Invoice invoice:
-                invoices) {
-            invoicess+=invoice.getInvoiceid()+",";
-        }
-
-
-
-
-
-
-        for (Purchasecontract purchasecontract:
-                purchasecontracts) {
-            suppliers+=purchasecontract.getPartyb()+",";
-            purchasecontractids+=purchasecontract.getPurchasecontractid()+",";
-            purcharsemoneys+=purchasecontract.getPurchasesamount()+",";
-        }
-
-
-
-        if (suppliers.indexOf(",")!=-1){
-            suppliers= suppliers.substring(0,suppliers.length()-1);
-            purchasecontractids=purchasecontractids.substring(0,purchasecontractids.length()-1);
-            purcharsemoneys=purcharsemoneys.substring(0,purcharsemoneys.length()-1);
-
-
-        }
-        if (invoicess.indexOf(",")!=-1){
-            invoicess= invoicess.substring(0,invoicess.length()-1);
-        }
-        if (purchaseinvoices.indexOf(",")!=-1){
-            purchaseinvoices= purchaseinvoices.substring(0,purchaseinvoices.length()-1);
-        }
-        Double purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;
-        map.put("purchasesamount", purchasesamount);
-        map.put("purchaseinvoices", purchaseinvoices);
-        map.put("purcharsemoneys",purcharsemoneys);
-        map.put("purchasecontractids",purchasecontractids);
-        map.put("invoices",invoicess);
-        map.put("suppliers",suppliers);
-        map.put("salescontracts",salescontracts);
-
-        return    map;
+    public Map<String,Object> findSalescontractInfo(@PathVariable("id") String id){
+        Map<String, Object> salescontractInfo = salescontractService.findSalescontractInfo(Long.valueOf(id));
+        return    salescontractService.findSalescontractInfo(Long.valueOf(id));
     }
 
 
-    @GetMapping("/accountsum")
-    public String accountsum(ModelMap mmap)
+
+
+    @RequestMapping("/print/{id}")
+    public String print(@PathVariable("id") Long id, Map<String,Object> map)
     {
-        mmap.put("kslcusromeruserList",kslcusromeruserService.selectKslcusromeruserList(null));
-        return  "system/accountsum/print";
-    }
-
-    @GetMapping("/print/{id}")
-    public String print(@PathVariable("id") Long id, ModelMap mmap)
-    {
-   //头部信息
-     Salescontract salescontract = salescontractService.selectSalescontractById(id);
-     if (salescontract.getContractid().substring(2,3).equals("G")){
-         mmap.put("saletype", "公司垫本销售合同明细单");
-     }else if(salescontract.getContractid().substring(2,3).equals("Z")){
-         mmap.put("saletype", "外勤垫本销售合同明细单");
-     }else{
-         mmap.put("saletype", "线上销售合同明细单");
-     }
-     //销售商品信息
-        List<SellDetail> sellDetails = sellDetailService.selectSellDetailByContractId(salescontract.getContractid());
-
-        //型号只显示前20位
-        if(sellDetails.size()>0) {
-            for (SellDetail selldeatail : sellDetails) {
-                if(selldeatail.getSpecifications()!=null&&selldeatail.getSpecifications().length() > 20) {
-                        selldeatail.setSpecifications(selldeatail.getSpecifications().substring(0, 20));
-                }
-            }
-        }
-
-
-       //计算销售下采购总金额
-        Double purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;
-        mmap.put("purchasesamount", purchasesamount);
-        //销售合同基本信息
-        mmap.put("salescontract", salescontract);
-       //销售商品基本信息
-        mmap.put("sellDetails", sellDetails);
-        return  "system/account/print";
-    }
-
-    @PostMapping(value = "salesamountBymonth")
-    @ResponseBody
-    public Map<String, Object> SalesamountBymonth(@RequestParam("newdate") String newdate) {
-        Map<String, Object> queryMap = new HashMap<String, Object>();
-
-        queryMap.put("result", salescontractService.selectSalesamountBmonth(newdate));
-
-        return  queryMap;
-    }
-
-    @PostMapping(value = "salesamountByday")
-    @ResponseBody
-    public Map<String, Object> salesamountByday(@RequestParam("newyear") String newyear,@RequestParam("newmonth") String newmonth) {
-        Map<String, Object> queryMap = new HashMap<String, Object>();
-        queryMap.put("result", salescontractService.selectSalesamountByday(newyear,newmonth));
-
-        return  queryMap;
+        map.put("data",sellDetailService.print(id));
+        return  prefix+"/print";
     }
 
 
 
 
-    @GetMapping(value = "sumMoneyGYear")
-    @ResponseBody
-    public Map<String, Object> sumMoneyGYear() throws Exception{
-        Map<String, Object> queryMap = new HashMap<String, Object>();
-        Date date=new Date();
-        SimpleDateFormat format=new SimpleDateFormat("yyyy");
-        String format1 = format.format(date);
-        queryMap.put("summoney", salescontractService.sumMoneyGYear(format1)!=null?salescontractService.sumMoneyGYear(format1):0);
-        return  queryMap;
-    }
+
+
+
+
+
 
 
     @RequestMapping(value = { "/getContractid" }, method = { RequestMethod.POST })
     @ResponseBody
     public Map<String, String> getContractid(
-            @RequestParam(value = "type", required = false, defaultValue = "") String type) {
+            @RequestParam(value = "type") String type,@RequestParam(value = "year") String year) {
         Map<String, String> map = new HashMap<String, String>();
-        if ( type.length() == 0) {
-
-        } else {
-            map.put("contractid", salescontractService.getContractid(type));
+        if (StringUtils.isNotBlank(type)&& StringUtils.isNotBlank(year)) {
+            map.put("contractid", salescontractService.getContractid(type,year.substring(2,4)));
+            return map;
         }
         return map;
     }
@@ -327,16 +190,9 @@ public class SalescontractController extends BaseController
     @Log(title = "销售合同列表", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
+    public AjaxResult remove(Long ids)
     {
-        String contractid = salescontractService.selectSalescontractById(Long.valueOf(ids)).getContractid();
-        if(sellDetailService.selectSellDetailByContractId(contractid)!=null&&sellDetailService.selectSellDetailByContractId(contractid).size()>0) {
-            return AjaxResult.error("操作失败,销售合同下有订单信息!");
-        }
-        if(purchasecontractService.selectPurchasecontractByContractId(contractid)!=null&&purchasecontractService.selectPurchasecontractByContractId(contractid).size()>0){
-            return AjaxResult.error("操作失败,销售合同下有采购合同!");
-        }
-        return toAjax(salescontractService.deleteSalescontractByIds(ids));
+        return salescontractService.deleteSalescontractById(ids);
     }
 
 
@@ -349,9 +205,7 @@ public class SalescontractController extends BaseController
     public String saleInfo(@PathVariable("id") Long id, ModelMap mmap)
     {
         Salescontract salescontract = salescontractService.selectSalescontractById(id);
-         Double purchasesamount=purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid())!=null?purchasecontractService.selectPurchasesamountsumByContractId(salescontract.getContractid()):0;
         mmap.put("salescontract", salescontract);
-        mmap.put("purchasesamount", purchasesamount);
         return prefix + "/saleinfo";
     }
 }

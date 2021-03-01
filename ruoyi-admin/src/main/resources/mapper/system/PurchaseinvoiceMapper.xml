@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.PurchaseinvoiceMapper">
-    
+
     <resultMap type="Purchaseinvoice" id="PurchaseinvoiceResult">
         <result property="id"    column="id"    />
         <result property="purchaseinvoiceid"    column="purchaseinvoiceid"    />
@@ -16,12 +16,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 
+
     <sql id="selectPurchaseinvoiceVo">
-        select id, purchaseinvoiceid, money, purchaseinvoicetime, create_time from purchaseinvoice
+        select id, purchaseinvoiceid, money, purchaseinvoicetime, create_time from pur_invoice
     </sql>
 
     <select id="selectPurchaseinvoiceByContractid" resultMap="PurchaseinvoiceResult">
-        select purchaseinvoiceid from purchaseinvoice p inner join purchasedetail s on p.id=s.purchaseinvoice_id
+        select purchaseinvoiceid from pur_invoice p inner join pur_detail s on p.id=s.purchaseinvoice_id
         where s.purchasecontractid like concat('%',#{purchasecontractid},'%')
         GROUP BY   purchaseinvoiceid
 
@@ -30,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectPurchaseinvoiceList" parameterType="Purchaseinvoice" resultMap="PurchaseinvoiceResult">
        <include refid="selectPurchaseinvoiceVo"></include>
-        <where>  
+        <where>
             <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''"> and purchaseinvoiceid = #{purchaseinvoiceid}</if>
         </where>
     </select>
@@ -47,9 +48,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPurchaseinvoiceVo"/>
         where purchaseinvoiceid = #{purchaseinvoiceid}
     </select>
-        
+    <select id="selectInvoiceListByIdGetPurchaseContractid" resultType="java.lang.Long">
+        select purchasecontract_id from pur_invoice i inner join pur_detail s on i.id=s.purchaseinvoice_id
+        where i.id=#{id}
+        GROUP BY purchasecontract_id
+    </select>
+
     <insert id="insertPurchaseinvoice" parameterType="Purchaseinvoice" useGeneratedKeys="true" keyProperty="id">
-        insert into purchaseinvoice
+        insert into pur_invoice
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">purchaseinvoiceid,</if>
             <if test="money != null ">money,</if>
@@ -65,7 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updatePurchaseinvoice" parameterType="Purchaseinvoice">
-        update purchaseinvoice
+        update pur_invoice
         <trim prefix="SET" suffixOverrides=",">
             <if test="purchaseinvoiceid != null  and purchaseinvoiceid != ''">purchaseinvoiceid = #{purchaseinvoiceid},</if>
             <if test="money != null ">money = #{money},</if>
@@ -75,15 +81,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
     <update id="updatePurchaseinvoiceByPurchaseinvoiceid">
-         update purchaseinvoice set money=money+#{newmoney} where id=#{id}
+         update pur_invoice set money=money+#{newmoney} where id=#{id}
     </update>
 
     <delete id="deletePurchaseinvoiceById" parameterType="Long">
-        delete from purchaseinvoice where id = #{id}
+        delete from pur_invoice where id = #{id}
     </delete>
 
     <delete id="deletePurchaseinvoiceByIds" parameterType="String">
-        delete from purchaseinvoice where id in
+        delete from pur_invoice where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

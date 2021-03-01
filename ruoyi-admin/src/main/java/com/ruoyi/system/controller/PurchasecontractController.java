@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
-import com.ruoyi.system.util.numberUtil;
+import com.ruoyi.system.utils.numberUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
@@ -38,31 +38,7 @@ public class PurchasecontractController extends BaseController
     private ISalescontractService salescontractService;
     @Autowired
     private ISupplierService supplierService;
-    @Autowired
-    private IPurchasedetailService purchasedetailService;
-    @Autowired
-    private IPurchasedetailChildService purchasedetailChildService;
 
-
-
-    @PostMapping(value = "/PurchasesamountBymonth")
-    @ResponseBody
-    public Map<String, Object> PurchasesamountBymonth(@RequestParam("newdate") String newdate) {
-        Map<String, Object> queryMap = new HashMap<String, Object>();
-
-        queryMap.put("result", purchasecontractService.selectPurchasesamountByMonth(newdate));
-
-        return  queryMap;
-    }
-
-    @PostMapping(value = "/PurchasesamountByday")
-    @ResponseBody
-    public Map<String, Object> PurchasesamountByday(@RequestParam("newyear") String newyear,@RequestParam("newmonth") String newmonth) {
-        Map<String, Object> queryMap = new HashMap<String, Object>();
-        queryMap.put("result", purchasecontractService.selectPurchasesamountByday(newyear,newmonth));
-
-        return  queryMap;
-    }
 
 
 
@@ -105,13 +81,11 @@ public class PurchasecontractController extends BaseController
     // 生成合同编号
     @RequestMapping(value = { "/getPurchaseContractid" }, method = { RequestMethod.POST })
     @ResponseBody
-    public Map<String, String> getContractid(
-            @RequestParam(value = "contractid", required = false, defaultValue = "") String contractid) {
+    public Map<String, String> getContractid(@RequestParam("contractid") Long contractid) {
         Map<String, String> map = new HashMap<String, String>();
-        if (contractid.length() == 0) {
-
-        }else{
-            map.put("purchasecontractid", purchasecontractService.findcontractid(contractid));
+        if (contractid!=null) {
+            String contractnumber=  salescontractService.selectSalescontractById(contractid).getContractid();
+            map.put("purchasecontractid", purchasecontractService.findcontractid(contractid,contractnumber));
         }
         return map;
     }
@@ -173,13 +147,9 @@ public class PurchasecontractController extends BaseController
     @Log(title = "采购合同", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
+    public AjaxResult remove(Long ids)
     {
-        String purchasecontractid = purchasecontractService.selectPurchasecontractById(Long.valueOf(ids)).getPurchasecontractid();
-        if(purchasedetailService.selectPurchasedetailListByPurchasecontractId(purchasecontractid)!=null&&purchasedetailService.selectPurchasedetailListByPurchasecontractId(purchasecontractid).size()>0) {
-            return AjaxResult.error("操作失败,采购合同下有订单信息!");
-        }
-        return toAjax(purchasecontractService.deletePurchasecontractByIds(ids));
+        return purchasecontractService.deletePurchasecontractById(ids);
     }
 
 
@@ -199,35 +169,7 @@ public class PurchasecontractController extends BaseController
     @GetMapping("/print/{id}")
     public String print(@PathVariable("id") String id, ModelMap mmap)
     {
-        Purchasecontract purchasecontract =null;
-        if( numberUtil.isNumeric(id)) {
-            purchasecontract = purchasecontractService.selectPurchasecontractById(Long.valueOf(id));
-
-        }else{
-            purchasecontract = purchasecontractService.selectPurchasecontractByPurchaseContractid(id);
-
-        }
-
-        List<Purchasedetail> purchasedetails = purchasedetailService.selectPurchasedetailListByPurchasecontractId(purchasecontract.getPurchasecontractid());
-        List<PurchasedetailChild> purchasedetailChildren = purchasedetailChildService.selectPurchasedetailChildList(null);
-        if(purchasedetails.size()>0){
-        for (Purchasedetail purchasedetail: purchasedetails) {
-            if (purchasedetail.getSpecifications()!=null&&purchasedetail.getSpecifications().length() > 20) {
-                purchasedetail.setSpecifications(purchasedetail.getSpecifications().substring(0, 20));
-            }
-        }
-    }
-        if(purchasedetailChildren.size()>0) {
-            for (PurchasedetailChild purchasedetailChildrens : purchasedetailChildren) {
-                if (purchasedetailChildrens.getSpecifications()!=null&&purchasedetailChildrens.getSpecifications().length() > 20) {
-                    purchasedetailChildrens.setSpecifications(purchasedetailChildrens.getSpecifications().substring(0, 20));
-                }
-            }
-        }
-
-        mmap.put("purchasecontract", purchasecontract);
-        mmap.put("purchasedetails", purchasedetails);
-        mmap.put("purchasedetailChildren", purchasedetailChildren);
+        mmap.put("data",purchasecontractService.print(id));
         return prefix + "/print";
     }
 }

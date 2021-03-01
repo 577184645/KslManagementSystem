@@ -13,7 +13,7 @@
     </resultMap>
 
     <sql id="selectInvoiceVo">
-        select id, invoiceid, money, invoicetime, create_time from invoice
+        select id, invoiceid, money, invoicetime, create_time from sale_invoice
     </sql>
 
     <select id="selectInvoiceList" parameterType="Invoice" resultMap="InvoiceResult">
@@ -36,7 +36,7 @@
         where invoiceid = #{invoiceid}
     </select>
     <select id="selectInvoiceListbycontractid"  resultMap="InvoiceResult">
-        select invoiceid from invoice inner join sell_detail on invoice.id=sell_detail.invoice_id
+        select invoiceid from sale_invoice inner join sell_detail on invoice.id=sell_detail.invoice_id
         where sell_detail.contractid=#{contractid}
         GROUP BY   invoiceid
     </select>
@@ -44,7 +44,7 @@
 
 
     <insert id="insertInvoice" parameterType="Invoice" useGeneratedKeys="true" keyProperty="id">
-        insert into invoice
+        insert into sale_invoice
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="invoiceid != null  and invoiceid != ''">invoiceid,</if>
             <if test="money != null ">money,</if>
@@ -60,7 +60,7 @@
     </insert>
 
     <update id="updateInvoice" parameterType="Invoice">
-        update invoice
+        update sale_invoice
         <trim prefix="SET" suffixOverrides=",">
             <if test="invoiceid != null  and invoiceid != ''">invoiceid = #{invoiceid},</if>
             <if test="money != null ">money = #{money},</if>
@@ -72,15 +72,15 @@
 
 
     <update id="updateInvoiceByInvoiceid">
-        update invoice set  money=money+#{newmoney} where id=#{id}
+        update sale_invoice set  money=money+#{newmoney} where id=#{id}
     </update>
 
     <delete id="deleteInvoiceById" parameterType="Long">
-        delete from invoice where id = #{id}
+        delete from sale_invoice where id = #{id}
     </delete>
 
     <delete id="deleteInvoiceByIds" parameterType="String">
-        delete from invoice where id in
+        delete from sale_invoice where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
@@ -88,9 +88,14 @@
 
 
 
-    <select id="sumMoneyGYear" resultType="Double">
-        select sum(money)  from invoice
+    <select id="sumMoneyByYear" resultType="Double">
+        select sum(money)  from sale_invoice
         where  year(invoicetime) = #{newDate}
+    </select>
+    <select id="selectInvoiceListByIdGetContractid" resultType="java.lang.Long">
+        select s.contract_id from sale_invoice i inner join sale_detail s on i.id=invoice_id
+        where i.id=#{id}
+        GROUP BY contract_id
     </select>
 
 

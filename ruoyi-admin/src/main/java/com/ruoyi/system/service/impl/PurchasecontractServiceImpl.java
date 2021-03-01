@@ -1,14 +1,18 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.Purchasedetail;
 import com.ruoyi.system.domain.Salescontract;
 import com.ruoyi.system.domain.SellDetail;
 import com.ruoyi.system.mapper.PurchasedetailMapper;
 import com.ruoyi.system.mapper.SellDetailMapper;
+import com.ruoyi.system.utils.jsonlistUtil;
+import com.ruoyi.system.utils.numberUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2020-05-22
  */
 @Service
+@Transactional
 public class PurchasecontractServiceImpl implements IPurchasecontractService 
 {
     @Autowired
@@ -36,7 +41,7 @@ public class PurchasecontractServiceImpl implements IPurchasecontractService
     private SellDetailMapper sellDetailMapper;
     /**
      * 查询采购合同
-     * 
+     *
      * @param id 采购合同ID
      * @return 采购合同
      */
@@ -65,34 +70,27 @@ public class PurchasecontractServiceImpl implements IPurchasecontractService
      * @return 结果
      */
     @Override
-    @Transactional
     public int addPurchasecontract(String purchasecontractList, Purchasecontract purchasecontract) {
-        JSONArray productArray = JSONArray.fromObject(purchasecontractList);
-        Float sum=0f;
-            for (int i = 0; i < productArray.size(); i++) {
-            JSONObject jsonObject = productArray.getJSONObject(i);
-            Purchasedetail purchasedetail = new Purchasedetail();
-            purchasedetail.setProductname(jsonObject.getString("productname"));
-            purchasedetail.setUnit(jsonObject.getString("unit"));
-            purchasedetail.setSpecifications(jsonObject.getString("specifications"));
-            if(!jsonObject.getString("producttype").equals("null")) {
-                purchasedetail.setProducttype(jsonObject.getString("producttype"));
-            }
-            purchasedetail.setPrice(Float.valueOf(jsonObject.getString("purchaseprice")));
-            purchasedetail.setProductnum(Float.valueOf(jsonObject.getString("purchaseproductnum")));
-            purchasedetail.setMoney(Float.valueOf(jsonObject.getString("purchasemoney")));
-            purchasedetail.setSelldetailid(Long.valueOf(jsonObject.getString("id")));
-            sum+=Float.valueOf(jsonObject.getString("purchasemoney"));
-            purchasedetail.setPurchasecontractid(purchasecontract.getPurchasecontractid());
+        List<String[]> jsonList = jsonlistUtil.getJsonList(purchasecontractList, new String[]{"id", "purchaseprice", "purchasemoney", "purchaseproductnum"});
+        Double sum=0.0;
+      int result=  purchasecontractMapper.insertPurchasecontract(purchasecontract);
+        for (int i = 0; i < jsonList.size(); i++) {
+            String[] strings = jsonList.get(i);
+            Purchasedetail purchasedetail=new Purchasedetail();
+            purchasedetail.setSelldetailId(Long.valueOf(strings[0]));
+            purchasedetail.setPrice(Double.valueOf(strings[1]));
+            purchasedetail.setMoney(Double.valueOf(strings[2]));
+            purchasedetail.setProductnum(Integer.valueOf(strings[3]));
+            purchasedetail.setPurchasecontractId(purchasecontract.getId());
             purchasedetailMapper.insertPurchasedetail(purchasedetail);
-            SellDetail sellDetail=new SellDetail();
-                sellDetail.setId(Long.valueOf(jsonObject.getString("id")));
-                sellDetail.setPurchasecontractid(purchasecontract.getPurchasecontractid());
-            sellDetailMapper.updatePurchasestatusAndPurchasecontractid(sellDetail);
+            sellDetailMapper.updatePurchaseStatusById(Long.valueOf(Long.valueOf(strings[0])));
+            sum+=purchasedetail.getMoney();
         }
-        purchasecontract.setPurchasesamount(sum);
-        return purchasecontractMapper.insertPurchasecontract(purchasecontract);
-
+        Purchasecontract updatepurchasecontract=new Purchasecontract();
+        updatepurchasecontract.setId(purchasecontract.getId());
+        updatepurchasecontract.setPurchasesamount(sum);
+        purchasecontractMapper.updatePurchasecontract(updatepurchasecontract);
+        return result;
     }
 
 
@@ -128,75 +126,58 @@ public class PurchasecontractServiceImpl implements IPurchasecontractService
      * @return 结果
      */
     @Override
-    public int deletePurchasecontractById(Long id)
+    public AjaxResult deletePurchasecontractById(Long id)
     {
-        return purchasecontractMapper.deletePurchasecontractById(id);
+        List<Purchasedetail> purchasedetails = purchasedetailMapper.selectPurchasedetailListByPurchasecontractId(id);
+        if(purchasedetails!=null&&purchasedetails.size()>0) {
+            return AjaxResult.error("操作失败,采购合同下有订单信息!");
+        }
+        purchasecontractMapper.deletePurchasecontractById(id);
+        return   AjaxResult.success("操作成功!");
+
     }
 
     @Override
-    public List<Purchasecontract> selectPurchasecontractByContractId(String contractid) {
-        return purchasecontractMapper.selectPurchasecontractByContractId(contractid);
+    public Map<String, Object> print(String PurchasecontractId) {
+        Map<String, Object> map=new HashMap<>();
+        Purchasecontract purchasecontract=new Purchasecontract();
+        if( numberUtil.isNumeric(PurchasecontractId)) {
+            purchasecontract = purchasecontractMapper.selectPurchasecontractById(Long.valueOf(PurchasecontractId));
+        }else{
+            purchasecontract= purchasecontractMapper.selectPurchasecontractByPurchaseContractid(PurchasecontractId);
+        }
+        List<Purchasedetail> purchasedetails = purchasedetailMapper.selectPurchasedetailListByPurchasecontractId(purchasecontract.getId());
+        map.put("purchasecontract", purchasecontract);
+        map.put("purchasedetails", purchasedetails);
+        return map;
     }
 
-    @Override
-    public String findcontractid(String contractid) {
-        if(contractid.indexOf(",")!=-1){
-            contractid=contractid.replace(",","-")+"-";
-          String maxcontractid= purchasecontractMapper.selectMaxPurchasecontractByContractId(contractid);
 
-          if (maxcontractid==null||maxcontractid.length()==0){
-              return contractid+"001";
-          } else{
-              Integer purchasecontractidCount= Integer.valueOf(maxcontractid.substring(maxcontractid.lastIndexOf("-")+1))+1;
+    @Override
+    public String findcontractid(Long contractid,String contractnumber) {
+        String maxcontractid= purchasecontractMapper.selectMaxPurchasecontractByContractId(contractid);
+         String contractidType=contractnumber.substring(2,3);
+          if (maxcontractid!=null){
+              String purchasecontractid="";
+              Integer purchasecontractidCount= Integer.valueOf(maxcontractid.substring(maxcontractid.lastIndexOf(contractidType)+1))+1;
               if(purchasecontractidCount<10){
-                  contractid="00"+purchasecontractidCount;
+                  purchasecontractid="00"+purchasecontractidCount;
               }else if(purchasecontractidCount<100){
-                  contractid="0"+purchasecontractidCount;
+                  purchasecontractid="0"+purchasecontractidCount;
               }else{
-                  contractid=String.valueOf(purchasecontractidCount);
+                  purchasecontractid=String.valueOf(purchasecontractidCount);
               }
-              return  contractid;
+              return   contractnumber+contractidType+purchasecontractid;
+          }
+          else{
+              return contractnumber+contractidType+"001";
           }
 
-        }
-
-         String contractidType=contractid.substring(2, 3);
-        if( purchasecontractMapper.selectPurchasecontractByContractId(contractid).size()<1){
-            return contractid+contractidType+"001";
-        }else{
-            String maxPurchasecontractid = purchasecontractMapper.selectMaxPurchasecontractByContractId(contractid);
-            Integer purchasecontractidCount= Integer.valueOf(maxPurchasecontractid.substring(maxPurchasecontractid.lastIndexOf(contractidType)+1))+1;
-            String purchasecontractid="";
-            if(purchasecontractidCount<10){
-                purchasecontractid="00"+purchasecontractidCount;
-            }else if(purchasecontractidCount<100){
-                purchasecontractid="0"+purchasecontractidCount;
-            }else{
-                purchasecontractid=String.valueOf(purchasecontractidCount);
-            }
-            return   contractid+contractidType+purchasecontractid;
-        }
-
-
     }
 
-    @Override
-    public Double selectPurchasesamountsumByContractId(String contractid) {
-        return purchasecontractMapper.selectPurchasesamountsumByContractId(contractid);
-    }
 
-    @Override
-    public List<Map<String, Object>> selectPurchasesamountByMonth(String newdate) {
-        return purchasecontractMapper.selectPurchasesamountByMonth(newdate);
-    }
 
-    @Override
-    public List<Map<String, Object>> selectPurchasesamountByday(String newyear, String newmonth) {
-        return purchasecontractMapper.selectPurchasesamountByday(newyear,newmonth);
-    }
 
-    @Override
-    public Purchasecontract selectPurchasecontractByPurchaseContractid(String id) {
-        return purchasecontractMapper.selectPurchasecontractByPurchaseContractid(id);
-    }
+
+ 
 }

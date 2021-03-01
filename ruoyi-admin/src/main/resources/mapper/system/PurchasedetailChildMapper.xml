@@ -13,12 +13,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="producttype"    column="producttype"    />
         <result property="productnum"    column="productnum"    />
         <result property="money"    column="money"    />
-        <result property="purchasedetailid"    column="purchasedetailid"    />
+        <result property="purchasedetail_id"    column="purchasedetailId"    />
         <result property="createTime"    column="create_time"    />
     </resultMap>
 
     <sql id="selectPurchasedetailChildVo">
-        select id, productname, price, unit, specifications, producttype, productnum, money, purchasedetailid, create_time from purchasedetail_child
+        select id, productname, price, unit, specifications, producttype, productnum, money, purchasedetail_id, create_time from pur_detailchild
     </sql>
 
 
@@ -34,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="producttype != null  and producttype != ''"> and producttype = #{producttype}</if>
             <if test="productnum != null "> and productnum = #{productnum}</if>
             <if test="money != null "> and money = #{money}</if>
-            <if test="purchasedetailid != null "> and purchasedetailid = #{purchasedetailid}</if>
+            <if test="purchasedetailId != null "> and purchasedetail_id = #{purchasedetailId}</if>
 
         </where>
     </select>
@@ -46,11 +46,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectPurchasedetailChildPurchasedetailid" parameterType="Long" resultMap="PurchasedetailChildResult">
         <include refid="selectPurchasedetailChildVo"/>
-        where purchasedetailid = #{purchasedetailid}
+        where purchasedetail_id = #{purchasedetailId}
     </select>
         
     <insert id="insertPurchasedetailChild" parameterType="PurchasedetailChild" useGeneratedKeys="true" keyProperty="id">
-        insert into purchasedetail_child
+        insert into pur_detailchild
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="productname != null  and productname != ''">productname,</if>
             <if test="price != null ">price,</if>
@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="producttype != null  and producttype != ''">producttype,</if>
             <if test="productnum != null ">productnum,</if>
             <if test="money != null ">money,</if>
-            <if test="purchasedetailid != null ">purchasedetailid,</if>
+            <if test="purchasedetailId != null ">purchasedetail_id,</if>
             <if test="createTime != null ">create_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -70,13 +70,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="producttype != null  and producttype != ''">#{producttype},</if>
             <if test="productnum != null ">#{productnum},</if>
             <if test="money != null ">#{money},</if>
-            <if test="purchasedetailid != null ">#{purchasedetailid},</if>
+            <if test="purchasedetailId != null ">#{purchasedetailId},</if>
             <if test="createTime != null ">#{createTime},</if>
          </trim>
     </insert>
 
     <update id="updatePurchasedetailChild" parameterType="PurchasedetailChild">
-        update purchasedetail_child
+        update pur_detailchild
         <trim prefix="SET" suffixOverrides=",">
             <if test="productname != null  and productname != ''">productname = #{productname},</if>
             <if test="price != null ">price = #{price},</if>
@@ -85,22 +85,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="producttype != null  and producttype != ''">producttype = #{producttype},</if>
             <if test="productnum != null ">productnum = #{productnum},</if>
             <if test="money != null ">money = #{money},</if>
-
-            <if test="purchasedetailid != null ">purchasedetailid = #{purchasedetailid},</if>
+            <if test="purchasedetailId != null ">purchasedetail_id = #{purchasedetailId},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
         </trim>
         where id = #{id}
     </update>
 
     <delete id="deletePurchasedetailChildById" parameterType="Long">
-        delete from purchasedetail_child where id = #{id}
+        delete from pur_detailchild where id = #{id}
     </delete>
 
     <delete id="deletePurchasedetailChildByIds" parameterType="String">
-        delete from purchasedetail_child where id in 
+        delete from pur_detailchild where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectPurchasedetailChildByPid" resultMap="PurchasedetailChildResult">
+        <include refid="selectPurchasedetailChildVo"/>
+         where purchasedetail_id=#{id}
+    </select>
     
 </mapper>

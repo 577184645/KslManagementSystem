@@ -33,7 +33,7 @@ public interface IInvoiceService
      * @param invoice 发票
      * @return 结果
      */
-    public int insertInvoice(String selldetailids,Invoice invoice);
+    public boolean insertInvoice(Long salescontractId,String selldetailids,Invoice invoice);
 
     /**
      * 修改发票
@@ -53,25 +53,6 @@ public interface IInvoiceService
 
 
 
-    /**
-     * 删除发票信息
-     *
-     * @param id 发票ID
-     * @return 结果
-     */
-    public int deleteInvoiceById(Long id);
 
-    /**
-     * 当前年的发票金额
-     * @param newDate
-     * @return
-     */
-   public Double sumMoneyGYear(String newDate);
 
-    /**
-     * 查询销售合同下所有的发票
-     * @param contractid
-     * @return
-     */
-    List<Invoice> selectInvoiceListbycontractid(String contractid);
 }
