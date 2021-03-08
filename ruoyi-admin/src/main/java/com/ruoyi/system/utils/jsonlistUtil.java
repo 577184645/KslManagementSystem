@@ -26,6 +26,8 @@ public class jsonlistUtil {
             for (int i1 = 0; i1 < title.length; i1++) {
                 if(jsonObject.has(title[i1])&&StringUtils.isNotBlank(jsonObject.getString(title[i1]))){
                     array[i1]=jsonObject.getString(title[i1]);
+                }else{
+                    array[i1]="";
                 }
             }
             list.add(array);

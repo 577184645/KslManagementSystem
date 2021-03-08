@@ -185,24 +185,14 @@
                contractid,
                firstparty,
                salesamount,
-               group_concat(DISTINCT t.invoiceid)                                       invoices,
-               group_concat(DISTINCT p.partyb)                                          suppliers,
-               group_concat(DISTINCT p.purchasesamount)                                 purcharsemoneys,
-               group_concat(DISTINCT p.purchasecontractid)                              purchasecontractids,
-               group_concat(DISTINCT pi.purchaseinvoiceid)                              purchaseinvoices,
+               (select  group_concat(DISTINCT invoiceid) from sale_invoice  inner join sale_detail on invoice_id = sale_invoice.id
+                where               contract_id=s.id)                                                      invoices,
+               (select group_concat(DISTINCT partyb)  from pur_contract where contract_id = s.id)    suppliers,
+               (select group_concat( purchasesamount)  from pur_contract where contract_id = s.id) purcharsemoneys,
+               (select group_concat(DISTINCT purchasecontractid)  from pur_contract where contract_id = s.id) purchasecontractids,
+               (select  group_concat(DISTINCT purchaseinvoiceid)  from pur_invoice   inner join pur_detail on purchaseinvoice_id = pur_invoice.id INNER JOIN pur_contract on pur_contract.id = purchasecontract_id	 where contract_id=s.id) purchaseinvoices,
                (select SUM(purchasesamount) from pur_contract where contract_id = s.id) purchasesamount
-               from sale_contract s
-                 left JOIN (select invoiceid, contract_id from sale_invoice
-                 inner join sale_detail
-              on invoice_id = sale_invoice.id) t
-                     on t.contract_id = s.id
-                 left JOIN (select partyb, contract_id, purchasesamount, purchasecontractid from pur_contract) p
-                     on p.contract_id = s.id
-              left JOIN (select purchaseinvoiceid, contract_id
-           from pur_invoice
-           inner join pur_detail on purchaseinvoice_id = pur_invoice.id
-           INNER JOIN pur_contract on pur_contract.id = purchasecontract_id) pi
-                     on pi.contract_id = s.id
+        from sale_contract s
         where s.id = #{id}
     </select>
 
