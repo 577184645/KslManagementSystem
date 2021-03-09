@@ -21,6 +21,11 @@ server:
     # 应用的访问路径
     context-path: /
   tomcat:
+    accesslog:
+    # 开启日志记录
+    enabled: true
+    # 访问日志存放目录
+    directory: logs
     # tomcat的URI编码
     uri-encoding: UTF-8
     # tomcat最大线程数，默认为200
@@ -28,7 +33,7 @@ server:
     # Tomcat启动初始化的线程数，默认值25
     min-spare-threads: 30
 
-    basedir: /tmp/tomcat
+    basedir: C:/ruoyi/uploadPath/logs
 
 
 # 日志配置

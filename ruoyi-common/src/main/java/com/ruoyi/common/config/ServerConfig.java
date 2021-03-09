@@ -23,7 +23,7 @@ public class ServerConfig
     @Bean
     public MultipartConfigElement multipartConfigElement() {
       MultipartConfigFactory factory = new MultipartConfigFactory();
-      factory.setLocation("/tmp/tomcat");
+      factory.setLocation("C:/ruoyi/uploadPath/tomcat");
       return factory.createMultipartConfig();
     }
     /**
