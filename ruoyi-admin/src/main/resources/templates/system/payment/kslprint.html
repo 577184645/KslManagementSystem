@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增岗位')" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+   <div id="context">
+       <center>
+           <table border="border:1px solid black;" class="table">
+               <tr  >
+                   <th  style="border:1px solid black;text-align:center;vertical-align:middle;" colspan="8" >上海康时利自动化系统工程有限公司</th>
+               </tr>
+               <tr>
+                   <th colspan="8" style="border:1px solid black;text-align:center;vertical-align:middle;">用款申请单</th>
+               </tr>
+               <tr>
+                   <th contentEditable="true" style="border:1px solid black;" colspan="4" align="left">用款单位:</th>
+                   <th contentEditable="true" style="border:1px solid black;" colspan="4" align="left">用款部门:</th>
+               </tr>
+               <tr>
+                   <th contentEditable="true" style="border:1px solid black;" colspan="4" align="left">汇入单位:</th>
+                   <th contentEditable="true" style="border:1px solid black;" colspan="4" align="left">汇款方式:</th>
+               </tr>
+               <tr>
+                   <th contentEditable="true" style="border:1px solid black;" colspan="4" align="left">开户银行:</th>
+                   <th contentEditable="true" style="border:1px solid black;" colspan="4" align="left">账号:</th>
+               </tr>
+               <tr>
+                   <th contentEditable="true" style="border:1px solid black;" colspan="4" align="left">汇款金额:</th>
+                   <th contentEditable="true" style="border:1px solid black;" colspan="4" align="left">¥:</th>
+               </tr>
+
+               <tr>
+                   <th contentEditable="true" style="border:1px solid black;" colspan="8" align="left">汇款用途:</th>
+
+               </tr>
+               <tr>
+                   <th contentEditable="true" style="border:1px solid black;" colspan="8" align="left">备注:</th>
+
+               </tr>
+               <tr>
+                   <th width="100">经办人:</th>
+                   <th ></th>
+                   <th width="140">部门负责人:</th>
+                   <th></th>
+                   <th width="100">复核人:</th>
+                   <th ></th>
+                   <th width="100">审批人:</th>
+                   <th ></th>
+               </tr>
+           </table>
+       </center>
+   </div>
+       <div class="row">
+           <div class="col-sm-offset-5 col-sm-10">
+               <button type="button" class="btn btn-sm btn-primary" onclick="print()"><i class="fa fa-check"></i>打 印</button>&nbsp;
+           </div>
+       </div>
+
+</div>
+<th:block th:include="include :: footer" />
+<script src="http://www.jq22.com/jquery/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.jqprint-0.3.js}"></script>
+<script type="text/javascript">
+
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-post-add').serialize());
+        }
+    }
+    function print() {
+        $("#context").jqprint();
+
+    }
+</script>
+</body>
+</html>
