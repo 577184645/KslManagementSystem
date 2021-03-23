@@ -78,7 +78,6 @@ public class SettlementServiceImpl implements ISettlementService {
             String[] strings = jsonList.get(i);
             Settlementchild settlementchild = new Settlementchild(null, settlement.getId(), Long.valueOf(strings[0]), strings[1], strings[2], Double.valueOf(strings[3]), strings[4], strings[5], strings[6], strings[7], Double.valueOf(strings[8]), Double.valueOf(strings[9]), Double.valueOf(strings[10]), Double.valueOf(strings[11]), Double.valueOf(strings[12]), Double.valueOf(strings[13]), null);
             settlementchildMapper.insertSettlementchild(settlementchild);
-            System.out.println(settlementchild.getContractid());
             salescontractMapper.updateSettlementstatus(Long.valueOf(settlementchild.getContractid()), AdminConstants.Settlementtype.SETTLEMENT_YES);
         }
         return true;

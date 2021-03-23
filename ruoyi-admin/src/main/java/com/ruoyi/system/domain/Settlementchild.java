@@ -36,10 +36,11 @@ public class Settlementchild extends BaseEntity
     private String suppliers;
     /** 采购合同号 */
     private String purchasecontractids;
-    /** 金额 */
-    private String purchasemoney;
+
     /** 发票号码 */
     private String purchaseinvoiceid;
+    /** 金额 */
+    private String purchasemoney;
     /** 采购税率 */
     private Double taxrate;
     /** 采购成本 */
