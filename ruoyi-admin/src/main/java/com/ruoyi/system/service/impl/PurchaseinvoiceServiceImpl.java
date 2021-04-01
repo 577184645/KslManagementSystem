@@ -68,7 +68,7 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
     public boolean insertPurchaseinvoice(Long purchasecontractid,Purchaseinvoice purchaseinvoice,String purchasedetailids) {
 
         String[] ids = purchasedetailids.split(",");
-        //判断这张发票是否存在
+        //判断这张发票是否存在,如果在则更新金额反之新增发票
         Purchaseinvoice oldpurchaseinvoice = purchaseinvoiceMapper.selectPurchaseinvoiceByPurchaseinvoiceid(purchaseinvoice.getPurchaseinvoiceid());
         if(oldpurchaseinvoice!=null){
             purchaseinvoiceMapper.updatePurchaseinvoiceByPurchaseinvoiceid(purchaseinvoice.getMoney(),purchaseinvoiceMapper.selectPurchaseinvoiceByPurchaseinvoiceid(purchaseinvoice.getPurchaseinvoiceid()).getId());
@@ -125,6 +125,7 @@ public class PurchaseinvoiceServiceImpl implements IPurchaseinvoiceService
     public int deletePurchaseinvoiceByIds(String ids)
     {
         for (String s : ids.split(",")) {
+            //找到这张发票下所有的关联的合同 修改发票关联商品发票id为null 修改合同状态
             List<Long> purchasecontracts = purchaseinvoiceMapper.selectInvoiceListByIdGetPurchaseContractid(Long.valueOf(s));
             purchasedetailMapper.updatePurchasedetailByPurchaseinvoiceId(Long.valueOf(s));
             for (Long purchasecontract : purchasecontracts) {

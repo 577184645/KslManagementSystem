@@ -69,7 +69,7 @@ public class InvoiceServiceImpl implements IInvoiceService
     public boolean insertInvoice(Long salescontractId,String selldetailids,Invoice invoice)
     {
         String[] ids = selldetailids.split(",");
-        //判断这张发票是否存在
+        //判断这张发票是否存在,如果在则更新金额反之新增发票
         Invoice oldinvoice = invoiceMapper.selectInvoiceByInvoiceid(invoice.getInvoiceid());
         if(oldinvoice!=null ){
           invoiceMapper.updateInvoiceByInvoiceid(invoice.getMoney(),invoiceMapper.selectInvoiceByInvoiceid(invoice.getInvoiceid()).getId());
@@ -130,7 +130,7 @@ public class InvoiceServiceImpl implements IInvoiceService
     public int deleteInvoiceByIds(String ids)
     {
         for (String s : ids.split(",")) {
-            //找到这张发票下所有的关联的合同
+            //找到这张发票下所有的关联的合同 修改发票关联商品发票id为null 修改合同状态
             List<Long> contractids = invoiceMapper.selectInvoiceListByIdGetContractid(Long.valueOf(s));
             sellDetailMapper.updateInvoiceIdNullByInvoiceId(s);
             for (Long contractid : contractids) {

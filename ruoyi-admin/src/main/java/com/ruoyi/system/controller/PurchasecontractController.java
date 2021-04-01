@@ -165,7 +165,9 @@ public class PurchasecontractController extends BaseController
         return prefix + "/purchaseinfo";
     }
 
-
+    /**
+     * 打印合同信息
+     */
     @GetMapping("/print/{id}")
     public String print(@PathVariable("id") String id, ModelMap mmap)
     {
