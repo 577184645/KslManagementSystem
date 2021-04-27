@@ -149,7 +149,7 @@
         select max(contractid)
         from sale_contract
         where contractid like '%${type}%'
-          and SUBSTR(create_time, 3, 2) = #{newdate}
+          and left(contractid, 2)  = #{newdate}
     </select>
 
     <select id="selectSalescontractByContractId" resultMap="SalescontractResult">
